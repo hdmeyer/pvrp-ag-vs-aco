@@ -22,10 +22,11 @@ public class Conocimiento {
     public int dias;
     public int duracion;
     public int capacidad;
-    public double inicial [][];
+    public double clientes [][];
     public double matrizCostos [][]; // contiene información del costo de ir
                                      // de un nodo a otro. Consideramos un
                                      // grafo conexo complto.
+    int listaVisitas [][];
     
     /** Creates a new instance of Lector */
     public Conocimiento() {
@@ -50,21 +51,25 @@ public class Conocimiento {
                 linea_dividida = linea.split("\\s");
             }
             this.capacidad = Integer.parseInt(linea_dividida[1]);
-            /*Inicializamos el vector donde cargaremos los datos del archivo por 
+            /*clientesizamos el vector donde cargaremos los datos del archivo por 
              *cada uno de los clientes*/
-            this.inicial = new double[this.cantClientes+1][6];
+            this.clientes = new double[this.cantClientes+1][6];
             for (int i = 0; i <= this.cantClientes; i++) {
                 linea = sarchivo.readLine();
                 linea_dividida = linea.split("\\s");
                 for (int j = 0; j < 6; j++) {
-                    this.inicial[i][j] = Double.parseDouble(linea_dividida[j]);
+                    this.clientes[i][j] = Double.parseDouble(linea_dividida[j]);
                 }
             }
-            
+            this.listaVisitas = new int[2][this.cantClientes+1];
+            this.InicializarListaVisitas();
             this.matrizCostos = new double[this.cantClientes+1][this.cantClientes+1];
             for (int i = 0; i < this.cantClientes+1; i++) {
+                
+                /*Ak aprovechamos y cargamos una lista de visitas y necesidades de cada cliente*/
+                this.listaVisitas[1][i] = (int)this.clientes[i][5];
                 for (int j = 0; j < this.cantClientes+1; j++) {
-                    this.matrizCostos[i][j] = Math.sqrt(Math.pow(this.inicial[i][1] - this.inicial[j][1],2) + Math.pow(this.inicial[i][2] - this.inicial[j][2],2));
+                    this.matrizCostos[i][j] = Math.sqrt(Math.pow(this.clientes[i][1] - this.clientes[j][1],2) + Math.pow(this.clientes[i][2] - this.clientes[j][2],2));
                 }
                 
             }
@@ -77,14 +82,19 @@ public class Conocimiento {
 	} finally { 
 
 	    System.out.println("");
-	    System.out.println("Es la mejor manera de aprender Streams, practicando!");
+	    System.out.println("practicando!");
 	} 	    
+    }
+    public void InicializarListaVisitas(){
+        for (int i = 0; i < clientes.length; i++) {
+            this.listaVisitas[0][i] = 0;
+        }
     }
     
     /* ToDo List
        
        - Retornar directamente distancia de dos clientes
-       - Revissar la idea de la matriz inicial
+       - Revissar la idea de la matriz clientes
        - Agregar listado de clientes con sus respectivas propiedades
      
      */
