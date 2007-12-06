@@ -1,0 +1,58 @@
+NOTAS VARIAS DE DOCUMENTACIÓN SOBRE EL MODELADO DE LA SOLUCIÓN DE PVRP PARA AGS
+===============================================================================
+
+1. En primer lugar hay que decir que tenemos un problema multinivel: 
+   - 1 Problema de planificación --> de que manera visitar a los clientes
+   - 1 Problema de ruteo ----------> encontrar rutas óptimas para cada día y 
+                                     vehículo disponible. 
+
+2. La estrategia común para resolver los problemas multinivel es aplicar un 
+   algoritmo adecuado en este nive, sin embargo en este trabajo nos planteamos
+   el desafío de resolver el problema solo con un algoritmo y una representación
+   única. 
+
+
+NOTAS SOBRE EL PROBLEMA
+===============================================================================
+
+El problema es generar el conjunto de rutas de menor costos para M camiones que
+tienen que visitar a n clientes, cada uno de los cuales requiere una frecuencia
+de visita en k días, y tiene una demanda que satisfacer.
+
+M = camiones
+k = dias
+n = clientes
+
+
+NOTAS SOBRE SOLUCIONES
+===============================================================================
+
+1. REPRESENTACIÓN DE SOLUCIÓN:
+
+   *Alelo ------> Ruta de un camión para un día. 
+                 Vector de enteros, cada entero un cliente. 
+
+   *Gen --------> Conjunto de rutas de un camion en el periodo de k días
+                 Vector de alelos
+
+   Cromosoma --> Conjunto de rutas de k días para cada camión
+                 Vector de genes.
+
+*Conceptos a revisar: 
+  - ¿Si definimos así, podemos igual cruzar y mutar a nivel de celdas de la 
+     matriz tridimensional?
+  - Hay que revisar si el gen no es directamente el entero en cada celda y 
+    el alelo un entero de 1 a N (que representa el número de cliente)
+
+En síntesis, decidimos usar una matriz tridimensional que contiene en cada celda
+el entero que representa a un cliente. La Matríz se podría definir así.
+
+     M = { Aijk | i pertenece a dias, 
+                  j pertenece a camiones,  
+                  k pertenece a clientes }
+
+     dias = { X | X = 1,2,3,...,k }
+     camiones = { X | X = 1,2,3,...,m }
+     clientes = { X | X = 1,2,3,...,n }
+
+   
