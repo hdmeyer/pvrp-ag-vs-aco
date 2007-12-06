@@ -85,6 +85,11 @@ public class Conocimiento {
 	    System.out.println("practicando!");
 	} 	    
     }
+    /** INICIALIZ LA LISTA DE VISITAS POSIBLES QUE ES UN VECTOR DE 2 DIMENSIONES
+     * DONDE LA PRIMERA DIMENSION INDICA SI SE VISITO O NO A UN CLIENTE EN UN DIA
+     * ESPECIFICO, Y LA SEGUNDA DIMENSION LA CANTIDAD DE VISITAS NECESARIAS DE 
+     * CADA CLIENTE...
+     */
     public void InicializarListaVisitas(){
         for (int i = 0; i < clientes.length; i++) {
             this.listaVisitas[0][i] = 0;
