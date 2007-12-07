@@ -50,11 +50,11 @@ public class Cromosoma {
         int contador = 0;
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
         this.aleatorio();
-        for (int i = 0; i < entrada.dias; i++) {
+        for (int i = 0; i < this.dias; i++) {
             this.InicializarListaVisitas();
             this.InicializarVehiculos();
-            for (int j = 1; j < entrada.cantClientes+1; j++) {
-                for (int k = 0; k < entrada.cantVehiculos; k++) {
+            for (int j = 1; j < this.cantClientes+1; j++) {
+                for (int k = 0; k < this.cantVehiculos; k++) {
                     /*INCREMENTAMOS UN CONTADOR PARA IR VISITANDO A LOS CLIENTES Y METIENDOLOS EN EL CROMOSOMA
                      LUEGO, SI LA CANTIDAD DE VISITAS QUE  NECSITAMOS PARA EL CLIENTE AUN NO FUE SATISFECHA,
                      LO VISITAMOS DE VUELTA Y DECREMENTAMOS LA CANTIDAD DE VISITAS NECESARIAS*/
@@ -74,7 +74,7 @@ public class Cromosoma {
                             this.vehiculos[k] -= (int)entrada.clientes[clienteActual][4];
                         }
                     }
-                    if(contador == entrada.cantClientes){
+                    if(contador == this.cantClientes){
                         //j = entrada.cantClientes+1;
                         //k = entrada.cantVehiculos;
                         contador =0;
@@ -129,12 +129,13 @@ public class Cromosoma {
         this.fitness = this.fitness - noVisitados*this.fitness;
         
     }
-    public String toString(Conocimiento entrada){
+    @Override
+    public String toString(){
         String granLinea = "";
-        for (int j = 0; j < entrada.cantVehiculos; j++) {
-            for (int i = 0; i < entrada.dias; i++) {
+        for (int j = 0; j < this.cantVehiculos; j++) {
+            for (int i = 0; i < this.dias; i++) {
                 granLinea += "[";
-                for (int k = 1; k < entrada.cantClientes + 1; k++) {
+                for (int k = 1; k < this.cantClientes + 1; k++) {
                     if (cromosoma[i][j][k] != 0) {
                         granLinea += cromosoma[i][j][k] +"-";
                     }
