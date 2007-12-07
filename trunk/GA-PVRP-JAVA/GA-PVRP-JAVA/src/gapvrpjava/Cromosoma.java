@@ -110,8 +110,8 @@ public class Cromosoma {
     }
     
     public void fObjetivo(Conocimiento entrada){
-        int suma =0;
-        int noVisitados = 0;
+        int ultimoVisitado = 0;
+        int penalizacion=0;
         for (int i = 0; i < entrada.dias; i++){
             for (int j = 0; j < entrada.cantVehiculos; j++){
                 /*no nos vamos hasta el cliente mas 1 porque
@@ -120,20 +120,30 @@ public class Cromosoma {
                  * de n*/
                 for (int k = 1; k < entrada.cantClientes; k++) {
                     if(cromosoma[i][j].ruta[k] != 0){
-                        suma += entrada.matrizCostos[cromosoma[i][j].ruta[k]][cromosoma[i][j].ruta[k+1]];
+                        for (int l = k+1; l < entrada.cantClientes+1; l++) {
+                            if(cromosoma[i][j].ruta[l] != 0){
+                                this.cromosoma[i][j].costo += entrada.matrizCostos[cromosoma[i][j].ruta[k]][cromosoma[i][j].ruta[l]];
+                                ultimoVisitado = l;
+                                l=entrada.cantClientes+1;  
+                            }
+                        }
                     }
                 }
+                /*Sumamos las cantidades para ir de 0 al primero y para ir del ultimo
+                 * al deposito de vuelta...*/
+                this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[1]];
+                this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[ultimoVisitado]];
+                this.fitness +=this.cromosoma[i][j].costo;
             }
         }
         /** AQUI PENALIZAMOS SI ES QUE NO SE VISITO A ALGUIEN*/
-        for (int i = 0; i < this.listaVisitasCromo.length; i++) {
+        for (int i = 0; i < this.cantClientes+1; i++) {
             if(this.listaVisitasCromo[1][i] > 0){
-                noVisitados++;
+                penalizacion += entrada.matrizCostos[0][i]*this.listaVisitasCromo[1][i];
             }
         }
 
-        this.fitness = 1/suma;
-        this.fitness = this.fitness - noVisitados*this.fitness;
+        this.fitness = this.fitness + penalizacion;
         
     }
     @Override
