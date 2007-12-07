@@ -1,10 +1,10 @@
-/*
- * ListaEnlada.java
+/**
+ * Población.java
  *
  * Created on 16 de noviembre de 2007, 8:37
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * Contiene las funcionalidades principales del Algoritmos genético para resolver
+ * PVRP
  */
 
 package gapvrpjava;
@@ -17,7 +17,6 @@ import java.util.*;
  * @author Hugo Meyer
  *
  */
-
 public class Poblacion {
     
     /** 
@@ -26,9 +25,12 @@ public class Poblacion {
     private Cromosoma[] individuos; 
     
     /**
-     * Hijos de los individuos selectos
+     * Hijos de los individuos selectos y variable para almacenar cantidad 
+     * de hijos generados
      */
     private Cromosoma[] hijos;        
+    private int CantHijosGenerados;
+    
     /**
      * Tamaño de la Población, equivalente a individuos.length
      */
@@ -36,6 +38,7 @@ public class Poblacion {
 
     /**
      * Fitness de los individuos 
+     * También disponible como información de cada individuo
      */
     private double[] fitness;
     
@@ -120,6 +123,9 @@ public class Poblacion {
      * Inicializa la población generando un Cromosoma y construyéndolo con 
      * valores aleatorios.
      * 
+     * No hace nada más que inicializar población. No se hace ninguna evaluación
+     * de la población en su conjunto.
+     * 
      * @param entrada
      * @return
      */
@@ -171,7 +177,7 @@ public class Poblacion {
     * son utilizados después para reemplazar parte de la población
     * @param selectos
     */
-    public void cruzar(Cromosoma[] selectos) {
+    public void cruce(Cromosoma[] selectos) {
         
         
         for (int i=0; i <= selectos.length-2; i = i+2){
@@ -192,7 +198,7 @@ public class Poblacion {
         rand.nextInt();
 
         for (int i=0; i < this.getTamanho(); i++){
-            if (rand.nextInt(99) < 20)
+            if (rand.nextInt(99) < this.probMutacion)
                 FuncionesGA.Mutar(hijos[i]);
         }
     }
@@ -230,7 +236,7 @@ public class Poblacion {
     public void evaluar(Conocimiento entrada) {
 
             for (int i=0; i<this.getTamanho();i++) {
-                    //fitness[i] = individuos[i].evaluar(entrada);
+                fitness[i] = individuos[i].evaluar(entrada);
             }
             elegirMejor();
     }
@@ -267,7 +273,7 @@ public class Poblacion {
             for (int i=0; i < this.getTamanho(); i++) {
                     if (fitness[i]> mejorFitness) {
                             mejorIndividuo = individuos[i];
-                            //mejorFitness = mejorIndividuo.getFitness();
+                            mejorFitness = mejorIndividuo.getFitness();
                     }
             }
     }
