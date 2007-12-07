@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
  * @author Huguis
  */
 public class Cromosoma {
-    public int cromosoma [][][]=null;
+    public ruta cromosoma [][]=null;
     public double fitness;
     /** Indica el orden en que se van tomando los clientes, estos se generan automaticamente*/
     public int ordenVisitas[];
@@ -33,7 +33,14 @@ public class Cromosoma {
      *poder manejar con sus indices reales
      Tanto los clientes como los vehiculos van desde cero hasta su valor menos 1*/
     public Cromosoma(Conocimiento entrada) {
-        this.cromosoma = new int [entrada.dias][entrada.cantVehiculos][entrada.cantClientes+1];
+        /*INICIALIZAMOS LA MATRIZ*/
+        this.cromosoma = new ruta [entrada.dias][entrada.cantVehiculos];
+        for (int i = 0; i < entrada.dias; i++) {
+            for (int j = 0; j < entrada.cantVehiculos; j++) {
+                this.cromosoma[i][j]= new ruta(entrada);
+            }
+        }
+
         this.ordenVisitas = new int[entrada.cantClientes+1];
         for (int i = 0; i < this.ordenVisitas.length; i++) {
             this.ordenVisitas[i] = i;
@@ -67,11 +74,11 @@ public class Cromosoma {
                         /*Verificamos si la demanda del cliente puede ser satisfecha por este vehiculo*/
                         if((this.vehiculos[k]-entrada.clientes[clienteActual][4] >= 0)){
                             /*Si es asi, se carga en el cromosoma el nro de cliente a ser visitado*/
-                            this.cromosoma[i][k][j] =(int)entrada.clientes[clienteActual][0];
+                            this.cromosoma[i][k].ruta[j] =(int)entrada.clientes[clienteActual][0];
                             this.listaVisitasCromo[1][clienteActual]--;
                             this.listaVisitasCromo[0][clienteActual] = 1;
                             /*Actualizamos la capacidad del cliente*/
-                            this.vehiculos[k] -= (int)entrada.clientes[clienteActual][4];
+                            //this.vehiculos[k] -= (int)entrada.clientes[clienteActual][4];
                         }
                     }
                     if(contador == this.cantClientes){
@@ -112,8 +119,8 @@ public class Cromosoma {
                  * costo, entonces cuando llegamos al n-1, tomamos con el valor
                  * de n*/
                 for (int k = 1; k < entrada.cantClientes; k++) {
-                    if(cromosoma[i][j][k] != 0){
-                        suma += entrada.matrizCostos[cromosoma[i][j][k]][cromosoma[i][j][k+1]];
+                    if(cromosoma[i][j].ruta[k] != 0){
+                        suma += entrada.matrizCostos[cromosoma[i][j].ruta[k]][cromosoma[i][j].ruta[k+1]];
                     }
                 }
             }
@@ -136,8 +143,8 @@ public class Cromosoma {
             for (int i = 0; i < this.dias; i++) {
                 granLinea += "[";
                 for (int k = 1; k < this.cantClientes + 1; k++) {
-                    if (cromosoma[i][j][k] != 0) {
-                        granLinea += cromosoma[i][j][k] +"-";
+                    if (cromosoma[i][j].ruta[k] != 0) {
+                        granLinea += cromosoma[i][j].ruta[k] +"-";
                     }
                 }
                 granLinea += "]";
