@@ -8,6 +8,7 @@
  */
 
 package gapvrpjava;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 /**
  *
@@ -74,7 +75,7 @@ public class Cromosoma {
                         /*Verificamos si la demanda del cliente puede ser satisfecha por este vehiculo*/
                         if((this.vehiculos[k]-entrada.clientes[clienteActual][4] >= 0)){
                             /*Si es asi, se carga en el cromosoma el nro de cliente a ser visitado*/
-                            this.cromosoma[i][k].ruta[j] =(int)entrada.clientes[clienteActual][0];
+                            this.cromosoma[i][k].ruta.add((int)entrada.clientes[clienteActual][0]);
                             this.listaVisitasCromo[1][clienteActual]--;
                             this.listaVisitasCromo[0][clienteActual] = 1;
                             /*Actualizamos la capacidad del cliente*/
@@ -119,27 +120,30 @@ public class Cromosoma {
     public void fObjetivo(Conocimiento entrada){
         int ultimoVisitado = 0;
         int penalizacion=0;
+        int actual;
+        int posterior;
         for (int i = 0; i < entrada.dias; i++){
             for (int j = 0; j < entrada.cantVehiculos; j++){
                 /*no nos vamos hasta el cliente mas 1 porque
                  * vamos haciendo cada valor con el sgte para calcular el
                  * costo, entonces cuando llegamos al n-1, tomamos con el valor
                  * de n*/
-                for (int k = 1; k < entrada.cantClientes; k++) {
-                    if(cromosoma[i][j].ruta[k] != 0){
-                        for (int l = k+1; l < entrada.cantClientes+1; l++) {
-                            if(cromosoma[i][j].ruta[l] != 0){
-                                this.cromosoma[i][j].costo += entrada.matrizCostos[cromosoma[i][j].ruta[k]][cromosoma[i][j].ruta[l]];
-                                ultimoVisitado = l;
-                                l=entrada.cantClientes+1;  
-                            }
-                        }
-                    }
+                Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
+                actual = (int) it.next();
+                while(it.hasNext()){
+                    
+                    posterior = (int) it.next();
+                    this.cromosoma[i][j].costo += entrada.matrizCostos[actual][posterior];
+                    actual = posterior;
+                    posterior = (int)it.next();
+                    ultimoVisitado = posterior;
+                    
                 }
+
                 /*Sumamos las cantidades para ir de 0 al primero y para ir del ultimo
                  * al deposito de vuelta...*/
-                this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[1]];
-                this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[ultimoVisitado]];
+                this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.firstElement()];
+                this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.lastElement()];
                 this.setFitness(this.getFitness() + this.cromosoma[i][j].costo);
             }
         }
@@ -159,11 +163,14 @@ public class Cromosoma {
         for (int j = 0; j < this.cantVehiculos; j++) {
             for (int i = 0; i < this.dias; i++) {
                 granLinea += "[";
-                for (int k = 1; k < this.cantClientes + 1; k++) {
-                    if (cromosoma[i][j].ruta[k] != 0) {
-                        granLinea += cromosoma[i][j].ruta[k] +"-";
-                    }
+                
+                Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
+                while(it.hasNext()){
+                    
+                    granLinea += it.next() + "-";
+                    
                 }
+                
                 granLinea += "]";
             }
             granLinea += "#";
