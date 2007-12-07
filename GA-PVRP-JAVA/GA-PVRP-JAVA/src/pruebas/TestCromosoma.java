@@ -40,7 +40,7 @@ public class TestCromosoma {
         System.out.println(cromo.ImprimirCromo(cromo.toString()));
         cromo.fObjetivo(prueba);
         System.out.println("=======================================================================");
-        System.out.println("| FITNESS: "+cromo.fitness+"                                          |");
+        System.out.println("| FITNESS: "+cromo.getFitness()+"                                          |");
         System.out.println("=======================================================================");
         System.out.println();
         System.out.println("2. PRUEBA DE INICIALIZAR POBLACION");
