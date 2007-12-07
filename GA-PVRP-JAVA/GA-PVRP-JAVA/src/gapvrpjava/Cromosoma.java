@@ -128,25 +128,25 @@ public class Cromosoma {
                  * vamos haciendo cada valor con el sgte para calcular el
                  * costo, entonces cuando llegamos al n-1, tomamos con el valor
                  * de n*/
-                Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
-                actual = (int) it.next();
-                while(it.hasNext()){
-                    
-                    posterior = (int) it.next();
-                    this.cromosoma[i][j].costo += entrada.matrizCostos[actual][posterior];
-                    actual = posterior;
-                    if(it.hasNext()){
-                        posterior = (int)it.next();
-                    }
-                    ultimoVisitado = posterior;
-                    
-                }
+                if (cromosoma[i][j].ruta.size() > 0) {
+                    Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
+                    actual = (int) it.next();
+                    while(it.hasNext()){
 
-                /*Sumamos las cantidades para ir de 0 al primero y para ir del ultimo
-                 * al deposito de vuelta...*/
-                this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.firstElement()];
-                this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.lastElement()];
-                this.setFitness(this.getFitness() + this.cromosoma[i][j].costo);
+                        posterior = (int) it.next();
+                        this.cromosoma[i][j].costo += entrada.matrizCostos[actual][posterior];
+                        actual = posterior;
+
+                        ultimoVisitado = posterior;
+
+                    }
+
+                    /*Sumamos las cantidades para ir de 0 al primero y para ir del ultimo
+                     * al deposito de vuelta...*/
+                    this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.firstElement()];
+                    this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.lastElement()];
+                    this.setFitness(this.getFitness() + this.cromosoma[i][j].costo);
+                }
             }
         }
         /** AQUI PENALIZAMOS SI ES QUE NO SE VISITO A ALGUIEN*/
