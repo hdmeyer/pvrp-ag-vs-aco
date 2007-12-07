@@ -38,22 +38,22 @@ public class FuncionesGA {
                 relleno =0;
                 for (int k = 1; k < c1.cantClientes + 1; k++) {
                     if(k < corte){
-                        if(!revisarRepetido(cruzado1, c1.cromosoma[i][j].ruta[k])){
+                        if(!revisarRepetido(cruzado1, c1.cromosoma[i][j].ruta[k],i,j)){
                             cruzado1.cromosoma[i][j].ruta[k] = c1.cromosoma[i][j].ruta[k];
                             cruzado1.listaVisitasCromo[1][k]--;
                         }
-                        if(!revisarRepetido(cruzado2, c2.cromosoma[i][j].ruta[k])){
+                        if(!revisarRepetido(cruzado2, c2.cromosoma[i][j].ruta[k],i,j)){
                             cruzado2.cromosoma[i][j].ruta[k] = c2.cromosoma[i][j].ruta[k];
                             cruzado2.listaVisitasCromo[1][k]--;
                         }
                         
                     }else{
                         relleno++;
-                        if(!revisarRepetido(cruzado1, c2.cromosoma[i][j].ruta[relleno])){
+                        if(!revisarRepetido(cruzado1, c2.cromosoma[i][j].ruta[relleno],i,j)){
                             cruzado1.cromosoma[i][j].ruta[k] = c2.cromosoma[i][j].ruta[relleno];
                             cruzado1.listaVisitasCromo[1][relleno]--;
                         }
-                        if(!revisarRepetido(cruzado2, c1.cromosoma[i][j].ruta[relleno])){
+                        if(!revisarRepetido(cruzado2, c1.cromosoma[i][j].ruta[relleno],i,j)){
                             cruzado2.cromosoma[i][j].ruta[k] = c1.cromosoma[i][j].ruta[relleno];
                             cruzado2.listaVisitasCromo[1][relleno]--;
                         }
@@ -117,8 +117,14 @@ public class FuncionesGA {
         return Mejores;
     }
     
-    public static boolean revisarRepetido(Cromosoma cromo, int nro){
+    public static boolean revisarRepetido(Cromosoma cromo, int nro, int i, int j){
         
-        return true;
+        for (int l = 1; l < cromo.cantClientes+1; l++) {
+            if(cromo.cromosoma[i][j].ruta[l] == nro){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
