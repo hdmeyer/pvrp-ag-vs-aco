@@ -18,7 +18,6 @@ import java.util.*;
  */
 public class FuncionesGA {
     /** Creates a new instance of FuncionesGA */
-    LinkedList<Cromosoma> poblacion = new LinkedList<Cromosoma>();
         
     public FuncionesGA() {
     }
