@@ -33,7 +33,9 @@ public class TestCromosoma {
         Cromosoma cromo = new Cromosoma(prueba);
         cromo.construirCromosoma(prueba);
         System.out.println(cromo.ImprimirCromo(cromo.toString(prueba)));
-        
+        cromo.fObjetivo(prueba);
+        System.out.println("================================================");
+        System.out.println("FITNESS DEL INDIVIDUO: "+cromo.fitness);
     }
     
 }

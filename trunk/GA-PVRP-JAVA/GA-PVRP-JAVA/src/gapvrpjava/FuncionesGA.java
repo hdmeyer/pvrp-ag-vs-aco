@@ -69,9 +69,10 @@ public class FuncionesGA {
         return cruceResult;
     }
     
-    public void crucePorPunto
+    public void crucePorPunto() {
+    }
     
-    public static Cromosoma Mutar (Cromosoma c1){
+    public static Cromosoma Mutar(Cromosoma c1) {
         Cromosoma mutado = new Cromosoma();
         
         // Operar sobre c1 para mutarlo y colocar el resultado en mutado

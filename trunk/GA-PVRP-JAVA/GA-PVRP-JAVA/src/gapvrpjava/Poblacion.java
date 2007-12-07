@@ -54,6 +54,8 @@ public class Poblacion {
      */
     private Cromosoma mejorIndividuo = null;
     
+    private Conocimiento conocimiento;
+    
     /** 
      * 
      * Constructor vacío de la población que genera una nueva instancia del 
@@ -77,6 +79,7 @@ public class Poblacion {
      */    
     public Poblacion(Conocimiento entrada, int tamanhoPop) {
         
+        this.conocimiento = entrada;
         this.tamanho = tamanhoPop;     
         this.individuos = new Cromosoma[tamanhoPop];
         this.hijos = new Cromosoma[tamanhoPop];
@@ -166,7 +169,7 @@ public class Poblacion {
         
         for (int i=0; i <= selectos.length-2; i = i+2){
             Cromosoma nuevos[];
-            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1]);
+            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1],this.conocimiento);
 
             this.hijos[i] = nuevos[0];
             this.hijos[i+1] = nuevos[1];
