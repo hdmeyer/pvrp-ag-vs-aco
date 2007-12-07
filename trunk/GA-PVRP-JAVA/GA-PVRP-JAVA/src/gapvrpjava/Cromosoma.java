@@ -109,6 +109,13 @@ public class Cromosoma {
         
     }
     
+    public double evaluar(Conocimiento entrada) {
+        
+        this.fObjetivo(entrada);
+        
+        return this.getFitness();
+    }
+    
     public void fObjetivo(Conocimiento entrada){
         int ultimoVisitado = 0;
         int penalizacion=0;
