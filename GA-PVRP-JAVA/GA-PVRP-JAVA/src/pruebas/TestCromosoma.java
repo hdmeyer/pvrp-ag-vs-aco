@@ -27,7 +27,7 @@ public class TestCromosoma {
     public static void main(String[] args) throws Exception{
         // TODO code application logic here
         Conocimiento prueba= new Conocimiento();
-        String filename = "C:\\p26";
+        String filename = "C:\\pvrp\\p26";
         
      
         prueba.CargarConocimiento(filename);
@@ -37,7 +37,7 @@ public class TestCromosoma {
         System.out.println("1. PRUEBA DE GENERACIÓN DEL CROMOSOMA");
         System.out.println("-* Cromosoma Generado ================================================");
         
-        System.out.println(cromo.ImprimirCromo(cromo.toString(prueba)));
+        System.out.println(cromo.ImprimirCromo(cromo.toString()));
         cromo.fObjetivo(prueba);
         System.out.println("=======================================================================");
         System.out.println("| FITNESS: "+cromo.fitness+"                                          |");
@@ -48,12 +48,15 @@ public class TestCromosoma {
         
         Poblacion p = new Poblacion(prueba, 30, 30);
         
-        p.imprimir();
+        String popString = p.toStringImprimible();
         
-        System.out.println("=======================================================================");
-        System.out.println("| POBLACIÓN TOSTRING                                                  |");
-        System.out.println("=======================================================================");
-        System.out.println(p.toString());
+        System.out.print(popString);        
+        
+        System.out.println("-* Imprimir población versión 2 =========================================");
+        
+        popString = p.toStringPorCromosoma(p.toString());
+        
+        System.out.print(popString);        
         
     }
     

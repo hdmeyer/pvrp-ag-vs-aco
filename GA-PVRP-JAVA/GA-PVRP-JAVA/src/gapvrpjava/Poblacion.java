@@ -355,13 +355,67 @@ public class Poblacion {
         String PopString = individuos[0].toString();
         
         for (int i=1; i<this.getTamanho(); i++){
-            String currentIndividual = individuos[0].toString();
+            String currentIndividual = individuos[i].toString();
             PopString +="$"+currentIndividual;
         }        
         
         return PopString; 
     }
     
+    public String toStringMultilinea(String toStringLinea) {
+        
+        StringTokenizer tk = new StringTokenizer(toStringLinea, "$");
+        
+        String poblacionMultilinea = "Individuo 1: "+tk.nextToken()+"\n";
+        int i = 1;
+        while (tk.hasMoreTokens()) {
+            String current ="Individuo "+(++i)+": "+ tk.nextToken()+"\n";
+            poblacionMultilinea += current;
+        }
+           
+        return poblacionMultilinea;
+    }
+    
+    public String toStringImprimible(){
+        String poblacionMultilinea ="<-------------------------------------------->\n";
+        poblacionMultilinea += "<---------- | Población - Inicio | ---------->\n"; 
+        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        
+        poblacionMultilinea +=toStringMultilinea(this.toString());
+        
+        poblacionMultilinea +="<-------------------------------------------->\n";
+        poblacionMultilinea +="<----------- | Población - Fin | ------------>\n"; 
+        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        
+        return poblacionMultilinea;
+    }
+
+    public String toStringPorCromosoma(String toStringLinea) {
+        
+        StringTokenizer tk = new StringTokenizer(toStringLinea, "$");
+        
+        String individuoMultiLinea = this.individuos[0].ImprimirCromo(tk.nextToken());
+        
+        String poblacionMultilinea ="<-------------------------------------------->\n";
+        poblacionMultilinea += "<---------- | Población - Inicio | ---------->\n"; 
+        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        
+        poblacionMultilinea += "Individuo 1: "+individuoMultiLinea+"\n";
+        int i = 0;
+        while (tk.hasMoreTokens()) {
+            individuoMultiLinea = this.individuos[++i].ImprimirCromo(tk.nextToken());
+            String current ="Individuo "+(i+1)+": "+ individuoMultiLinea+"\n";
+            poblacionMultilinea += current;
+        }
+        
+        
+        poblacionMultilinea +="<-------------------------------------------->\n";
+        poblacionMultilinea +="<----------- | Población - Fin | ------------>\n"; 
+        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        
+        return poblacionMultilinea;
+    }
+
     /**
      * Imprime en salida standard toda la población
      */
@@ -369,7 +423,7 @@ public class Poblacion {
         for (int i=0; i<this.getTamanho(); i++){
             System.out.println("Cromosoma: "+i+" ");
             System.out.println("Fitness  : "+fitness[i]);
-            String LineaCromosoma = individuos[i].toString(conocimiento);            
+            String LineaCromosoma = individuos[i].toString();            
             String CromosomaMultilinea = individuos[i].ImprimirCromo(LineaCromosoma);
             System.out.print(CromosomaMultilinea);
             System.out.println();
