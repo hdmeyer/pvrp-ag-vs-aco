@@ -56,7 +56,39 @@ el entero que representa a un cliente. La Matríz se podría definir así.
      camiones = { X | X = 1,2,3,...,m }
      clientes = { X | X = 1,2,3,...,n }
 
+
+Una ruta es una sucesión de nodos. Por simplificación, nuestro representación
+no incluye el nodo 0 (deposito). Se asume que todas las rutas empiezan y terminan 
+en 0 y se tiene en cuenta esta observación al calcular el fitness.
+
+RESTRICCIONES
+ - Cada cliente requiere una cantidad de visitas a ser satisfacha.
+   Para cada ci, rci = X tal que X =< k (cantidad de días)
+ - Cada alelo es una ruta que corresponde a un día, y en la cual un cliente 
+   solo debe ser visitado una vez en el día (una ruta no debe repetir nodos)
+ - Un camión podría no retornar en el mismo día al depósito, pero nosotros optamos
+   para simplificar la solución y la representación TODOS LOS CAMIONES SALEN Y 
+   VUELVEN EN EL MISMO DÍA AL DEPÓSITO. 
+
+***PROBLEMAS DE LA GENERACIÓN DE NUESTRA POBLACIÓN
+ - Inicialmente, teníamos en cuenta la capacidad de los camiones, pero esto 
+   nos complicaba enormente debido a que constantemente se producía un cromosoma
+   que no visitaba a todos los nodos para satisfacer la restricción de carga de 
+   los camiones. 
+ - Resolver este problema implicaba muchas cosas que al final decidimos obviar, 
+   ya que la literatura general no define como restriccción de PVRP la capacidad
+   de los camiones. 
+   OBS: como optimización, para producir mejores individuos, se podría tener en
+        cuenta un esquema híbrido en el cual al iniciar la población tenemos 
+        cuenta la capacidad de los camiones, y si al final quedan clientes por
+        visitar, asignarlos aleatoriamente a distintos camiones
    
+2. GENERACIÓN DE LA POBLACIÓN INICIAL
+
+Generamos una población de 30 individuos factibles en el sentido que todos 
+cumplen con la restrición de que la cantidad de visitas recibidas por un cliente
+es igual a la cantidad de visitas que requiere. 
+
 2. SELECCIÓN
 
 3. CRUCE
