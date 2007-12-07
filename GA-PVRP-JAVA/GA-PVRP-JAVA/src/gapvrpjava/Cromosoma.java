@@ -8,14 +8,14 @@
  */
 
 package gapvrpjava;
-
+import java.util.StringTokenizer;
 /**
  *
  * @author Huguis
  */
 public class Cromosoma {
     int cromosoma [][][]=null;
-    int fitness;
+    double fitness;
     /** Indica el orden en que se van tomando los clientes, estos se generan automaticamente*/
     int ordenVisitas[];
     int clienteActual;
@@ -29,7 +29,9 @@ public class Cromosoma {
     public Cromosoma(Conocimiento entrada) {
         this.cromosoma = new int [entrada.dias][entrada.cantVehiculos][entrada.cantClientes+1];
         this.ordenVisitas = new int[entrada.cantClientes+1];
-        
+        for (int i = 0; i < this.ordenVisitas.length; i++) {
+            this.ordenVisitas[i] = i;
+        }
     }
     public void construirCromosoma(Conocimiento entrada){
         int contador = 0;
@@ -40,6 +42,7 @@ public class Cromosoma {
             vehiculos[i] = entrada.capacidad;
         }
         for (int i = 0; i < entrada.dias; i++) {
+            entrada.InicializarListaVisitas();
             for (int j = 1; j < entrada.cantClientes+1; j++) {
                 for (int k = 0; k < entrada.cantVehiculos; k++) {
                     /*INCREMENTAMOS UN CONTADOR PARA IR VISITANDO A LOS CLIENTES Y METIENDOLOS EN EL CROMOSOMA
@@ -49,7 +52,7 @@ public class Cromosoma {
                      *aun no fue satisfecha y si no fue visitado en ese dia.*/
                     contador++;
                     clienteActual = this.ordenVisitas[contador];
-                    if(entrada.listaVisitas[1][clienteActual] > 0 && entrada.listaVisitas[1][clienteActual] == 0){
+                    if(entrada.listaVisitas[1][clienteActual] > 0 && entrada.listaVisitas[0][clienteActual] == 0){
                         
                         /*Verificamos si la demanda del cliente puede ser satisfecha por este vehiculo*/
                         if((vehiculos[k]-entrada.clientes[clienteActual][4] >= 0)){
@@ -61,14 +64,15 @@ public class Cromosoma {
                         }
                         
                     }
-                    if(contador == entrada.cantClientes+1){
-                        j = entrada.cantClientes+1;
-                        k = entrada.cantVehiculos;
+                    if(contador == entrada.cantClientes){
+                        //j = entrada.cantClientes+1;
+                        //k = entrada.cantVehiculos;
                         contador =0;
                     }
                 }
             }
         }
+        entrada.FormatearListaVisitas();
     }
     public void aleatorio(){
         /*AHORA LO QUE HACEMOS ES ORDENAR ALEATORIAMENTE EL VECTOr*/
@@ -90,17 +94,49 @@ public class Cromosoma {
     }
     
     public void fObjetivo(Conocimiento entrada){
-        
+        int suma =0;
         for (int i = 0; i < entrada.dias; i++){
             for (int j = 0; j < entrada.cantVehiculos; j++){
-                for (int k = 1; k < entrada.cantClientes+1; k++) {
+                /*no nos vamos hasta el cliente mas 1 porque
+                 * vamos haciendo cada valor con el sgte para calcular el
+                 * costo, entonces cuando llegamos al n-1, tomamos con el valor
+                 * de n*/
+                for (int k = 1; k < entrada.cantClientes; k++) {
                     if(cromosoma[i][j][k] != 0){
-                        suma = 
+                        suma += entrada.matrizCostos[cromosoma[i][j][k]][cromosoma[i][j][k+1]];
                     }
                 }
             }
         }
+        this.fitness = 1/suma;
         
+    }
+    public String toString(Conocimiento entrada){
+        String granLinea = "";
+        for (int j = 0; j < entrada.cantVehiculos; j++) {
+            for (int i = 0; i < entrada.dias; i++) {
+                granLinea += "[";
+                for (int k = 1; k < entrada.cantClientes + 1; k++) {
+                    if (cromosoma[i][j][k] != 0) {
+                        granLinea += cromosoma[i][j][k] +"-";
+                    }
+                }
+                granLinea += "]";
+            }
+            granLinea += "#";
+        }
+        
+        return granLinea;
+    }
+    
+    public String ImprimirCromo(String granLinea){
+        String granMatriz ="";
+            for (StringTokenizer stringTokenizer = new StringTokenizer(granLinea,"#"); stringTokenizer.hasMoreTokens();) {
+                String token = stringTokenizer.nextToken();
+                granMatriz += token + "\n";
+            }
+            
+        return granMatriz;
     }
                 
 }
