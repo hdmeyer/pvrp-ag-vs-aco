@@ -168,7 +168,7 @@ public class Poblacion {
      * @return Cromosoma[] nuevos individuos seleccionados
      */
     public Cromosoma[] seleccion() {
-            return FuncionesGA.seleccion(this);
+            return FuncionesGA.seleccionar(this);
     }
 
     
@@ -223,6 +223,7 @@ public class Poblacion {
     public void reemplazar() {
         
         // Revisar esta estrategia reemplazo
+        // AHORA REEMPLAZAMOS TODO
         for (int i =0; i<this.getTamanho(); i++)
             individuos[i] = hijos[i];
             //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
@@ -373,10 +374,15 @@ public class Poblacion {
         StringTokenizer tk = new StringTokenizer(toStringLinea, "$");
         
         String poblacionMultilinea = "Individuo 1: "+tk.nextToken()+"\n";
+        poblacionMultilinea +="-----> Fitness = "+individuos[0].getFitness()+"\n";
         int i = 1;
         while (tk.hasMoreTokens()) {
+            
+            double currentFitness = individuos[i].getFitness();
+            
             String current ="Individuo "+(++i)+": "+ tk.nextToken()+"\n";
             poblacionMultilinea += current;
+            poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
         }
            
         return poblacionMultilinea;
@@ -407,11 +413,16 @@ public class Poblacion {
         poblacionMultilinea +="<-------------------------------------------->\n\n";
         
         poblacionMultilinea += "Individuo 1: "+individuoMultiLinea+"\n";
+        poblacionMultilinea +="-----> Fitness = "+individuos[0].getFitness()+"\n";
         int i = 0;
         while (tk.hasMoreTokens()) {
+            
+            double currentFitness = individuos[i].getFitness();
+            
             individuoMultiLinea = this.individuos[++i].ImprimirCromo(tk.nextToken());
             String current ="Individuo "+(i+1)+": "+ individuoMultiLinea+"\n";
             poblacionMultilinea += current;
+            poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
         }
         
         
