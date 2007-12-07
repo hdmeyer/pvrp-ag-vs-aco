@@ -48,6 +48,8 @@ public class TestCromosoma {
         
         Poblacion p = new Poblacion(prueba, 30, 30);
         
+        p.evaluar(prueba);
+        
         String popString = p.toStringImprimible();
         
         System.out.print(popString);        
