@@ -51,15 +51,21 @@ public class Conocimiento {
                 linea_dividida = linea.split("\\s");
             }
             this.capacidad = Integer.parseInt(linea_dividida[1]);
-            /*clientesizamos el vector donde cargaremos los datos del archivo por 
+            /*inicializamos el vector donde cargaremos los datos del archivo por 
              *cada uno de los clientes*/
             this.clientes = new double[this.cantClientes+1][6];
             for (int i = 0; i <= this.cantClientes; i++) {
                 linea = sarchivo.readLine();
-                linea_dividida = linea.split("\\s");
-                for (int j = 0; j < 6; j++) {
+                //linea_dividida = linea.split("\\s");
+                /*for (int j = 0; j < linea_dividida.length; j++) {
                     this.clientes[i][j] = Double.parseDouble(linea_dividida[j]);
+                }*/
+                StringTokenizer partes = new StringTokenizer(linea," ");
+                for (int j = 0; j < 6; j++) {
+                    String token = partes.nextToken();
+                    this.clientes[i][j] = Double.parseDouble(token);
                 }
+
             }
             this.listaVisitas = new int[2][this.cantClientes+1];
             this.InicializarListaVisitas();
@@ -94,6 +100,16 @@ public class Conocimiento {
         for (int i = 0; i < clientes.length; i++) {
             this.listaVisitas[0][i] = 0;
         }
+    }
+    /**Este metodo formatea totalmente la lista de visitas
+     * reinicializando la demanda de cada cliente.
+     */
+    public void FormatearListaVisitas(){
+        for (int i = 0; i < clientes.length; i++) {
+            this.listaVisitas[0][i] = 0;
+            this.listaVisitas[1][i] = (int)this.clientes[i][5];
+        }
+
     }
     
     /* ToDo List
