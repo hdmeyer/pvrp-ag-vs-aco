@@ -14,15 +14,15 @@ import java.util.StringTokenizer;
  * @author Huguis
  */
 public class Cromosoma {
-    int cromosoma [][][]=null;
-    double fitness;
+    public int cromosoma [][][]=null;
+    public double fitness;
     /** Indica el orden en que se van tomando los clientes, estos se generan automaticamente*/
-    int ordenVisitas[];
-    int clienteActual;
-    int listaVisitasCromo [][];
-    int cantVehiculos;
-    int cantClientes;
-    int dias;
+    public int ordenVisitas[];
+    public int clienteActual;
+    public int listaVisitasCromo [][];
+    public int cantVehiculos;
+    public int cantClientes;
+    public int dias;
     
     /** Creates a new instance of Cromosoma */
     public Cromosoma() {
