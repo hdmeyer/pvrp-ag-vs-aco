@@ -23,6 +23,8 @@ public class Cromosoma {
     public int cantVehiculos;
     public int cantClientes;
     public int dias;
+    public int vehiculos[];
+    public int capacidad;
     
     /** Creates a new instance of Cromosoma */
     public Cromosoma() {
@@ -36,22 +38,21 @@ public class Cromosoma {
         for (int i = 0; i < this.ordenVisitas.length; i++) {
             this.ordenVisitas[i] = i;
         }
-        this.listaVisitasCromo = entrada.listaVisitas.clone();
         this.cantVehiculos = entrada.cantVehiculos;
         this.cantClientes = entrada.cantClientes;
         this.dias = entrada.dias;
+        this.listaVisitasCromo =new int [2][this.cantClientes+1];
+        copiar(entrada.listaVisitas);
+        this.vehiculos = new int[entrada.cantVehiculos];
+        this.capacidad = entrada.capacidad;
     }
     public void construirCromosoma(Conocimiento entrada){
         int contador = 0;
-        int vehiculos[] = new int[entrada.cantVehiculos];
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
         this.aleatorio();
-        
-        for (int i = 0; i < vehiculos.length; i++) {
-            vehiculos[i] = entrada.capacidad;
-        }
         for (int i = 0; i < entrada.dias; i++) {
             this.InicializarListaVisitas();
+            this.InicializarVehiculos();
             for (int j = 1; j < entrada.cantClientes+1; j++) {
                 for (int k = 0; k < entrada.cantVehiculos; k++) {
                     /*INCREMENTAMOS UN CONTADOR PARA IR VISITANDO A LOS CLIENTES Y METIENDOLOS EN EL CROMOSOMA
@@ -64,14 +65,14 @@ public class Cromosoma {
                     if(this.listaVisitasCromo[1][clienteActual] > 0 && this.listaVisitasCromo[0][clienteActual] == 0){
                         
                         /*Verificamos si la demanda del cliente puede ser satisfecha por este vehiculo*/
-                        if((vehiculos[k]-entrada.clientes[clienteActual][4] >= 0)){
+                        if((this.vehiculos[k]-entrada.clientes[clienteActual][4] >= 0)){
                             /*Si es asi, se carga en el cromosoma el nro de cliente a ser visitado*/
                             this.cromosoma[i][k][j] =(int)entrada.clientes[clienteActual][0];
                             this.listaVisitasCromo[1][clienteActual]--;
                             this.listaVisitasCromo[0][clienteActual] = 1;
-                            
+                            /*Actualizamos la capacidad del cliente*/
+                            this.vehiculos[k] -= (int)entrada.clientes[clienteActual][4];
                         }
-                        
                     }
                     if(contador == entrada.cantClientes){
                         //j = entrada.cantClientes+1;
@@ -162,8 +163,20 @@ public class Cromosoma {
      * CADA CLIENTE...
      */
     public void InicializarListaVisitas(){
-        for (int i = 0; i < this.listaVisitasCromo.length; i++) {
+        for (int i = 0; i < this.cantClientes+1; i++) {
             this.listaVisitasCromo[0][i] = 0;
+        }
+    }
+
+    private void copiar(int[][] listaVisitas) {
+        for (int i = 0; i < this.cantClientes+1; i++) {
+            this.listaVisitasCromo[1][i] = listaVisitas[1][i];
+            this.listaVisitasCromo[0][i] = 0;
+        }
+    }
+    public void InicializarVehiculos(){
+        for (int i = 0; i < vehiculos.length; i++) {
+            vehiculos[i] = this.capacidad;
         }
     }
                 
