@@ -24,16 +24,16 @@ public class FuncionesGA {
     /*PODRIAMOS PONER A CERO CUANDO INICIALIZAMOS EL CROMOSOMA*/    
     
     
-    public static ArrayList<Cromosoma> Cruce(Cromosoma c1, Cromosoma c2){
+    public static Cromosoma[] Cruzar(Cromosoma c1, Cromosoma c2){
         Cromosoma cruzado1 = new Cromosoma();
         Cromosoma cruzado2 = new Cromosoma();
-        ArrayList<Cromosoma> cruceResult = new ArrayList();
+        Cromosoma[] cruceResult = new Cromosoma[2];
         
         // Realizar el cruce de c1 y c2, y producir el resultado en 
         // cruzado1 y cruzado2
         
-        cruceResult.add(cruzado1);
-        cruceResult.add(cruzado2);
+        cruceResult[0] = cruzado1;
+        cruceResult[1] = cruzado2;
         
         return cruceResult;
     }
@@ -47,10 +47,11 @@ public class FuncionesGA {
     }
     
     
-    public static void seleccion(Poblacion p) {
+    public static Cromosoma[] seleccion(Poblacion p) {
         /** 
          * @TODO 
          * 
          */
+        return new Cromosoma[p.getTamanho()];
     }
 }
