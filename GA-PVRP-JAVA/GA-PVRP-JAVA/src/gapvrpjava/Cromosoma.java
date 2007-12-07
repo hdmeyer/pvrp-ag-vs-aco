@@ -135,7 +135,9 @@ public class Cromosoma {
                     posterior = (int) it.next();
                     this.cromosoma[i][j].costo += entrada.matrizCostos[actual][posterior];
                     actual = posterior;
-                    posterior = (int)it.next();
+                    if(it.hasNext()){
+                        posterior = (int)it.next();
+                    }
                     ultimoVisitado = posterior;
                     
                 }
