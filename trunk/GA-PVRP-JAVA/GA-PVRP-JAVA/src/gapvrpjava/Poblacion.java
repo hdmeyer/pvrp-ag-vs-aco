@@ -56,6 +56,10 @@ public class Poblacion {
     
     private Conocimiento conocimiento;
     
+    private int probMutacion;
+    
+    private int iterador = 0;
+    
     /** 
      * 
      * Constructor vacío de la población que genera una nueva instancia del 
@@ -66,6 +70,7 @@ public class Poblacion {
         this.tamanho = 30; 
         this.individuos = new Cromosoma[this.tamanho];
         this.hijos = new Cromosoma[this.tamanho];
+        this.probMutacion = 20; 
     }
     
     /**
@@ -84,12 +89,32 @@ public class Poblacion {
         this.individuos = new Cromosoma[tamanhoPop];
         this.hijos = new Cromosoma[tamanhoPop];
         this.fitness = new double[tamanhoPop];
-        
+        this.probMutacion = 20; 
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop(entrada);
     }
     
+    
+    
+    public Poblacion(Conocimiento entrada, int tamanhoPop, int probMutacion) {
+        
+        this.conocimiento = entrada;
+        this.tamanho = tamanhoPop;
+        this.individuos = new Cromosoma[tamanhoPop];
+        this.hijos = new Cromosoma[tamanhoPop];
+        this.fitness = new double[tamanhoPop];
+        
+        if (probMutacion > 100 || probMutacion < 0) {
+            this.probMutacion = 20; 
+        } else {
+            this.probMutacion = probMutacion; 
+        }
+        
+        // Leer de la entrada el conocimiento e inicializar la población a 
+        // partir de ello
+        this.inicializarPop(entrada);
+    }
 
     /** 
      * Inicializa la población generando un Cromosoma y construyéndolo con 
@@ -102,28 +127,10 @@ public class Poblacion {
        
         for (int i=0; i < individuos.length; i++) {
                 individuos[i] = new Cromosoma(entrada);
-                individuos[i].aleatorio();
+                individuos[i].construirCromosoma(entrada);
         }
     }
-
-    public Cromosoma[] getIndividuos() {
-        return individuos;
-    }
-
-    public void setIndividuos(Cromosoma[] individuos) {
-        this.individuos = individuos;
-    }
-
-    /**
-     * Solo el getter de tamanaho está implementado, porque esta propiedad solo
-     * se establece una vez, al inicializar la población
-     * 
-     * @return El tamanho (cantidad de individuos) de la población
-     */
-    public int getTamanho() {
-        return tamanho;
-    }
-
+    
     /**
      * Método para Optimizar el Algoritmo. Elimina los duplicados. 
      * PENDIENTE
@@ -190,6 +197,19 @@ public class Poblacion {
         }
     }
 
+    public void inicializarIterador() {
+        iterador = 0;
+    }
+    
+    public Cromosoma getNextIndividuo() {
+        if (iterador < this.tamanho) {
+            return individuos[iterador++];
+        } else {
+            iterador = 0;
+            return null;
+        }
+        
+    }
     /**
      * Realiza el reemplazo de individuos de
      * la población.
@@ -253,7 +273,6 @@ public class Poblacion {
     }
 
     /**
-     * REVISAR --------------------------------------
      * 
      * Realiza el control de la población, y si la cantidad
      * de cromosomas inválidos es mayor al factor, retorna
@@ -281,6 +300,11 @@ public class Poblacion {
             return false;
     }
 
+   /**
+    * Setters y Getters
+    * @return
+    */
+   
     public Cromosoma getMejorIndividuo() {
             return this.mejorIndividuo;
     }
@@ -291,28 +315,64 @@ public class Poblacion {
 
     // INCOMPLETO
     public double getMejorFitness(){
-        // return this.mejorIndividuo.getFitness();
+        //return this.mejorIndividuo.getFitness();
         return 0;
     }
 
     // INCOMPLETO
     public double getMejorCosto(){
-            // return 1/this.mejorIndividuo.getCosto();
+        // return 1/this.mejorIndividuo.getCosto();
         return 0;
     }
 
+    public Cromosoma[] getIndividuos() {
+        return individuos;
+    }
+
+    public void setIndividuos(Cromosoma[] individuos) {
+        this.individuos = individuos;
+    }
+
+    /**
+     * Solo el getter de tamanaho está implementado, porque esta propiedad solo
+     * se establece una vez, al inicializar la población
+     * 
+     * @return El tamanho (cantidad de individuos) de la población
+     */
+    public int getTamanho() {
+        return tamanho;
+    }    
+
+    
+    /**
+     * Función qeu convierte la población en un string concatenado de todos los
+     * individuos.
+     * 
+     */
+    @Override
+    public String toString() {
+        
+        String PopString = individuos[0].toString();
+        
+        for (int i=1; i<this.getTamanho(); i++){
+            String currentIndividual = individuos[0].toString();
+            PopString +="$"+currentIndividual;
+        }        
+        
+        return PopString; 
+    }
+    
     /**
      * Imprime en salida standard toda la población
      */
     public void imprimir(){
-            for (int i=0; i<this.getTamanho(); i++){
-                    System.out.println("Cromosoma: "+i+" ");
-                    System.out.println("Fitness  : "+fitness[i]);
-                    //individuos[i].ImprimirCromo(granLinea);
-                    System.out.println();
-            }
+        for (int i=0; i<this.getTamanho(); i++){
+            System.out.println("Cromosoma: "+i+" ");
+            System.out.println("Fitness  : "+fitness[i]);
+            String LineaCromosoma = individuos[i].toString(conocimiento);            
+            String CromosomaMultilinea = individuos[i].ImprimirCromo(LineaCromosoma);
+            System.out.print(CromosomaMultilinea);
+            System.out.println();
+        }
     }
-
-    
- 
 }
