@@ -33,21 +33,38 @@ public class FuncionesGACparra {
         Cromosoma Mejores[] = new Cromosoma[cantMejores];
         Random rand = new Random();
         rand.nextInt();
-
+        
+        int [] listaParticipacion = new int[p.getTamanho()];
+        
+               
+        
         for (int i=0; i<cantMejores; i++) {
 
                 int ind1 = rand.nextInt(p.getTamanho()); // se elige un individuo
-                int ind2 = rand.nextInt(p.getTamanho()); // se elige un individuo
-                while (ind2==ind1) {
-                        ind2 = rand.nextInt(p.getTamanho()); // se reelige un individuo
+                /*
+                // mientras salgan indices ya elegidos
+                while (listaParticipacion[ind1] == 1) {
+                    ind1 = rand.nextInt(p.getTamanho()); // se elige un individuo
                 }
+                listaParticipacion[ind1] = 1;
+                */
+                
+                int ind2 = rand.nextInt(p.getTamanho()); // se elige un individuo
+                
+                // mientras salgan indices ya elegidos
+                while (/*listaParticipacion[ind2] == 1 &&*/ ind2 == ind1) {
+                    ind2 = rand.nextInt(p.getTamanho()); // se elige un individuo
+                }
+                
+                //listaParticipacion[ind2] = 1;
+                
 
                 // Se extrae los fitness de los correspondientes individuos 
                 double costo1 = p.getFitness(ind1);
                 double costo2 = p.getFitness(ind2);
 
                 // Competencia
-                if (costo1>=costo2) { // Gan? individuo 1
+                if (costo1>=costo2) { // Gano individuo 1
                         Mejores[i]=p.getIndividuo(ind1);
                 }
                 else { // Gano individuo 2
