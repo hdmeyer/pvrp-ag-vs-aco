@@ -7,7 +7,8 @@ NOTAS VARIAS DE DOCUMENTACIÓN SOBRE EL MODELADO DE LA SOLUCIÓN DE PVRP PARA AGS
                                      vehículo disponible. 
 
 2. La estrategia común para resolver los problemas multinivel es aplicar un 
-   algoritmo adecuado en este nive, sin embargo en este trabajo nos planteamos
+   algoritmo adecuado en cada nivel, y luego tratar las soluciones de ambos
+   niveles como dos objetivos a optimizar, sin embargo en este trabajo nos planteamos
    el desafío de resolver el problema solo con un algoritmo y una representación
    única. 
 
@@ -110,184 +111,21 @@ cargas excesivas a los primeros camiones.
    - A medida que recorremos, segun aparecen los clientes disminuimos sus 
      visitas requeridas y si se decide cambiar al cliente, se disminuye al que 
      entra y se aumenta al que sale
+   - La probabilidad de mutación mencionada en este apartado no es la misma que 
+     la probabilidad de mutacion del Cromosoma en sí.
 
 
 
 
 
+ALGORITMO SIMPLE
+==============================================================================
 
+inicializarPop
+seleccion
+reemplazo
+cruce
+mutacion
+evaluar
 
-
-
-   /**
-     * Cruza los individuos seleccionados eliminando
-     * la población vieja. 
-     * @param selectos
-     */
-    public void cruzar(Cromosoma[] selectos) {
-            for (int i=0; i <= selectos.length-2; i = i+2){
-                    Cromosoma nuevos[];
-                    nuevos = operacionesGeneticas.(selectos[i], selectos[i+1]);
-
-                    this.hijos[i] = nuevos[0];
-                    this.hijos[i+1] = nuevos[1];
-            }
-    }
-
-    /**
-     * Muta cromosomas de la población con una 
-     * problabilidad de mutar de 1
-     */
-    public void mutar() {
-            Random rand = new Random();
-            rand.nextInt();
-
-            for (int i=0; i < this.getTamaño(); i++){
-                    if (rand.nextInt(99) < 20)
-                            operacionesGeneticas.mutar(hijos[i]);
-            }
-    }
-
-    /**
-     * Realiza el reemplazo de individuos de
-     * la población.
-     */
-    public void reemplazar() {
-            for (int i =0; i<this.getTamaño(); i++)
-                    individuos[i] = hijos[i];
-            //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
-    }
-
-    /**
-     * Realiza el calculo de fitness para todos los individuos
-     */
-    public void evaluar() {
-
-            for (int i=0; i<this.getTamaño();i++) {
-                    fitness[i] = cantAristas + individuos[i].evaluar();
-            }
-            elegirMejor();
-    }
-
-    /**
-     * Obtiene el fitness de un individuo
-     * @param ind indice de un individuo
-     * @return fitness
-     */
-    public double getFitness(int ind) {
-            return fitness[ind];
-    }
-
-    public Cromosoma getIndividuo(int pos) {
-            return individuos[pos];
-    }
-
-    public operacionesGeneticas getoperacionesGeneticas() {
-            return operacionesGeneticas;
-    }
-
-    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
-            this.operacionesGeneticas = operacionesGeneticas;
-    }
-
-    public operacionesGeneticas getoperacionesGeneticas() {
-            return operacionesGeneticas;
-    }
-
-    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
-            this.operacionesGeneticas = operacionesGeneticas;
-    }
-
-    public operacionesGeneticas getoperacionesGeneticas() {
-            return operacionesGeneticas;
-    }
-
-    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
-            this.operacionesGeneticas = operacionesGeneticas;
-    }
-
-    public int getCantAristas(){
-            return this.cantAristas;
-    }
-
-    public void setCantAristas(int n){
-            this.cantAristas = n;
-    }
-
-    /**
-     * Elige el mejor cromosoma de 
-     * toda la historia.
-     */
-    private void elegirMejor() {
-            /*
-             * Si todavia no se seleccionó
-             * a ninguno, guardamos al primero.
-             */
-            if (mejorIndividuo == null) {
-                    mejorIndividuo = individuos[0];
-            }
-
-            double mejorFitness = cantAristas + mejorIndividuo.getCosto();
-            for (int i=0; i < this.getTamaño(); i++) {
-                    if (fitness[i]> mejorFitness) {
-                            mejorIndividuo = individuos[i];
-                            mejorFitness = cantAristas + mejorIndividuo.getCosto();
-                    }
-            }
-    }
-
-    /**
-     * Realiza el control de la población, y si la cantidad
-     * de cromosomas inválidos es mayor al factor, retorna
-     * true y en caso contrario, retorna false.
-     * @param factor valor entre 0 y 1 que indica el porcentaje permitido.
-     * @return true si la cantidad de invalidos supera el factor.
-     */
-    public boolean reinicializar(double factor){
-            int contador = 0; // cuenta los cromosomas invalidos
-
-            for (int i=1; i < this.getTamaño(); i++) {
-                    // Contamos si el fitness es inválido
-                    if (fitness[i] < cantAristas)
-                            contador++;
-            }
-
-            /*
-             * Si el porcentaje de inválidos calculado es mayor 
-             * al permitido, retornamos true
-             */
-            if (contador > this.getTamaño()*factor)
-                    return true;
-
-            // Si no, retornamos false
-            return false;
-    }
-
-    public Cromosoma getMejorIndividuo() {
-            return this.mejorIndividuo;
-    }
-
-    public void setMejorIndividuo(Cromosoma x) {
-            this.mejorIndividuo = x; 
-    }
-
-    public double getMejorFitness(){
-            return this.cantAristas + this.mejorIndividuo.getCosto();
-    }
-
-    public double getMejorCosto(){
-            return 1/this.mejorIndividuo.getCosto();
-    }
-
-    /**
-     * Imprime en salida standard toda la población
-     */
-    public void imprimir(){
-            for (int i=0; i<this.getTamaño(); i++){
-                    System.out.println("Cromosoma: "+i+" ");
-                    System.out.println("Fitness  : "+fitness[i]);
-                    individuos[i].imprimir();
-                    System.out.println();
-            }
-    }
 
