@@ -5,16 +5,18 @@
 
 package gapvrpjava;
 
+import java.util.Vector;
+
 /**
  *
  * @author Cristhian Parra-Hugo Meyer
  */
 public class ruta {
-    int []ruta;
+    Vector ruta;
     double costo;
     public void getCosto(){};
     public ruta(Conocimiento entrada){
-        ruta = new int[entrada.cantClientes+1];
+        ruta = new Vector(entrada.cantClientes);
         
     }
     
