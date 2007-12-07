@@ -28,7 +28,7 @@ public class Main {
         prueba.CargarConocimiento("C:\\p26");
         Cromosoma cromo = new Cromosoma(prueba);
         cromo.construirCromosoma(prueba);
-        System.out.println(cromo.ImprimirCromo(cromo.toString(prueba)));
+        System.out.println(cromo.ImprimirCromo(cromo.toString()));
         
     }
     
