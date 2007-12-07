@@ -179,13 +179,23 @@ public class Poblacion {
     */
     public void cruce(Cromosoma[] selectos) {
         
-        
+        Cromosoma nuevos[];
         for (int i=0; i <= selectos.length-2; i = i+2){
-            Cromosoma nuevos[];
+            
             nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1],this.conocimiento);
 
             this.hijos[i] = nuevos[0];
             this.hijos[i+1] = nuevos[1];
+        }
+        
+        // si la longitud es impar, cruzamos el último con el primero
+        int indiceUltimo = selectos.length - 1;
+        
+        if ((indiceUltimo+1)%2 != 0) {
+            nuevos = FuncionesGA.Cruzar(selectos[indiceUltimo], 
+                                        selectos[0],
+                                        this.conocimiento);
+            this.hijos[indiceUltimo] = nuevos[0];
         }
     }
 
@@ -224,7 +234,8 @@ public class Poblacion {
         
         // Revisar esta estrategia reemplazo
         // AHORA REEMPLAZAMOS TODO
-        for (int i =0; i<this.getTamanho(); i++)
+        for (int i = 0; i<this.getTamanho(); i++)
+            
             individuos[i] = hijos[i];
             //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
     }

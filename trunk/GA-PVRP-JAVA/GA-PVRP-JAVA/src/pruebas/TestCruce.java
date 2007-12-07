@@ -48,7 +48,7 @@ public class TestCruce {
         Cromosoma[] selectos = p.getIndividuos();
         p.cruce(selectos);
         p.reemplazar();
-                
+        p.evaluar(prueba);
         System.out.println("-* Población Cruzada  =========================================");
                 
         popString = p.toStringImprimible();
