@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  */
 public class Cromosoma {
     public ruta cromosoma [][]=null;
-    public double fitness;
+    private double fitness;
     /** Indica el orden en que se van tomando los clientes, estos se generan automaticamente*/
     public int ordenVisitas[];
     public int clienteActual;
@@ -133,7 +133,7 @@ public class Cromosoma {
                  * al deposito de vuelta...*/
                 this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[1]];
                 this.cromosoma[i][j].costo += entrada.matrizCostos[0][cromosoma[i][j].ruta[ultimoVisitado]];
-                this.fitness +=this.cromosoma[i][j].costo;
+                this.setFitness(this.getFitness() + this.cromosoma[i][j].costo);
             }
         }
         /** AQUI PENALIZAMOS SI ES QUE NO SE VISITO A ALGUIEN*/
@@ -143,7 +143,7 @@ public class Cromosoma {
             }
         }
 
-        this.fitness = this.fitness + penalizacion;
+        this.setFitness(this.getFitness() + penalizacion);
         
     }
     @Override
@@ -196,6 +196,14 @@ public class Cromosoma {
         for (int i = 0; i < vehiculos.length; i++) {
             vehiculos[i] = this.capacidad;
         }
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
     }
                 
 }
