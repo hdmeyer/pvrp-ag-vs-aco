@@ -20,6 +20,9 @@ public class Cromosoma {
     int ordenVisitas[];
     int clienteActual;
     int listaVisitasCromo [][];
+    int cantVehiculos;
+    int cantClientes;
+    int dias;
     
     /** Creates a new instance of Cromosoma */
     public Cromosoma() {
@@ -34,6 +37,9 @@ public class Cromosoma {
             this.ordenVisitas[i] = i;
         }
         this.listaVisitasCromo = entrada.listaVisitas.clone();
+        this.cantVehiculos = entrada.cantVehiculos;
+        this.cantClientes = entrada.cantClientes;
+        this.dias = entrada.dias;
     }
     public void construirCromosoma(Conocimiento entrada){
         int contador = 0;
