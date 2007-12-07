@@ -91,6 +91,39 @@ es igual a la cantidad de visitas que requiere.
 
 2. SELECCIÓN
 
+
+Los m´etodos de selección proporcional requieren de dos pasos a través de toda 
+la población en cada generación:
+
+1. Calcular la aptitud media (y, si se usa escalamiento sigma, la desviación
+   estándar).
+
+2. Calcular el valor esperado de cada individuo.
+
+El uso de jerarquías requiere que se ordene toda la población (una operación
+cuyo costo puede volverse significativo en poblaciones grandes).
+La selección mediante torneo es similar a la de jerarquías en términos de la
+presión de selección, pero es computacionalmente más adecuada para implementarse
+en paralelo.
+
+Debido a la naturaleza compleja de nuestros cromosomas (que tiene 3 niveles de 
+abstracción) consideramos más adecuado utilizar una estrategia de torneo. 
+
+Por otro lado, no se consideraron las estrategias de selección de estado Uniforme, 
+ya que estas (propuesta por Whitley [228])  se usan en AGs no generacionales,
+en los cuales sólo unos cuantos individuos son reemplazados en cada generación
+(los menos aptos).
+
+Esta técnica suele usarse cuando se evolucionan sistemas basados en reglas
+(p.ej., sistemas clasificadores) en los que el aprendizaje es incremental.
+
+Nuestro caso no cuadra en esta definición ya que es muy generacional. 
+
+-------
+TODO
+
+
+
 3. CRUCE
 
 El cruce es la parte que más nos complicó inicialmente en el trabajo. 
@@ -147,13 +180,11 @@ cargas excesivas a los primeros camiones.
      la probabilidad de mutacion del Cromosoma en sí.
 
 
-
-
-
 ALGORITMO SIMPLE
 ==============================================================================
 
 inicializarPop
+evaluacion 
 seleccion
 reemplazo
 cruce
