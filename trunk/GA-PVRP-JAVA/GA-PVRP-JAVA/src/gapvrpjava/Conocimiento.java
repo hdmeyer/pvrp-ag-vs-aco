@@ -102,7 +102,7 @@ public class Conocimiento {
         }
     }
     /**Este metodo formatea totalmente la lista de visitas
-     * reinicializando la demanda de cada cliente.
+     * reinicializando la frecuencia de visitas necesarias de cada cliente.
      */
     public void FormatearListaVisitas(){
         for (int i = 0; i < clientes.length; i++) {
