@@ -186,6 +186,7 @@ public class Poblacion {
 
             this.hijos[i] = nuevos[0];
             this.hijos[i+1] = nuevos[1];
+           
         }
         
         // si la longitud es impar, cruzamos el último con el primero

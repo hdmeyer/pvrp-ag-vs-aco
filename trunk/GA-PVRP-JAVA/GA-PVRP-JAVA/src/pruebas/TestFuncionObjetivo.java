@@ -27,7 +27,7 @@ public class TestFuncionObjetivo {
     public static void main(String[] args) throws Exception{
         // TODO code application logic here
         Conocimiento prueba= new Conocimiento();
-        String filename = "C:\\p26";
+        String filename = "C:\\pvrp\\p26";
         
      
         prueba.CargarConocimiento(filename);
@@ -38,7 +38,7 @@ public class TestFuncionObjetivo {
         System.out.println("-* Cromosoma Generado ================================================");
         
         System.out.println(cromo.ImprimirCromo(cromo.toString()));
-        cromo.fObjetivo(prueba);
+        cromo.evaluar(prueba);
         System.out.println("=======================================================================");
         System.out.println("| FITNESS: "+cromo.getFitness()+"                                          |");
         System.out.println("=======================================================================");
