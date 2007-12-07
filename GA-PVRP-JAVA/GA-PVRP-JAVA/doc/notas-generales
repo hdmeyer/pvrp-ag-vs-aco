@@ -56,3 +56,238 @@ el entero que representa a un cliente. La Matríz se podría definir así.
      clientes = { X | X = 1,2,3,...,n }
 
    
+2. SELECCIÓN
+
+3. CRUCE
+
+El cruce es la parte que más nos complicó inicialmente en el trabajo. 
+___________________________________________________________________
+|[2,3,1,4,5,2,0,0,0] [5,23,3,1,5,6,5,7,0] ..... *
+|. ...
+|: ...
+
+(los datos son los mismos, pero es para tener una idea nomas)___________________________________________________________________
+|[2,3,1,4,5,2,0,0,0] [5,23,3,1,5,6,5,7,0] .....
+|. ... **
+|: ...
+
+
+* se cruza con ** a nivel de cada ruta. El cruce de cada ruta se hace así:
+  
+  [2,3,1,4,5,2,0,0,0] 
+  
+  [5,23,3,1,5,6,5,7,0]
+
+Se elige un punto y se empieza el cruzado construyendo el primer cromosoma 
+copiando la primera mitad de una de las rutas
+
+[2,3,1,4,...
+
+A continuación se van colocando los valores de la otra ruta solo si ya no están 
+en la ruta. 
+
+A medida que se agrega cada cliente, se verifica/actualiza la estructura de 
+datos auxiliar que tiene la lista de visitas requeridas por cada nodo. 
+
+Se verifica tambien que no se exceda la carga del camión. Si se excede esta 
+carga del camión, se termina la construcción de las rutas para el camión acual
+y se hacen las rutas del camión equivalente del otro padre.
+
+Al terminar, se repite el mismo proceso con los demás padres.
+
+En cada caso, se cruza el camión i del cromosoma 1 con el camión (i+1) mod k del
+otro camión. Esto es para asegurar que los cromosomas no se produzcan todos con 
+cargas excesivas a los primeros camiones. 
+
+
+4. MUTACIÓN
+   La primera idea es aplicar el cruce, pero sobre el mismo Cromosoma. Esto no
+   es tan bueno. 
+
+   Segunda idea: random del porcentaje de mutación. Según este porcentaje, 
+   recorremos el cromosoma y usando el porcentaje cambiamos o no el valor.
+   - Primero, reinicializamos vector de visitas requeridas
+   - A medida que recorremos, segun aparecen los clientes disminuimos sus 
+     visitas requeridas y si se decide cambiar al cliente, se disminuye al que 
+     entra y se aumenta al que sale
+
+
+
+
+
+
+
+
+
+   /**
+     * Cruza los individuos seleccionados eliminando
+     * la población vieja. 
+     * @param selectos
+     */
+    public void cruzar(Cromosoma[] selectos) {
+            for (int i=0; i <= selectos.length-2; i = i+2){
+                    Cromosoma nuevos[];
+                    nuevos = operacionesGeneticas.(selectos[i], selectos[i+1]);
+
+                    this.hijos[i] = nuevos[0];
+                    this.hijos[i+1] = nuevos[1];
+            }
+    }
+
+    /**
+     * Muta cromosomas de la población con una 
+     * problabilidad de mutar de 1
+     */
+    public void mutar() {
+            Random rand = new Random();
+            rand.nextInt();
+
+            for (int i=0; i < this.getTamaño(); i++){
+                    if (rand.nextInt(99) < 20)
+                            operacionesGeneticas.mutar(hijos[i]);
+            }
+    }
+
+    /**
+     * Realiza el reemplazo de individuos de
+     * la población.
+     */
+    public void reemplazar() {
+            for (int i =0; i<this.getTamaño(); i++)
+                    individuos[i] = hijos[i];
+            //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
+    }
+
+    /**
+     * Realiza el calculo de fitness para todos los individuos
+     */
+    public void evaluar() {
+
+            for (int i=0; i<this.getTamaño();i++) {
+                    fitness[i] = cantAristas + individuos[i].evaluar();
+            }
+            elegirMejor();
+    }
+
+    /**
+     * Obtiene el fitness de un individuo
+     * @param ind indice de un individuo
+     * @return fitness
+     */
+    public double getFitness(int ind) {
+            return fitness[ind];
+    }
+
+    public Cromosoma getIndividuo(int pos) {
+            return individuos[pos];
+    }
+
+    public operacionesGeneticas getoperacionesGeneticas() {
+            return operacionesGeneticas;
+    }
+
+    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
+            this.operacionesGeneticas = operacionesGeneticas;
+    }
+
+    public operacionesGeneticas getoperacionesGeneticas() {
+            return operacionesGeneticas;
+    }
+
+    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
+            this.operacionesGeneticas = operacionesGeneticas;
+    }
+
+    public operacionesGeneticas getoperacionesGeneticas() {
+            return operacionesGeneticas;
+    }
+
+    public void setoperacionesGeneticas(operacionesGeneticas operacionesGeneticas) {
+            this.operacionesGeneticas = operacionesGeneticas;
+    }
+
+    public int getCantAristas(){
+            return this.cantAristas;
+    }
+
+    public void setCantAristas(int n){
+            this.cantAristas = n;
+    }
+
+    /**
+     * Elige el mejor cromosoma de 
+     * toda la historia.
+     */
+    private void elegirMejor() {
+            /*
+             * Si todavia no se seleccionó
+             * a ninguno, guardamos al primero.
+             */
+            if (mejorIndividuo == null) {
+                    mejorIndividuo = individuos[0];
+            }
+
+            double mejorFitness = cantAristas + mejorIndividuo.getCosto();
+            for (int i=0; i < this.getTamaño(); i++) {
+                    if (fitness[i]> mejorFitness) {
+                            mejorIndividuo = individuos[i];
+                            mejorFitness = cantAristas + mejorIndividuo.getCosto();
+                    }
+            }
+    }
+
+    /**
+     * Realiza el control de la población, y si la cantidad
+     * de cromosomas inválidos es mayor al factor, retorna
+     * true y en caso contrario, retorna false.
+     * @param factor valor entre 0 y 1 que indica el porcentaje permitido.
+     * @return true si la cantidad de invalidos supera el factor.
+     */
+    public boolean reinicializar(double factor){
+            int contador = 0; // cuenta los cromosomas invalidos
+
+            for (int i=1; i < this.getTamaño(); i++) {
+                    // Contamos si el fitness es inválido
+                    if (fitness[i] < cantAristas)
+                            contador++;
+            }
+
+            /*
+             * Si el porcentaje de inválidos calculado es mayor 
+             * al permitido, retornamos true
+             */
+            if (contador > this.getTamaño()*factor)
+                    return true;
+
+            // Si no, retornamos false
+            return false;
+    }
+
+    public Cromosoma getMejorIndividuo() {
+            return this.mejorIndividuo;
+    }
+
+    public void setMejorIndividuo(Cromosoma x) {
+            this.mejorIndividuo = x; 
+    }
+
+    public double getMejorFitness(){
+            return this.cantAristas + this.mejorIndividuo.getCosto();
+    }
+
+    public double getMejorCosto(){
+            return 1/this.mejorIndividuo.getCosto();
+    }
+
+    /**
+     * Imprime en salida standard toda la población
+     */
+    public void imprimir(){
+            for (int i=0; i<this.getTamaño(); i++){
+                    System.out.println("Cromosoma: "+i+" ");
+                    System.out.println("Fitness  : "+fitness[i]);
+                    individuos[i].imprimir();
+                    System.out.println();
+            }
+    }
+
