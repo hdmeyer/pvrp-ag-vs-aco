@@ -27,7 +27,7 @@ public class TestCromosoma {
     public static void main(String[] args) throws Exception{
         // TODO code application logic here
         Conocimiento prueba= new Conocimiento();
-        String filename = "C:\\pvrp\\p26";
+        String filename = "C:\\p26";
         
      
         prueba.CargarConocimiento(filename);
