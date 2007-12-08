@@ -117,18 +117,23 @@ public class Conocimiento {
         salida += "CANTIDAD DE VEHICULOS ----------->"+this.cantVehiculos+"\n";
         salida += "CANTIDAD DE CLIENTES ----------->"+this.cantClientes+"\n";
         salida += "CANTIDAD DE DIAS ----------->"+this.dias+"\n";
+        
+        return salida;
+    }
+    public String toStringMatrizCostos(){
+        String salida = "";
         for (int j = 0; j < this.cantClientes + 1; j++) {
-                salida += "\t" + j + "\n";
+                salida += "\t" + j;
         }
+        salida+="\n";
         
         for (int i = 0; i < this.cantClientes + 1; i++) {
             salida += "\t"+i;
             for (int j = 0; j < this.cantClientes; j++) {
-                salida += "\t"+ this.matrizCostos[i][j];
+                salida += "\t"+ Math.round(this.matrizCostos[i][j]);
             }
             salida += "\n";
         }
-        
         return salida;
     }
     
