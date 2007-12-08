@@ -32,71 +32,240 @@ public class FuncionesGA {
         int corte2;
         int valor = 0;
         int contador =0;
+        int [] visitasLocales = new int[entrada.cantClientes+1];
 
         // Realizar el cruce de c1 y c2, y producir el resultado en 
         // cruzado1 y cruzado2
         for (int j = 0; j < c1.cantVehiculos; j++) {
             for (int i = 0; i < c1.dias; i++) {
+                contador = 0;
+                int c1Size = c1.cromosoma[i][j].ruta.size(); // cantidad de elementos en c1
+                int c2Size = c2.cromosoma[i][j].ruta.size(); // cantidad de elementos en c2
                 
-                int c1Size = c1.cromosoma[i][j].ruta.size();
-                int c2Size = c2.cromosoma[i][j].ruta.size();
+                // inicializamos visitasLocales a todo cero
+                for (int k = 0; k < visitasLocales.length; k++) {
+                     visitasLocales[k]= 0;
+
+                }
+                
                 
                 if (c1Size > 0 && c2Size > 0) {
-                    corte1 = (int)c1.cromosoma[i][j].ruta.size()/2;
-                    corte2 = (int)c2.cromosoma[i][j].ruta.size()/2;
-
+                
+                    corte1 = (int) Math.ceil(c1Size/2);
+                    corte2 = (int) Math.ceil(c2Size/2);
+                    
+                    // tamaaños requeridos para nuevos hijos
+                    int h1Size = corte1+c1Size-corte2;
+                    int h2Size = corte2+c2Size-corte1;
+                    
+                    // sublista de 0 a corte1--> o sea los corte1 primeros elementos
                     List<Integer> v1 = c1.cromosoma[i][j].ruta.subList(0, corte1);
-                    cruzado1.cromosoma[i][j].ruta.addAll(v1);
-                    List<Integer> v2 = c2.cromosoma[i][j].ruta.subList(0, corte2);
-                    cruzado2.cromosoma[i][j].ruta.addAll(v2);
-                    /*
-                    List<Integer> v3 = c1.cromosoma[i][j].ruta.subList(corte1,c1.cromosoma[i][j].ruta.size());
-                    List<Integer> v4 = c2.cromosoma[i][j].ruta.subList(corte2,c2.cromosoma[i][j].ruta.size());
-                    */
-
-                    Iterator<Integer> it1 = c1.cromosoma[i][j].ruta.iterator();
-                    Iterator<Integer> it2 = c2.cromosoma[i][j].ruta.iterator();
-
-                    while(it1.hasNext()){
-                        valor = (int)it1.next();
-                        if (!cruzado2.cromosoma[i][j].ruta.contains(valor)&& contador <= corte1) {
-                            cruzado2.cromosoma[i][j].ruta.add(valor);
-                            contador++;
-                            cruzado2.listaVisitasCromo[1][valor]--;
-                        }
-                    }
-                    contador =0;
-                    while(it2.hasNext()){
-                        valor = (int)it2.next();
-                        if (!cruzado1.cromosoma[i][j].ruta.contains(valor) && contador <= corte2) {
+                    Iterator<Integer> itSublist = v1.iterator();
+                    
+                    while (itSublist.hasNext() && contador < corte1) {
+                        valor = (int) itSublist.next();
+                        visitasLocales[valor]++;
+                        if (cruzado1.listaVisitasCromo[1][valor] > 0) {
                             cruzado1.cromosoma[i][j].ruta.add(valor);
                             contador++;
+
+                            // decrementamos de las visitas globales
                             cruzado1.listaVisitasCromo[1][valor]--;
+                            visitasLocales[valor]--;
+                        }
+                    }
+                    
+                    contador =0;
+                    
+                    List<Integer> v2 = c2.cromosoma[i][j].ruta.subList(0, corte2);
+                    
+                    itSublist = v2.iterator();
+                    
+                    while (itSublist.hasNext() && contador < corte2) {
+                        valor = (int) itSublist.next();
+                        visitasLocales[valor]++;
+                         if (cruzado2.listaVisitasCromo[1][valor] > 0) {
+                            cruzado2.cromosoma[i][j].ruta.add(valor);
+                            contador++;
+
+                            // decrementamos visitas globales
+                            cruzado2.listaVisitasCromo[1][valor]--;
+                            visitasLocales[valor]--;
+                         }
+                                
+                    }
+                    
+                    contador = 0;
+                    
+                    List<Integer> v3 = c1.cromosoma[i][j].ruta.subList(corte1,c1.cromosoma[i][j].ruta.size());
+                    List<Integer> v4 = c2.cromosoma[i][j].ruta.subList(corte2,c2.cromosoma[i][j].ruta.size());
+                                   
+                    Iterator<Integer> it3 = v3.iterator();
+                    
+                    while(it3.hasNext()){
+                        visitasLocales[(int)it3.next()]++;
+                    }
+                    
+                    Iterator<Integer> it4 = v4.iterator();
+                    
+                    while(it4.hasNext()){
+                        visitasLocales[(int)it4.next()]++;
+                    }
+                    
+                    Iterator<Integer> it1 = c1.cromosoma[i][j].ruta.iterator();
+                    Iterator<Integer> it2 = c2.cromosoma[i][j].ruta.iterator();
+                    
+                    /*AHORA CONTROLAMOS TB LA LISTAVISITASCROMO*/
+                    
+                    while(it1.hasNext() && contador <= corte1){
+                        valor = (int)it1.next();
+                        if (!cruzado2.cromosoma[i][j].ruta.contains(valor)&& contador <= corte1) {
+                            if(cruzado2.listaVisitasCromo[1][valor] > 0 
+                                    && visitasLocales[valor] > 0){
+                                cruzado2.cromosoma[i][j].ruta.add(valor);
+                                contador++;
+                                cruzado2.listaVisitasCromo[1][valor]--;
+                                visitasLocales[valor]--;
+                            }                      
+                        }           
+                    }
+                    
+                    // reiniciamos contador para recorrer adecuadamente la siguiente ruta
+                    contador = 0;
+                    
+                    while(it2.hasNext() && contador <= corte2){
+                        valor = (int)it2.next();
+                        if (!cruzado1.cromosoma[i][j].ruta.contains(valor) && contador <= corte2) {
+                             if(cruzado1.listaVisitasCromo[1][valor] > 0 
+                                    && visitasLocales[valor] > 0){
+                                cruzado1.cromosoma[i][j].ruta.add(valor);
+                                contador++;
+                                cruzado1.listaVisitasCromo[1][valor]--;
+                                visitasLocales[valor]--;
+                             }
                         }
                     } 
+                    
+                    for (int k = 1; k < visitasLocales.length; k++) {
+                        int l = visitasLocales[k];
+                        
+                        if (l==2) {  
+                            
+                            if (cruzado1.listaVisitasCromo[1][k] > 0) {
+                                cruzado1.cromosoma[i][j].ruta.add(k);
+                                visitasLocales[k]--;
+                                cruzado1.listaVisitasCromo[1][k]--;
+                            }
+                            if (cruzado2.listaVisitasCromo[1][k] > 0) {                            
+                                cruzado2.cromosoma[i][j].ruta.add(k);
+                                visitasLocales[k]--;
+                                cruzado2.listaVisitasCromo[1][k]--;
+                            }
+                            
+                        } else if (l==1) {
+                            int espacio1 = h1Size - cruzado1.cromosoma[i][j].ruta.size();
+                            int espacio2 = h2Size - cruzado2.cromosoma[i][j].ruta.size();
+                            
+                            if (espacio1 > 0 && cruzado1.listaVisitasCromo[1][k] > 0) {
+                                
+                                    cruzado1.cromosoma[i][j].ruta.add(k);
+                                    visitasLocales[k]--;
+                                    cruzado1.listaVisitasCromo[1][k]--;                                
+                                
+                            } else if (espacio2 > 0 && cruzado2.listaVisitasCromo[1][k] > 0){
+                                
+                                    cruzado2.cromosoma[i][j].ruta.add(k);
+                                    visitasLocales[k]--;
+                                    cruzado2.listaVisitasCromo[1][k]--;                                                                
+                                
+                            } else {
+                                if (cruzado1.listaVisitasCromo[1][k] > 0 
+                                        && !cruzado1.cromosoma[i][j].ruta.contains(k)) {
+                                    cruzado1.cromosoma[i][j].ruta.add(k);
+                                    visitasLocales[k]--;
+                                    cruzado1.listaVisitasCromo[1][k]--;                                                                
+                                } else if (cruzado2.listaVisitasCromo[1][k] > 0 
+                                        && !cruzado2.cromosoma[i][j].ruta.contains(k)) {
+                                    cruzado2.cromosoma[i][j].ruta.add(k);
+                                    visitasLocales[k]--;
+                                    cruzado2.listaVisitasCromo[1][k]--;                                                                
+                                }
+                            }
+                        }
+                    }                    
+                        
                 // si uno está vacío y el otro no, partir el que no está vacío 
                 // en dos. Si ambos están vacío, yapiro forzado
                 } else if (c1Size == 0 || c2Size == 0) {
                     
                     if (c1Size > 0) {
-                        corte1 = c1Size/2;
+                        corte1 = (int) Math.floor(c1Size/2)+1;
 
                         List<Integer> v1 = c1.cromosoma[i][j].ruta.subList(0, corte1);
-                        cruzado1.cromosoma[i][j].ruta.addAll(v1);
-                        List<Integer> v2 = c1.cromosoma[i][j].ruta.subList(corte1, c1Size);
-                        cruzado2.cromosoma[i][j].ruta.addAll(v2);
+                        Iterator<Integer> itSublist = v1.iterator();
+                        contador = 0; 
                         
+                        while (itSublist.hasNext() ) {
+                            valor = (int) itSublist.next();
+
+                            if (cruzado1.listaVisitasCromo[1][valor] > 0) {
+                                cruzado1.cromosoma[i][j].ruta.add(valor);
+
+                                // decrementamos de las visitas globales
+                                cruzado1.listaVisitasCromo[1][valor]--;
+                            }
+                        }
+
+                        List<Integer> v2 = c1.cromosoma[i][j].ruta.subList(corte1, c1Size);
+
+                        itSublist = v2.iterator();
+
+                        while (itSublist.hasNext() ) {
+                            valor = (int) itSublist.next();
+                            if (cruzado2.listaVisitasCromo[1][valor] > 0) {
+                                cruzado2.cromosoma[i][j].ruta.add(valor);
+
+
+                                // decrementamos visitas globales
+                                cruzado2.listaVisitasCromo[1][valor]--;
+                            }
+
+                        }
                     } else if (c2Size > 0) {
                         
-                        corte2 = c2Size/2;
+                        corte2 = (int)Math.floor(c2Size/2)+1;
 
                         List<Integer> v1 = c2.cromosoma[i][j].ruta.subList(0, corte2);
-                        cruzado1.cromosoma[i][j].ruta.addAll(v1);
+                        Iterator<Integer> itSublist = v1.iterator();
+                        
+                        while (itSublist.hasNext()) {
+                            valor = (int) itSublist.next();
+
+                            if (cruzado1.listaVisitasCromo[1][valor] > 0) {
+                                cruzado1.cromosoma[i][j].ruta.add(valor);
+
+                                // decrementamos de las visitas globales
+                                cruzado1.listaVisitasCromo[1][valor]--;
+                            }
+                        }
+
                         List<Integer> v2 = c2.cromosoma[i][j].ruta.subList(corte2, c2Size);
-                        cruzado2.cromosoma[i][j].ruta.addAll(v2);
+                        
+                        itSublist = v2.iterator();
+
+                        while (itSublist.hasNext()) {
+                            valor = (int) itSublist.next();
+                            if (cruzado2.listaVisitasCromo[1][valor] > 0) {
+                                cruzado2.cromosoma[i][j].ruta.add(valor);
+
+                                // decrementamos visitas globales
+                                cruzado2.listaVisitasCromo[1][valor]--;
+                            }
+                        }
                     }                    
                 }
                 /*ACTUALIZAMOS LA CANTIDAD DE VECINOS*/
+                /*
                 Iterator<Integer> it1 = cruzado1.cromosoma[i][j].ruta.iterator();
                 while (it1.hasNext()) {
                     valor = (int) it1.next();
@@ -107,11 +276,9 @@ public class FuncionesGA {
                     valor = (int) it2.next();
                     cruzado2.listaVisitasCromo[1][valor]--;
                 }
+                 */
             }
         }
-        
-        cruzado1.evaluar(entrada);
-        cruzado2.evaluar(entrada);
         
         cruceResult[0] = cruzado1;
         cruceResult[1] = cruzado2;
