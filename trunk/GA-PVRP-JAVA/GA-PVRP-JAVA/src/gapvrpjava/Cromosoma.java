@@ -117,11 +117,23 @@ public class Cromosoma {
         return this.getFitness();
     }
     
+    public boolean isValido() {
+        
+        for (int i = 0; i < listaVisitasCromo.length; i++) {
+            if (this.listaVisitasCromo[1][i] > 0) {
+                return false;
+            }
+        }        
+        return true;
+
+    }
+    
     public void fObjetivo(Conocimiento entrada){
         int ultimoVisitado = 0;
         int penalizacion=0;
         int actual;
         int posterior;
+        this.fitness=0;
         for (int i = 0; i < entrada.dias; i++){
             for (int j = 0; j < entrada.cantVehiculos; j++){
                 /*no nos vamos hasta el cliente mas 1 porque

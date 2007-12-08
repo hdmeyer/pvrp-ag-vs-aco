@@ -37,38 +37,68 @@ public class FuncionesGA {
         for (int j = 0; j < c1.cantVehiculos; j++) {
             for (int i = 0; i < c1.dias; i++) {
                 
-                corte1 = (int)c1.cromosoma[i][j].ruta.size()/2;
-                corte2 = (int)c2.cromosoma[i][j].ruta.size()/2;
+                int c1Size = c1.cromosoma[i][j].ruta.size();
+                int c2Size = c2.cromosoma[i][j].ruta.size();
                 
-                Vector v1 = (Vector) c1.cromosoma[i][j].ruta.subList(0, corte1);
-                cruzado1.cromosoma[i][j].ruta.addAll(v1);
-                Vector v2 = (Vector) c2.cromosoma[i][j].ruta.subList(0, corte2);
-                cruzado2.cromosoma[i][j].ruta.addAll(v2);
-                
-                Vector v3 = (Vector) c1.cromosoma[i][j].ruta.subList(corte1,c1.cromosoma[i][j].ruta.size());
-                Vector v4 = (Vector) c2.cromosoma[i][j].ruta.subList(corte2,c2.cromosoma[i][j].ruta.size());
-                
-                
-                Iterator<Integer> it1 = v3.iterator();
-                Iterator<Integer> it2 = v4.iterator();
-                
-                while(it1.hasNext()){
-                    valor = (int)it1.next();
-                    if (!cruzado2.cromosoma[i][j].ruta.contains(valor)) {
-                        cruzado2.cromosoma[i][j].ruta.add(valor);
-                        cruzado2.listaVisitasCromo[1][valor]--;
+                if (c1Size > 0 && c2Size > 0) {
+                    corte1 = (int)c1.cromosoma[i][j].ruta.size()/2;
+                    corte2 = (int)c2.cromosoma[i][j].ruta.size()/2;
+
+                    List<Integer> v1 = c1.cromosoma[i][j].ruta.subList(0, corte1);
+                    cruzado1.cromosoma[i][j].ruta.addAll(v1);
+                    List<Integer> v2 = c2.cromosoma[i][j].ruta.subList(0, corte2);
+                    cruzado2.cromosoma[i][j].ruta.addAll(v2);
+
+                    List<Integer> v3 = c1.cromosoma[i][j].ruta.subList(corte1,c1.cromosoma[i][j].ruta.size());
+                    List<Integer> v4 = c2.cromosoma[i][j].ruta.subList(corte2,c2.cromosoma[i][j].ruta.size());
+
+
+                    Iterator<Integer> it1 = v3.iterator();
+                    Iterator<Integer> it2 = v4.iterator();
+
+                    while(it1.hasNext()){
+                        valor = (int)it1.next();
+                        if (!cruzado2.cromosoma[i][j].ruta.contains(valor)) {
+                            cruzado2.cromosoma[i][j].ruta.add(valor);
+
+                            cruzado2.listaVisitasCromo[1][valor]--;
+                        }
                     }
+                    
+                    while(it2.hasNext()){
+                        valor = (int)it2.next();
+                        if (!cruzado1.cromosoma[i][j].ruta.contains(valor)) {
+                            cruzado1.cromosoma[i][j].ruta.add(valor);
+                            cruzado1.listaVisitasCromo[1][valor]--;
+                        }
+                    } 
+                // si uno está vacío y el otro no, partir el que no está vacío 
+                // en dos. Si ambos están vacío, yapiro forzado
+                } else if (c1Size == 0 || c2Size == 0) {
+                    
+                    if (c1Size > 0) {
+                        corte1 = c1Size/2;
+
+                        List<Integer> v1 = c1.cromosoma[i][j].ruta.subList(0, corte1);
+                        cruzado1.cromosoma[i][j].ruta.addAll(v1);
+                        List<Integer> v2 = c1.cromosoma[i][j].ruta.subList(corte1, c1Size);
+                        cruzado2.cromosoma[i][j].ruta.addAll(v2);
+                        
+                    } else if (c2Size > 0) {
+                        
+                        corte2 = c2Size/2;
+
+                        List<Integer> v1 = c2.cromosoma[i][j].ruta.subList(0, corte2);
+                        cruzado1.cromosoma[i][j].ruta.addAll(v1);
+                        List<Integer> v2 = c2.cromosoma[i][j].ruta.subList(corte2, c2Size);
+                        cruzado2.cromosoma[i][j].ruta.addAll(v2);
+                    }                    
                 }
-                while(it2.hasNext()){
-                    valor = (int)it1.next();
-                    if (!cruzado1.cromosoma[i][j].ruta.contains(valor)) {
-                        cruzado1.cromosoma[i][j].ruta.add(valor);
-                        cruzado1.listaVisitasCromo[1][valor]--;
-                    }
-                }                
             }
         }
         
+        cruzado1.evaluar(entrada);
+        cruzado2.evaluar(entrada);
         
         cruceResult[0] = cruzado1;
         cruceResult[1] = cruzado2;

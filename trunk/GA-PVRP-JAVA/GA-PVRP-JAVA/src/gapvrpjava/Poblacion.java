@@ -332,16 +332,8 @@ public class Poblacion {
             this.mejorIndividuo = x; 
     }
 
-    // INCOMPLETO
     public double getMejorFitness(){
-        //return this.mejorIndividuo.getFitness();
-        return 0;
-    }
-
-    // INCOMPLETO
-    public double getMejorCosto(){
-        // return 1/this.mejorIndividuo.getCosto();
-        return 0;
+        return this.mejorIndividuo.getFitness();
     }
 
     public Cromosoma[] getIndividuos() {
