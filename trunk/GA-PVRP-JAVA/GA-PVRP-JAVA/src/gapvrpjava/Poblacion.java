@@ -234,15 +234,37 @@ public class Poblacion {
     /**
      * Realiza el reemplazo de individuos de
      * la población.
+     * 
+     * El reemplazo definido sigue un modelo híbrido (semiestacionario) ya que
+     * en cada generacio, hay una nueva población, pero se salva al mejor 
+     * individuo de la generación anterior y se reemplaza al peor de la nueva 
+     * generación.
+     * 
      */
     public void reemplazar() {
         
         // Revisar esta estrategia reemplazo
         // AHORA REEMPLAZAMOS TODO
-        for (int i = 0; i<this.getTamanho(); i++)
-            
-            individuos[i] = getHijos()[i];
-            //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
+        Cromosoma peorIndividuo;
+        int peorIndividuoPos = 0;
+        Cromosoma currentSun = this.getHijo(0);
+        peorIndividuo = currentSun;
+        individuos[0] = currentSun;
+        
+        
+        for (int i = 1; i<this.getTamanho(); i++) {
+
+            currentSun = this.getHijo(i);
+        
+            individuos[i] = currentSun;
+        
+            if (currentSun.getFitness() < peorIndividuo.getFitness()) {
+                peorIndividuo = currentSun;
+                peorIndividuoPos = i;
+            }            
+        }
+        
+        individuos[peorIndividuoPos]=this.getMejorIndividuo(); // Reemplaza el peor nuevo por el mejor de la generacion anterior
     }
 
     /**
@@ -470,6 +492,10 @@ public class Poblacion {
 
     public Cromosoma[] getHijos() {
         return hijos;
+    }
+    
+    public Cromosoma getHijo(int i) {
+        return hijos[i];
     }
 
     public void setHijos(Cromosoma[] hijos) {
