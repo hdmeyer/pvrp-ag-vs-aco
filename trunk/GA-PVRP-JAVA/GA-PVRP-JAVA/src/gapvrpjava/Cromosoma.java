@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 public class Cromosoma {
     public ruta cromosoma [][]=null;
     private double fitness;
+    private double costo;
     /** Indica el orden en que se van tomando los clientes, estos se generan automaticamente*/
     public int ordenVisitas[];
     public int clienteActual;
@@ -112,8 +113,7 @@ public class Cromosoma {
     
     public double evaluar(Conocimiento entrada) {
         
-        this.fObjetivo(entrada);
-        
+        this.fObjetivo(entrada);        
         return this.getFitness();
     }
     
@@ -133,7 +133,7 @@ public class Cromosoma {
         int penalizacion=0;
         int actual;
         int posterior;
-        this.fitness=0;
+        this.setCosto(0);
         for (int i = 0; i < entrada.dias; i++){
             for (int j = 0; j < entrada.cantVehiculos; j++){
                 /*no nos vamos hasta el cliente mas 1 porque
@@ -157,7 +157,7 @@ public class Cromosoma {
                      * al deposito de vuelta...*/
                     this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.firstElement()];
                     this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.lastElement()];
-                    this.setFitness(this.getFitness() + this.cromosoma[i][j].costo);
+                    this.setCosto(this.getCosto() + this.cromosoma[i][j].costo);
                 }
             }
         }
@@ -168,9 +168,12 @@ public class Cromosoma {
             }
         }
 
-        this.setFitness(this.getFitness() + penalizacion);
+        this.setCosto(this.getCosto() + penalizacion);
+        double fit = (double) (1/this.getCosto());
+        this.setFitness(fit);
         
     }
+    
     @Override
     public String toString(){
         String granLinea = "";
@@ -232,6 +235,14 @@ public class Cromosoma {
 
     public void setFitness(double fitness) {
         this.fitness = fitness;
+    }
+
+    public double getCosto() {
+        return costo;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
     }
                 
 }
