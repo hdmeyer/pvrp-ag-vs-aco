@@ -38,7 +38,7 @@ public class TestCruce {
         System.out.println("-* Población Inicial Generada =========================================");
         
         Poblacion p = new Poblacion(prueba, 2, 30);
-        p.evaluar(prueba);
+        p.evaluar();
         
         String popString = p.toStringImprimible();        
         System.out.print(popString);        
@@ -48,7 +48,7 @@ public class TestCruce {
         Cromosoma[] selectos = p.getIndividuos();
         p.cruce(selectos);
         p.reemplazar();
-        p.evaluar(prueba);
+        p.evaluar();
         
         int i = 0;
 /*        while (!p.getIndividuo(0).isValido() || !p.getIndividuo(1).isValido()) {
