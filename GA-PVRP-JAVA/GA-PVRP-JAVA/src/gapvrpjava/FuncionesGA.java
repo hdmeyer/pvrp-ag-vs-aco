@@ -364,11 +364,11 @@ public class FuncionesGA {
                 }
 
                 // Se extrae los fitness de los correspondientes individuos 
-                double costo1 = p.getFitness(ind1);
-                double costo2 = p.getFitness(ind2);
+                double fitness1 = p.getFitness(ind1);
+                double fitness2 = p.getFitness(ind2);
 
                 // Competencia
-                if (costo1>=costo2) { // Gan? individuo 1
+                if (fitness1>=fitness2) { // Gan? individuo 1
                         Mejores[i]=p.getIndividuo(ind1);
                 }
                 else { // Gano individuo 2
