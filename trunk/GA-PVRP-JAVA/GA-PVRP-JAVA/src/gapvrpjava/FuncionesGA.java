@@ -28,37 +28,44 @@ public class FuncionesGA {
         Cromosoma cruzado1 = new Cromosoma(entrada);
         Cromosoma cruzado2 = new Cromosoma(entrada);
         Cromosoma[] cruceResult = new Cromosoma[2];
-        int corte = (int) c1.cantClientes/2;
-        int relleno = 0;
-        
+        int corte1;
+        int corte2;
+        int valor = 0;
+
         // Realizar el cruce de c1 y c2, y producir el resultado en 
         // cruzado1 y cruzado2
         for (int j = 0; j < c1.cantVehiculos; j++) {
             for (int i = 0; i < c1.dias; i++) {
-                relleno =0;
-                for (int k = 1; k < c1.cantClientes + 1; k++) {
-                    if(k < corte){
-                        if(!revisarRepetido(cruzado1, c1.cromosoma[i][j].ruta[k],i,j)){
-                            cruzado1.cromosoma[i][j].ruta[k] = c1.cromosoma[i][j].ruta[k];
-                            cruzado1.listaVisitasCromo[1][k]--;
-                        }
-                        if(!revisarRepetido(cruzado2, c2.cromosoma[i][j].ruta[k],i,j)){
-                            cruzado2.cromosoma[i][j].ruta[k] = c2.cromosoma[i][j].ruta[k];
-                            cruzado2.listaVisitasCromo[1][k]--;
-                        }
-                        
-                    }else{
-                        relleno++;
-                        if(!revisarRepetido(cruzado1, c2.cromosoma[i][j].ruta[relleno],i,j)){
-                            cruzado1.cromosoma[i][j].ruta[k] = c2.cromosoma[i][j].ruta[relleno];
-                            cruzado1.listaVisitasCromo[1][relleno]--;
-                        }
-                        if(!revisarRepetido(cruzado2, c1.cromosoma[i][j].ruta[relleno],i,j)){
-                            cruzado2.cromosoma[i][j].ruta[k] = c1.cromosoma[i][j].ruta[relleno];
-                            cruzado2.listaVisitasCromo[1][relleno]--;
-                        }
+                
+                corte1 = (int)c1.cromosoma[i][j].ruta.size()/2;
+                corte2 = (int)c2.cromosoma[i][j].ruta.size()/2;
+                
+                Vector v1 = (Vector) c1.cromosoma[i][j].ruta.subList(0, corte1);
+                cruzado1.cromosoma[i][j].ruta.addAll(v1);
+                Vector v2 = (Vector) c2.cromosoma[i][j].ruta.subList(0, corte2);
+                cruzado2.cromosoma[i][j].ruta.addAll(v2);
+                
+                Vector v3 = (Vector) c1.cromosoma[i][j].ruta.subList(corte1,c1.cromosoma[i][j].ruta.size());
+                Vector v4 = (Vector) c2.cromosoma[i][j].ruta.subList(corte2,c2.cromosoma[i][j].ruta.size());
+                
+                
+                Iterator<Integer> it1 = v3.iterator();
+                Iterator<Integer> it2 = v4.iterator();
+                
+                while(it1.hasNext()){
+                    valor = (int)it1.next();
+                    if (!cruzado2.cromosoma[i][j].ruta.contains(valor)) {
+                        cruzado2.cromosoma[i][j].ruta.add(valor);
+                        cruzado2.listaVisitasCromo[1][valor]--;
                     }
                 }
+                while(it2.hasNext()){
+                    valor = (int)it1.next();
+                    if (!cruzado1.cromosoma[i][j].ruta.contains(valor)) {
+                        cruzado1.cromosoma[i][j].ruta.add(valor);
+                        cruzado1.listaVisitasCromo[1][valor]--;
+                    }
+                }                
             }
         }
         
@@ -117,14 +124,14 @@ public class FuncionesGA {
         return Mejores;
     }
     
-    public static boolean revisarRepetido(Cromosoma cromo, int nro, int i, int j){
-        
-        for (int l = 1; l < cromo.cantClientes+1; l++) {
-            if(cromo.cromosoma[i][j].ruta[l] == nro){
-                return true;
-            }
-        }
-
-        return false;
-    }
+//    public static boolean revisarRepetido(Cromosoma cromo, int nro, int i, int j){
+//        
+//        for (int l = 1; l < cromo.cantClientes+1; l++) {
+//            if(cromo.cromosoma[i][j].ruta[l] == nro){
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 }
