@@ -57,6 +57,11 @@ public class Poblacion {
      */
     private Cromosoma mejorIndividuo = null;
     
+    /**
+     * Posición en el vector de población del mejor individuo. 
+     */
+    private int mejorIndividuoPos;
+    
     private Conocimiento conocimiento;
     
     private int probMutacion;
@@ -95,7 +100,7 @@ public class Poblacion {
         this.probMutacion = 20; 
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
-        this.inicializarPop(entrada);
+        this.inicializarPop();
     }
     
     
@@ -116,7 +121,7 @@ public class Poblacion {
         
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
-        this.inicializarPop(entrada);
+        this.inicializarPop();
     }
 
     /** 
@@ -129,11 +134,11 @@ public class Poblacion {
      * @param entrada
      * @return
      */
-    public void inicializarPop(Conocimiento entrada) {
+    public void inicializarPop() {
        
         for (int i=0; i < individuos.length; i++) {
-                individuos[i] = new Cromosoma(entrada);
-                individuos[i].construirCromosoma(entrada);
+                individuos[i] = new Cromosoma(this.getConocimiento());
+                individuos[i].construirCromosoma(this.getConocimiento());
         }
     }
     
@@ -182,10 +187,10 @@ public class Poblacion {
         Cromosoma nuevos[];
         for (int i=0; i <= selectos.length-2; i = i+2){
             
-            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1],this.conocimiento);
+            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1],this.getConocimiento());
 
-            this.hijos[i] = nuevos[0];
-            this.hijos[i+1] = nuevos[1];
+            this.getHijos()[i] = nuevos[0];
+            this.getHijos()[i+1] = nuevos[1];
            
         }
         
@@ -194,9 +199,8 @@ public class Poblacion {
         
         if ((indiceUltimo+1)%2 != 0) {
             nuevos = FuncionesGA.Cruzar(selectos[indiceUltimo], 
-                                        selectos[0],
-                                        this.conocimiento);
-            this.hijos[indiceUltimo] = nuevos[0];
+                                        selectos[0],this.getConocimiento());
+            this.getHijos()[indiceUltimo] = nuevos[0];
         }
     }
 
@@ -210,7 +214,7 @@ public class Poblacion {
 
         for (int i=0; i < this.getTamanho(); i++){
             if (rand.nextInt(99) < this.probMutacion)
-                FuncionesGA.Mutar(hijos[i]);
+                FuncionesGA.Mutar(getHijos()[i]);
         }
     }
 
@@ -237,7 +241,7 @@ public class Poblacion {
         // AHORA REEMPLAZAMOS TODO
         for (int i = 0; i<this.getTamanho(); i++)
             
-            individuos[i] = hijos[i];
+            individuos[i] = getHijos()[i];
             //individuos[0]=this.getMejorIndividuo(); // Reemplaza el mejor
     }
 
@@ -246,10 +250,10 @@ public class Poblacion {
      * 
      * INCOMPLETO: Descomentar la evaluación
      */
-    public void evaluar(Conocimiento entrada) {
+    public void evaluar() {
 
             for (int i=0; i<this.getTamanho();i++) {
-                fitness[i] = individuos[i].evaluar(entrada);
+                getFitness()[i] = individuos[i].evaluar(this.getConocimiento());
             }
             elegirMejor();
     }
@@ -260,7 +264,7 @@ public class Poblacion {
      * @return fitness
      */
     public double getFitness(int ind) {
-        return fitness[ind];
+        return getFitness()[ind];
     }
 
     public Cromosoma getIndividuo(int pos) {
@@ -270,8 +274,6 @@ public class Poblacion {
     /**
      * Elige el mejor cromosoma de 
      * toda la historia.
-     * 
-     * INCOMPLETO --> FALTA DESCOMENTAR Y VERIFICAR ELECCION DEL MEJORFITNESS
      */
     private void elegirMejor() {
             /*
@@ -280,13 +282,15 @@ public class Poblacion {
              */
             if (mejorIndividuo == null) {
                     mejorIndividuo = individuos[0];
+                    this.setMejorIndividuoPos(0);
             }
 
             double mejorFitness = 0;// mejorIndividuo.getFitness();
             for (int i=0; i < this.getTamanho(); i++) {
-                    if (fitness[i]> mejorFitness) {
+                    if (getFitness()[i]> mejorFitness) {
                             mejorIndividuo = individuos[i];
                             mejorFitness = mejorIndividuo.getFitness();
+                            this.setMejorIndividuoPos(i);
                     }
             }
     }
@@ -304,7 +308,7 @@ public class Poblacion {
 
             for (int i=1; i < this.getTamanho(); i++) {
                     // Contamos si el fitness es inválido
-                    if (fitness[i] < 0)
+                    if (getFitness()[i] < 0)
                             contador++;
             }
 
@@ -370,7 +374,7 @@ public class Poblacion {
             PopString +="$"+currentIndividual;
         }        
         
-        return PopString; 
+        return PopString+"$"+this.getMejorIndividuoPos()+","+this.getMejorFitness(); 
     }
     
     public String toStringMultilinea(String toStringLinea) {
@@ -381,27 +385,31 @@ public class Poblacion {
         poblacionMultilinea +="-----> Fitness = "+individuos[0].getFitness()+"\n";
         int i = 1;
         while (tk.hasMoreTokens()) {
+            String current_token = tk.nextToken();
             
-            double currentFitness = individuos[i].getFitness();
+            // si se cumple esta condición, todavía no estamos en el último token
+            if (tk.hasMoreTokens()) {
+                double currentFitness = individuos[i].getFitness();
             
-            String current ="Individuo "+(++i)+": "+ tk.nextToken()+"\n";
-            poblacionMultilinea += current;
-            poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
+                String current ="Individuo "+(++i)+": "+ current_token+"\n";
+                poblacionMultilinea += current;
+                poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
+            } else {
+                poblacionMultilinea +="*** Mejor Individuo, Fitness *** "+current_token+"\n";
+            }
         }
            
         return poblacionMultilinea;
     }
     
     public String toStringImprimible(){
-        String poblacionMultilinea ="<-------------------------------------------->\n";
-        poblacionMultilinea += "<---------- | Población - Inicio | ---------->\n"; 
-        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        String poblacionMultilinea ="<----------------------------------------------------------------------------------------------->\n";
+        poblacionMultilinea += "<--------------------------- | Población - Inicio | ------------------------->\n"; 
         
         poblacionMultilinea +=toStringMultilinea(this.toString());
         
-        poblacionMultilinea +="<-------------------------------------------->\n";
-        poblacionMultilinea +="<----------- | Población - Fin | ------------>\n"; 
-        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        poblacionMultilinea +="<---------------------------- | Población - Fin | ----------------------------->\n"; 
+        poblacionMultilinea +="<--------------------------------------------------------------------------------------------------->\n\n";
         
         return poblacionMultilinea;
     }
@@ -412,27 +420,30 @@ public class Poblacion {
         
         String individuoMultiLinea = this.individuos[0].ImprimirCromo(tk.nextToken());
         
-        String poblacionMultilinea ="<-------------------------------------------->\n";
-        poblacionMultilinea += "<---------- | Población - Inicio | ---------->\n"; 
-        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        String poblacionMultilinea ="<--------------------------------------------------------------------------------------------------->\n";
+        poblacionMultilinea += "<--------------------------- | Población - Inicio | --------------------------->\n"; 
         
         poblacionMultilinea += "Individuo 1: "+individuoMultiLinea+"\n";
         poblacionMultilinea +="-----> Fitness = "+individuos[0].getFitness()+"\n";
         int i = 0;
         while (tk.hasMoreTokens()) {
+            String current_token = tk.nextToken();
             
-            double currentFitness = individuos[i].getFitness();
-            
-            individuoMultiLinea = this.individuos[++i].ImprimirCromo(tk.nextToken());
-            String current ="Individuo "+(i+1)+": "+ individuoMultiLinea+"\n";
-            poblacionMultilinea += current;
-            poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
+            // no estamos todavía en el último...
+            if (tk.hasMoreTokens()) {
+                double currentFitness = individuos[i].getFitness();
+
+                individuoMultiLinea = this.individuos[++i].ImprimirCromo(current_token);
+                String current ="Individuo "+(i+1)+": "+ individuoMultiLinea+"\n";
+                poblacionMultilinea += current;
+                poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n"; 
+            } else {
+                poblacionMultilinea +="*** Mejor Individuo, Fitness *** "+current_token+"\n";                
+            }
         }
         
-        
-        poblacionMultilinea +="<-------------------------------------------->\n";
-        poblacionMultilinea +="<----------- | Población - Fin | ------------>\n"; 
-        poblacionMultilinea +="<-------------------------------------------->\n\n";
+        poblacionMultilinea +="<---------------------------- | Población - Fin | ----------------------------->\n"; 
+        poblacionMultilinea +="<---------------------------------------------------------------------------------->\n\n";
         
         return poblacionMultilinea;
     }
@@ -443,11 +454,55 @@ public class Poblacion {
     public void imprimir(){
         for (int i=0; i<this.getTamanho(); i++){
             System.out.println("Cromosoma: "+i+" ");
-            System.out.println("Fitness  : "+fitness[i]);
+            System.out.println("Fitness  : "+getFitness()[i]);
             String LineaCromosoma = individuos[i].toString();            
             String CromosomaMultilinea = individuos[i].ImprimirCromo(LineaCromosoma);
             System.out.print(CromosomaMultilinea);
             System.out.println();
         }
+    }
+
+    public Cromosoma[] getHijos() {
+        return hijos;
+    }
+
+    public void setHijos(Cromosoma[] hijos) {
+        this.hijos = hijos;
+    }
+
+    public double[] getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double[] fitness) {
+        this.fitness = fitness;
+    }
+
+    public int getMejorIndividuoPos() {
+        return mejorIndividuoPos;
+    }
+
+    public void setMejorIndividuoPos(int mejorIndividuoPos) {
+        this.mejorIndividuoPos = mejorIndividuoPos;
+    }
+
+    public Conocimiento getConocimiento() {
+        return conocimiento;
+    }
+
+    public int getCantHijosGenerados() {
+        return CantHijosGenerados;
+    }
+
+    public void setCantHijosGenerados(int CantHijosGenerados) {
+        this.CantHijosGenerados = CantHijosGenerados;
+    }
+
+    public int getGeneracion() {
+        return generacion;
+    }
+
+    public void setGeneracion(int generacion) {
+        this.generacion = generacion;
     }
 }
