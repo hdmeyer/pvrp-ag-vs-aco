@@ -49,7 +49,17 @@ public class TestCruce {
         p.cruce(selectos);
         p.reemplazar();
         p.evaluar(prueba);
-        System.out.println("-* Población Cruzada  =========================================");
+        
+        int i = 0;
+/*        while (!p.getIndividuo(0).isValido() || !p.getIndividuo(1).isValido()) {
+            selectos = p.getIndividuos();
+            p.cruce(selectos);
+            p.reemplazar();
+            p.evaluar(prueba);            
+            i++;
+        }*/
+        
+        System.out.println("-* ("+i+") vueltas Población Cruzada  =========================================");
                 
         popString = p.toStringImprimible();
         
