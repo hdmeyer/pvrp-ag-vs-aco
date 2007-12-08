@@ -11,6 +11,7 @@ package gapvrpjava;
 import java.io.*;
 import java.util.StringTokenizer;
 import java.math.*;
+import java.util.Vector;
 /**
  *
  * @author Huguis
@@ -27,6 +28,9 @@ public class Conocimiento {
                                      // de un nodo a otro. Consideramos un
                                      // grafo conexo complto.
     int listaVisitas [][];
+    /*ATRIBUTOS PARA LAS SOLUCIONES LEIDAS*/
+    public double mejorSol;
+    public Vector<Double>solucion [];
     
     /** Creates a new instance of Lector */
     public Conocimiento() {
@@ -144,5 +148,48 @@ public class Conocimiento {
        - Agregar listado de clientes con sus respectivas propiedades
      
      */
-    
+    public void LeerSolucion(String archivo) throws IOException{
+        String linea;
+        int contador =0;
+        this.solucion = new Vector[this.dias*this.cantVehiculos];
+        for (int i = 0; i < this.solucion.length; i++) {
+            this.solucion[i] = new Vector<Double>();
+        }
+
+        try {
+            BufferedReader sarchivo = new BufferedReader(new FileReader(archivo));
+            linea = sarchivo.readLine();
+            
+            this.mejorSol = Double.parseDouble(linea);
+            linea=sarchivo.readLine();
+            while (linea!=null) { 
+                StringTokenizer partes = new StringTokenizer(linea," ");
+                while (partes.hasMoreTokens()) {
+                    double part = Double.parseDouble(partes.nextToken());
+                    this.solucion[contador].add(part);
+                }
+                linea=sarchivo.readLine();
+                contador++;
+            }
+
+
+        } catch (Exception exception) {
+            System.out.println("Se pudrio todo viteh...");
+        }
+    }
+    public String toStringMejorSolucion(){
+        String salida = "";
+        salida+= this.mejorSol + "\n";
+        
+        for (int i = 0; i < this.solucion.length; i++) {
+            salida += "\t";
+            if(!this.solucion[i].isEmpty()){
+                for(int j=0; j < this.solucion[i].size();j++){
+                    salida += "\t"+ this.solucion[i].get(j);
+                }
+                salida += "\n";
+            }
+        }
+        return salida;
+    }
 }
