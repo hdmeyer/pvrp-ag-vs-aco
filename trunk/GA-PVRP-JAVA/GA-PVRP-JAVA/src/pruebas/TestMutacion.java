@@ -78,6 +78,9 @@ public class TestMutacion {
         popString = p.toStringPorCromosoma(p.toString());
         System.out.print(popString);
         
+        System.out.println(prueba.toString());
+        System.out.println(prueba.toStringMatrizCostos());
+        
         
         
     }
