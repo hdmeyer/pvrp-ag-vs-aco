@@ -56,6 +56,7 @@ public class Poblacion {
      * Mejor cromosoma de toda la historia
      */
     private Cromosoma mejorIndividuo = null;
+    private Cromosoma mejorHistorico;
     
     /**
      * Posición en el vector de población del mejor individuo. 
@@ -67,6 +68,7 @@ public class Poblacion {
     private int probMutacion;
     
     private int iterador = 0;
+    private int mejorGeneracion;
     
     /** 
      * 
@@ -79,6 +81,7 @@ public class Poblacion {
         this.individuos = new Cromosoma[this.tamanho];
         this.hijos = new Cromosoma[this.tamanho];
         this.probMutacion = 20; 
+        this.generacion = 0;
     }
     
     /**
@@ -97,7 +100,8 @@ public class Poblacion {
         this.individuos = new Cromosoma[tamanhoPop];
         this.hijos = new Cromosoma[tamanhoPop];
         this.fitness = new double[tamanhoPop];
-        this.probMutacion = 20; 
+        this.probMutacion = 20;
+        this.generacion = 0;
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop();
@@ -112,6 +116,7 @@ public class Poblacion {
         this.individuos = new Cromosoma[tamanhoPop];
         this.hijos = new Cromosoma[tamanhoPop];
         this.fitness = new double[tamanhoPop];
+        this.generacion = 0;
         
         if (probMutacion > 100 || probMutacion < 0) {
             this.probMutacion = 20; 
@@ -244,27 +249,14 @@ public class Poblacion {
     public void reemplazar() {
         
         // Revisar esta estrategia reemplazo
-        // AHORA REEMPLAZAMOS TODO
-        Cromosoma peorIndividuo;
-        int peorIndividuoPos = 0;
-        Cromosoma currentSun = this.getHijo(0);
-        peorIndividuo = currentSun;
-        individuos[0] = currentSun;
-        
-        
-        for (int i = 1; i<this.getTamanho(); i++) {
-
-            currentSun = this.getHijo(i);
-        
-            individuos[i] = currentSun;
-        
-            if (currentSun.getFitness() < peorIndividuo.getFitness()) {
-                peorIndividuo = currentSun;
-                peorIndividuoPos = i;
-            }            
+        // AHORA REEMPLAZAMOS TODO        
+        Cromosoma currentSun;
+               
+        for (int i = 0; i<this.getTamanho(); i++) {
+            currentSun = this.getHijo(i);        
+            individuos[i] = currentSun;        
         }
         
-        individuos[peorIndividuoPos]=this.getMejorIndividuo(); // Reemplaza el peor nuevo por el mejor de la generacion anterior
     }
 
     /**
@@ -272,12 +264,14 @@ public class Poblacion {
      * 
      * INCOMPLETO: Descomentar la evaluación
      */
-    public void evaluar() {
+    public boolean evaluar() {
 
             for (int i=0; i<this.getTamanho();i++) {
                 getFitness()[i] = individuos[i].evaluar(this.getConocimiento());
             }
-            elegirMejor();
+            boolean newBestG = elegirMejor();
+            this.generacion++;
+            return newBestG;
     }
 
     /**
@@ -297,24 +291,59 @@ public class Poblacion {
      * Elige el mejor cromosoma de 
      * toda la historia.
      */
-    private void elegirMejor() {
-            /*
-             * Si todavia no se seleccionó
-             * a ninguno, guardamos al primero.
-             */
-            if (mejorIndividuo == null) {
-                    mejorIndividuo = individuos[0];
-                    this.setMejorIndividuoPos(0);
-            }
+    private boolean elegirMejor() {
+        
+        /** 
+         * 1. Cálculo mejor individuo local, de la población atual
+         * 2. Actualizo, si hace falta, el mejor individuo global.
+         * 3. Reeplazamos el peor de los nuevos por el mejor de la población 
+         *    anterior
+         */
+        boolean newBestG=false;
+        Cromosoma mejor = individuos[0];
+        int mejorPos = 0;
+        Cromosoma peor = individuos[0];
+        int peorPos = 0;
 
-            double mejorFitness = 0;// mejorIndividuo.getFitness();
-            for (int i=0; i < this.getTamanho(); i++) {
-                    if (getFitness()[i]> mejorFitness) {
-                            mejorIndividuo = individuos[i];
-                            mejorFitness = mejorIndividuo.getFitness();
-                            this.setMejorIndividuoPos(i);
-                    }
+        double mejorFitness = mejor.getFitness();
+        double peorFitness = peor.getFitness(); 
+        
+        for (int i=1; i < this.getTamanho(); i++) {
+            double currentFitness = getFitness()[i];
+            if (currentFitness > mejorFitness) {
+                mejor = individuos[i];
+                mejorFitness = mejor.getFitness();
+                mejorPos = i;
+            } else if (currentFitness < peorFitness) {
+                peor = individuos[i];
+                peorFitness = currentFitness;
+                peorPos = i;
             }
+        }
+        
+        
+        // reemplazamos el peor, por el mejor anterior
+        // la idea es preservar los mejores locales de iteración a iteración
+        if (this.mejorIndividuo != null) {
+            individuos[peorPos] = this.mejorIndividuo;
+        }
+        
+        // en mejor individuo, ponemos el nuevo mejor local
+        this.mejorIndividuo = mejor;
+        this.mejorIndividuoPos = mejorPos;
+        
+        // verificamos el mejor historico de todas las generaciones
+        if (this.mejorHistorico == null) {
+            this.mejorHistorico  = this.mejorIndividuo;
+            this.mejorGeneracion = this.getGeneracion();
+            newBestG = true;
+        } else if (mejorIndividuo.getFitness() > mejorHistorico.getFitness()) {
+            this.mejorHistorico = this.mejorIndividuo;
+            this.mejorGeneracion = this.getGeneracion();
+            newBestG = true;
+        }  
+            
+        return newBestG;
     }
 
     /**
@@ -421,11 +450,25 @@ public class Poblacion {
                 poblacionMultilinea += current;
                 poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
             } else {
-                poblacionMultilinea +="*** Mejor Individuo, Fitness, Costo *** "+current_token+"\n";
+                poblacionMultilinea +="*** Mejor de la generación actual ***\n";
+                poblacionMultilinea +="*** Mejor Individuo, Fitness, Costo *** "+current_token+"\n";                
             }
         }
            
         return poblacionMultilinea;
+    }
+    
+    public String toStringMejorHistorico(){
+        String mejor = "FIT="+mejorHistorico.getFitness();        
+        mejor+= " | COST=" + mejorHistorico.getCosto()+" | "+mejorHistorico.toString();
+        return mejor;         
+    }
+    
+    
+    public String toStringMejorActual(){
+        String mejor = "FIT="+mejorIndividuo.getFitness();        
+        mejor+= " | COST=" + mejorIndividuo.getCosto()+" | "+mejorIndividuo.toString();
+        return mejor;         
     }
     
     public String toStringImprimible(){
@@ -536,5 +579,13 @@ public class Poblacion {
 
     public void setGeneracion(int generacion) {
         this.generacion = generacion;
+    }
+
+    public Cromosoma getMejorHistorico() {
+        return mejorHistorico;
+    }
+
+    public void setMejorHistorico(Cromosoma mejorHistorico) {
+        this.mejorHistorico = mejorHistorico;
     }
 }
