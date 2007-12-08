@@ -214,7 +214,7 @@ public class Poblacion {
 
         for (int i=0; i < this.getTamanho(); i++){
             if (rand.nextInt(99) < this.probMutacion)
-                FuncionesGA.Mutar(getHijos()[i],this.conocimiento);
+                getHijos()[i]=FuncionesGA.Mutar(getHijos()[i],this.conocimiento);
         }
     }
 
@@ -340,6 +340,10 @@ public class Poblacion {
         return this.mejorIndividuo.getFitness();
     }
 
+    public double getMejorCosto(){
+        return this.mejorIndividuo.getCosto();
+    }
+
     public Cromosoma[] getIndividuos() {
         return individuos;
     }
@@ -374,7 +378,7 @@ public class Poblacion {
             PopString +="$"+currentIndividual;
         }        
         
-        return PopString+"$"+this.getMejorIndividuoPos()+","+this.getMejorFitness(); 
+        return PopString+"$"+this.getMejorIndividuoPos()+","+this.getMejorFitness()+","+this.getMejorCosto();
     }
     
     public String toStringMultilinea(String toStringLinea) {
@@ -395,7 +399,7 @@ public class Poblacion {
                 poblacionMultilinea += current;
                 poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n";
             } else {
-                poblacionMultilinea +="*** Mejor Individuo, Fitness *** "+current_token+"\n";
+                poblacionMultilinea +="*** Mejor Individuo, Fitness, Costo *** "+current_token+"\n";
             }
         }
            
@@ -432,13 +436,15 @@ public class Poblacion {
             // no estamos todavía en el último...
             if (tk.hasMoreTokens()) {
                 double currentFitness = individuos[i].getFitness();
+                double currentCosto = individuos[i].getCosto();
 
                 individuoMultiLinea = this.individuos[++i].ImprimirCromo(current_token);
                 String current ="Individuo "+(i+1)+": "+ individuoMultiLinea+"\n";
                 poblacionMultilinea += current;
                 poblacionMultilinea +="-----> Fitness = "+currentFitness+"\n"; 
+                poblacionMultilinea +="-----> Costo = "+currentCosto+"\n"; 
             } else {
-                poblacionMultilinea +="*** Mejor Individuo, Fitness *** "+current_token+"\n";                
+                poblacionMultilinea +="*** Mejor Individuo, Fitness , Costo *** "+current_token+"\n";                
             }
         }
         
