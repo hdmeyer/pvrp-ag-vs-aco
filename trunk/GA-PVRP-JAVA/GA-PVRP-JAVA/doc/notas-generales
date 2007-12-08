@@ -142,39 +142,81 @@ ___________________________________________________________________
   primera mitad de las dos rutas, y la segunda mitad construir con los nodos
   de la ruta complementaria que no se encuentran en la actual. 
   
-  Ri -> [10,3,1,4,5,2] 
-  Rj -> [4,23,3,1,5,6,9,7]
+R1 ->  [10,3,1,4,5,2,8  ]   
+R2 ->  [4,23,3,1,2,5,6,9,7]   
 
 El procedimiento es así:
 
 1. Se elige punto de corte para cada ruta: 
 
-  [10,3,1     |  4,5,2]   
-  [4,23,3,1  |  5,6,9,7]
+R1 ->  [10,3,1,4,   |  5,2,8  ]   
+R2 ->  [4,23,3,1,2  |  5,6,9,7]   
 
 2. Se preprocesan las rutas para establecer el criterio de validez del alelo:
-   - El criterio de validez del alelo es que no se modifique la cantidad de 
-     visitas realizadas en las rutas originales a cada cliente que existe 
-     en las mismas.
+   - El criterio de validez es que los requerimientos de visitas de cada cliente
+     se cumplan con las rutas generadas. Esto es, la ruta no puede albergar 
+     clientes que ya se visitaron la cantidad de veces requeridas. 
+   - Además, se debe asegurar que a un cliente no se le visite dos veces en la
+     misma ruta.
+
+   Para asegurar esta validez, tenemos dos informaciones que mantenemos. Una 
+   información global y una información local. 
+
+   *Información Global
+   ----------------------------------
+   Se trata de la lista de requerimientos de visita de cada cliente que se 
+   por cada Cromosoma nuevo generado. Cada vez que algún cliente 
+   se incluye en alguna ruta del cromosoma correspondiente, se disminuyen sus
+   requerimientos.
+
+   Se implementa por medio de vector de enteros de tantas posiciones como 
+   clientes. Cada elemento i del vector contiene el requerimiento del cliente i
+
+   Ejemplo: Reqs = [4, 5 , 2 , .... 8 ]
+
+   *Información Local 
+   ------------------------------------
+   Con la información global, ya bastaría para asegurar el requerimiento de 
+   visitas. Es decir, realizar el cruce sin más validación que el control de la
+   información global, pero al final de las iteraciones del cruce necesitaríamos
+   un ajuste para incluir a clientes que eventualmente fueron deshechados en el 
+   camino por no cumplir con los requerimientos de uno de los hijos.
+
+   Optamos por una optimización local al algoritmo de cruce que consiste en
+   mantener otra lista local de la cantidad de visitas realizadas a un cliente 
+   entre las dos  rutas a cruzar (como máximo sería dos, o sea, 
+   una vez en cada ruta). 
+
+   Nos aseguramos de que localmente no se visite de más ni de menos de lo que 
+   se visita entre las dos rutas a cruzar. De esta manera, nunca quedarían al 
+   final del cruce clientes que recolocar debido a que localmente se resuelven 
+   las visitas requeridas por cada par de rutas. Además, de esta manera se 
+   asegura una cierta semejanza entre padres e hijos ya que cada ruta incluye 
+   a todos los clientes que de alguna manera se incluían originalmente en los
+   dos padres y no se pierde ninguno ni se mueve a otras rutas de otros camiones.
 
    Para ello, armamos una lista de 1..N donde marcamos la cantidad de visitas de 
    cada nodo entre las dos rutas (máximo será dos). 
 
-   Se debe mantener la lista de visitas requeridas por cada cliente de manera 
-   global durante el proceso y asegurarse de que todos sean visitados lo que 
-   requieren.
+   Del mismo modo que el vector global, la información que contiene este vector 
+   es una cantidad requerida de visitas por cada cliente a nivel local. 
+  
+   Inicializamos el vector a la cantidad de visitas que recibió cada cliente 
+   sumando las visitas entre las dos rutas a cruzarse (máximo será 2). A medida
+   que un cliente ingresa en una nueva ruta de un hijo, se disminuye el valor 
+   de esta entrada para indicar las veces que le restan por visitar. 
 
-   Solo tenemos que asegurar que si vuelven a aparecer en las 2das. mitades se los 
-   cuente adecuadamente.
-
-  [10,3,1   |  4,5,2]   
-  [4,23,3,1  |  5,6,9,7]
+R1 ->  [10,3,1,4,   |  5,2,8  ]   
+R2 ->  [4,23,3,1,2  |  5,6,9,7]   
    
 ---------------------------------------------
-V -> [ 0, 1 , 0 , 1 , 2 , 1 , 1 , 0 , 1 , ...]
-       1  2   3   4   5   6   7   8   9   ...
+V -> [ 2, 2 , 2 , 2 , 2 , 1 , 1 , 1 , 1 , 1 ...  1 ]
+       1  2   3   4   5   6   7   8   9  10 ... 23
 
-3. Copiamos las dos primeras mitades. 
+3. Copiamos las dos primeras mitades, verificando por cada cliente i que
+   V[i] y Reqs[i] sean mayores que cero. Si se cumple la condición, incluimos
+   los clientes en la primera mitad de los hijos generados, H1 y H2. 
+   - Al incluir los clientes se hace V[i]-- y Reqs[i]--.
 
 R1 ->  [10,3,1    |  4,5,2  ]   
 R2 ->  [4,23,3,1  |  5,6,9,7]
@@ -192,6 +234,7 @@ H2 ->  [4,23,3,1  |         ]
      definen el criterio de validez de un alelo. 
      * ci no pertenece a Ri+1/1
      * V[i] > 0. 
+     * Reqss[i] > 0.
 
      Se insertan tantos clientes como la cantidad de los mismos en la segunda mitad 
      de Ri+1
@@ -199,6 +242,20 @@ H2 ->  [4,23,3,1  |         ]
    - Si se cumplen las condiciones y se ingresa al cliente a la ruta Hi+1, se 
      actualiza V de la siguiente manera: 
      * V[i]--;
+     * Reqs[i]--;
+
+Pseudocódigo. 
+   Para cada dia i
+      Para cada camion j
+         R1 <- Padre1[i][j]
+         R2 <- Padre2[i][j]
+
+         H1 <- R1/1 // Ojo, se controla restricciones como se explico más arriba
+         H2 <- R2/2
+
+         Para H1/2, recorrer R1 desde el comienzo e insertar 
+
+------ COMPLETAR PSEUDOCÓDIGO ---------------
 
    En nuestro ejemplo: 
 
@@ -210,17 +267,30 @@ H1 ->  [10,3,1,4    | 2,5,6,9]   corte1=4,c1Size-corte2=4    7
 H2 ->  [4,23,3,1,2  |5,8 ]   corte2=5,c2Size-corte1=3
        --<R2/1>--        
 
+Observación: Nótese que al correr el algoritmo fue excluido el 7. Esto va a 
+suceder siempre que en la primera que un individuo de la primera mitad de uno de 
+los padres, aparezca en la segunda mitad del otro. Entonces, al completar el nuevo
+hijo, se incluirá desde la primera mitad del padre que lo tiene en la primera mitad, 
+y no llegaremos a recorrerlo por completo. Entonces, usando la información local, 
+realizamos al final un ajuste: 
+
+Ajuste de visitas locales.
 Para cada cliente con V[i]>0 hacer
      l <- V[i]
      Si l==2
          metener i en las dos rutas.
      sino si l==1
-         -- Ver donde sobra espacio
+         -- Ver donde sobra espacio, según la idea inicial de espacio (para controlar
+         -- equilibrio de rutas
          espacio1 = (corte1 +c1Size-corte2) - H1.size();
          espacio2 = (corte2 +c2Size-corte1) - H2.size();
 
-         si espacio1>0 entonces meter l en H1
-         sino entonces meter l en H2. 
+         si espacio1>0 y cumple con restricción global en H1
+            entonces meter l en H1
+         sino si espacio2> 0 y cumple con restricción global en H2
+            entonces meter l en H2. 
+         sino
+            meter l donde aún se pueda según restricción global
      fin
 
                     V -> [ 0, 1 , 0 , 1 , 2 , 1 , 1 , 0 , 1 , 0...]
@@ -252,8 +322,8 @@ Paso 10:                  [ 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , ...]
 ----------------------------------------------------------------------------
 HIJOS PRODUCIDOS
 
-H1 ->  [10,3,1,4,5,6,9]
-H2 ->  [4,23,3,1,5,2,7]
+H1 ->  [10,3,1,4,2,5,6,9]
+H2 ->  [4,23,3,1,2,5,8,7 ]
 
 
 
@@ -265,6 +335,10 @@ cargas excesivas a los primeros camiones.
 
 
 4. MUTACIÓN
+
+   A diferencia del cruce, la mutación no presenta complicaciones para asegurar 
+   validez de los alelos. Se realiza básicamente un Cruce de inversión.
+
    La primera idea es aplicar el cruce, pero sobre el mismo Cromosoma. Esto no
    es tan bueno. 
 
@@ -276,6 +350,40 @@ cargas excesivas a los primeros camiones.
      entra y se aumenta al que sale
    - La probabilidad de mutación mencionada en este apartado no es la misma que 
      la probabilidad de mutacion del Cromosoma en sí.
+
+   Idea Final: 
+
+   Se recorren los individuos de la población, y se realiza la mutación o no
+   según una probabilidad de mutación que se establece al inicializar la población
+   
+   Para cada día i
+      mitad <- i+1
+      mezclar rutas de camion i con el de camion i+mitad
+   fin
+
+   Procedimiento de mezcla de rutas (Ruta1, Ruta2)
+      Elegir valor k aleatorio
+      Elegir k pares aleatorios de indices (i,j)
+         donde i es un indice valido en la Ruta1
+               j es un indice valido en la Ruta2
+
+      swap(Ruta1[i],Ruta2[j])
+
+De por si, como solo se realizan intercambios, siempre se mantiene la propiedad
+de validez si el cromosoma original era válido. 
+
+PENALIZACIONES: Si por algún motivo el cruce produce algún cromosoma inválido, 
+                se penaliza la situación aumentandole el costo del cromosoma y 
+                por lo tanto disminuyendo el fitness. 
+                
+                Por cada cliente no visitado, se suma al costo de las rutas, el 
+                costo de ir desde el deposito hasta dicho cliente y volver. 
+    
+                Esto representa el costo en la vida real, si nos olvidamos de un
+                cliente, esto nos requiere y tenemos que ir y volver hasta el 
+                mismo, desde el deposito.
+
+REEMPLAZO:
 
 
 ALGORITMO SIMPLE
