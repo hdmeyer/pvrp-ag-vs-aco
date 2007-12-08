@@ -39,7 +39,7 @@ public class TestSeleccion {
         
         Poblacion p = new Poblacion(prueba, 30, 30);
         
-        p.evaluar(prueba);
+        p.evaluar();
         
         String popString = p.toStringPorCromosoma(p.toString());
         System.out.print(popString);        
@@ -58,6 +58,9 @@ public class TestSeleccion {
         }
         
         
+        double fit =  1/8976.761277124948; 
+        
+        System.out.println("---FITNESS EJEMPLO: "+(1/10000)+"---"+fit);
                 
              
         
