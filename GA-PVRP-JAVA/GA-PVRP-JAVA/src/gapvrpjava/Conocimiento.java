@@ -111,6 +111,26 @@ public class Conocimiento {
         }
 
     }
+    @Override
+    public String toString(){
+        String salida ="";
+        salida += "CANTIDAD DE VEHICULOS ----------->"+this.cantVehiculos+"\n";
+        salida += "CANTIDAD DE CLIENTES ----------->"+this.cantClientes+"\n";
+        salida += "CANTIDAD DE DIAS ----------->"+this.dias+"\n";
+        for (int j = 0; j < this.cantClientes + 1; j++) {
+                salida += "\t" + j + "\n";
+        }
+        
+        for (int i = 0; i < this.cantClientes + 1; i++) {
+            salida += "\t"+i;
+            for (int j = 0; j < this.cantClientes; j++) {
+                salida += "\t"+ this.matrizCostos[i][j];
+            }
+            salida += "\n";
+        }
+        
+        return salida;
+    }
     
     /* ToDo List
        
