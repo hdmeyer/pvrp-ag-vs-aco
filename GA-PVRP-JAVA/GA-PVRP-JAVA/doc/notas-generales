@@ -383,7 +383,15 @@ PENALIZACIONES: Si por algún motivo el cruce produce algún cromosoma inválido,
                 cliente, esto nos requiere y tenemos que ir y volver hasta el 
                 mismo, desde el deposito.
 
+                No existe Pena de muerte
+
 REEMPLAZO:
+
+
+     * El reemplazo definido sigue un modelo híbrido (semiestacionario) ya que
+     * en cada generacio, hay una nueva población, pero se salva al mejor 
+     * individuo de la generación anterior y se reemplaza al peor de la nueva 
+     * generación.
 
 
 ALGORITMO SIMPLE
