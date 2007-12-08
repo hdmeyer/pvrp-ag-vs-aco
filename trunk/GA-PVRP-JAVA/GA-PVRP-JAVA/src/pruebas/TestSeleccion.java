@@ -31,8 +31,6 @@ public class TestSeleccion {
         
      
         prueba.CargarConocimiento(filename);
-        Cromosoma cromo = new Cromosoma(prueba);
-        cromo.construirCromosoma(prueba);
                 
         System.out.println("1. PRUEBA DE INICIALIZAR POBLACION");
         System.out.println("-* Población Inicial Generada =========================================");
@@ -53,17 +51,10 @@ public class TestSeleccion {
             
             System.out.println("Individuo "+(i+1)+": "+cromosoma.toString());
             System.out.println("Fitness "+(i+1)+": "+cromosoma.getFitness());
+            System.out.println("Costo "+(i+1)+": "+cromosoma.getCosto());
             System.out.println("------------------------------------------------------------");
 
-        }
-        
-        
-        double fit =  1/8976.761277124948; 
-        
-        System.out.println("---FITNESS EJEMPLO: "+(1/10000)+"---"+fit);
-                
-             
-        
+        } 
     }
     
 }
