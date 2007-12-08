@@ -17,6 +17,8 @@ import java.util.*;
  * @author Hugo Meyer
  */
 public class FuncionesGA {
+
+    
     /** Creates a new instance of FuncionesGA */
         
     public FuncionesGA() {
@@ -288,15 +290,56 @@ public class FuncionesGA {
     
     public void crucePorPunto() {
     }
-    
-    public static Cromosoma Mutar(Cromosoma c1) {
-        Cromosoma mutado = new Cromosoma();
+    /**
+     * // Operar sobre c1 para mutarlo y colocar el resultado en mutado
+     * @param c1
+     * @param entrada
+     * @return
+     */
+    public static Cromosoma Mutar(Cromosoma c1,Conocimiento entrada) {
         
-        // Operar sobre c1 para mutarlo y colocar el resultado en mutado
-        
-        return mutado;
+        for (int i = 0; i < entrada.dias; i++) {
+            mezclarCamiones(c1.cromosoma[i]);
+        }
+
+        return c1;
+    }
+    public static void mezclarCamiones(ruta[] camiones){
+        int mitad = (int) Math.ceil(camiones.length/2);
+        for (int k = 0; k < camiones.length; k++) {
+            if(k + mitad > camiones.length){
+                mezclarRutas(camiones[k],camiones[0]);
+                break;
+            }else{
+                mezclarRutas(camiones[k],camiones[k+mitad]);
+            }
+        }
     }
     
+    private static void mezclarRutas(ruta ruta1, ruta ruta2) {
+        int cantCruces =0;
+        int vecSize;
+        int temp;
+        int[][] intercambios;
+        if(ruta1.ruta.size() > ruta2.ruta.size()){
+            vecSize = ruta1.ruta.size();
+        }else{
+            vecSize = ruta2.ruta.size();
+        }
+        vecSize = (int)(Math.random()* (vecSize));
+        intercambios = new int [2][vecSize];
+        for (int i = 0; i < intercambios.length; i++) {
+            intercambios[0][i] = (int)(Math.random()* (ruta1.ruta.size()));
+            intercambios[1][i] = (int)(Math.random()* (ruta2.ruta.size()));
+        }
+        
+        for (int i = 0; i < intercambios.length; i++) {
+            temp =(Integer) ruta1.ruta.get(intercambios[0][i]);
+            ruta1.ruta.setElementAt(ruta2.ruta.get(intercambios[1][i]),intercambios[0][i]);
+            ruta2.ruta.setElementAt(temp,intercambios[1][i]);
+        }
+
+    }
     
         
     public static Cromosoma[] seleccionar(Poblacion p) {
