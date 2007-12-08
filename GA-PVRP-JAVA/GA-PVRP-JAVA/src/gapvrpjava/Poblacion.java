@@ -214,7 +214,7 @@ public class Poblacion {
 
         for (int i=0; i < this.getTamanho(); i++){
             if (rand.nextInt(99) < this.probMutacion)
-                FuncionesGA.Mutar(getHijos()[i]);
+                FuncionesGA.Mutar(getHijos()[i],this.conocimiento);
         }
     }
 
