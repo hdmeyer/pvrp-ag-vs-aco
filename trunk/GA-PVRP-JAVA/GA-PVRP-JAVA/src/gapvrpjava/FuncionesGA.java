@@ -307,7 +307,7 @@ public class FuncionesGA {
     public static void mezclarCamiones(ruta[] camiones){
         int mitad = (int) Math.ceil(camiones.length/2);
         for (int k = 0; k < camiones.length; k++) {
-            if(k + mitad > camiones.length){
+            if(k + mitad >= camiones.length){
                 mezclarRutas(camiones[k],camiones[0]);
                 break;
             }else{
@@ -328,15 +328,17 @@ public class FuncionesGA {
         }
         vecSize = (int)(Math.random()* (vecSize));
         intercambios = new int [2][vecSize];
-        for (int i = 0; i < intercambios.length; i++) {
+        for (int i = 0; i < vecSize; i++) {
             intercambios[0][i] = (int)(Math.random()* (ruta1.ruta.size()));
             intercambios[1][i] = (int)(Math.random()* (ruta2.ruta.size()));
         }
         
-        for (int i = 0; i < intercambios.length; i++) {
-            temp =(Integer) ruta1.ruta.get(intercambios[0][i]);
-            ruta1.ruta.setElementAt(ruta2.ruta.get(intercambios[1][i]),intercambios[0][i]);
-            ruta2.ruta.setElementAt(temp,intercambios[1][i]);
+        for (int i = 0; i < vecSize; i++) {
+            if(ruta1.ruta.size() != 0 && ruta2.ruta.size() !=0){
+                temp =(Integer) ruta1.ruta.get(intercambios[0][i]);
+                ruta1.ruta.setElementAt(ruta2.ruta.get(intercambios[1][i]),intercambios[0][i]);
+                ruta2.ruta.setElementAt(temp,intercambios[1][i]);
+            }
         }
 
     }
