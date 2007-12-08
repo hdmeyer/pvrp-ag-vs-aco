@@ -128,36 +128,134 @@ TODO
 
 El cruce es la parte que más nos complicó inicialmente en el trabajo. 
 ___________________________________________________________________
-|[2,3,1,4,5,2,0,0,0] [5,23,3,1,5,6,5,7,0] ..... *
+|[2,3,1,4,5,2] [5,23,3,1,5,6,5,7] ..... *
 |. ...
 |: ...
 
 (los datos son los mismos, pero es para tener una idea nomas)___________________________________________________________________
-|[2,3,1,4,5,2,0,0,0] [5,23,3,1,5,6,5,7,0] .....
+|[2,3,1,4,5,2] [5,23,3,1,5,6,5,7] .....
 |. ... **
 |: ...
 
 
-* se cruza con ** a nivel de cada ruta. El cruce de cada ruta se hace así:
+* se cruza con ** a nivel de cada ruta. La idea básica del cruce es mantener la 
+  primera mitad de las dos rutas, y la segunda mitad construir con los nodos
+  de la ruta complementaria que no se encuentran en la actual. 
   
-  [2,3,1,4,5,2,0,0,0] 
-  
-  [5,23,3,1,5,6,5,7,0]
+  Ri -> [10,3,1,4,5,2] 
+  Rj -> [4,23,3,1,5,6,9,7]
 
-Se elige un punto y se empieza el cruzado construyendo el primer cromosoma 
-copiando la primera mitad de una de las rutas
+El procedimiento es así:
 
-[2,3,1,4,...
+1. Se elige punto de corte para cada ruta: 
 
-A continuación se van colocando los valores de la otra ruta solo si ya no están 
-en la ruta. 
+  [10,3,1     |  4,5,2]   
+  [4,23,3,1  |  5,6,9,7]
 
-A medida que se agrega cada cliente, se verifica/actualiza la estructura de 
-datos auxiliar que tiene la lista de visitas requeridas por cada nodo. 
+2. Se preprocesan las rutas para establecer el criterio de validez del alelo:
+   - El criterio de validez del alelo es que no se modifique la cantidad de 
+     visitas realizadas en las rutas originales a cada cliente que existe 
+     en las mismas.
 
-Se verifica tambien que no se exceda la carga del camión. Si se excede esta 
-carga del camión, se termina la construcción de las rutas para el camión acual
-y se hacen las rutas del camión equivalente del otro padre.
+   Para ello, armamos una lista de 1..N donde marcamos la cantidad de visitas de 
+   cada nodo entre las dos rutas (máximo será dos). 
+
+   Se debe mantener la lista de visitas requeridas por cada cliente de manera 
+   global durante el proceso y asegurarse de que todos sean visitados lo que 
+   requieren.
+
+   Solo tenemos que asegurar que si vuelven a aparecer en las 2das. mitades se los 
+   cuente adecuadamente.
+
+  [10,3,1   |  4,5,2]   
+  [4,23,3,1  |  5,6,9,7]
+   
+---------------------------------------------
+V -> [ 0, 1 , 0 , 1 , 2 , 1 , 1 , 0 , 1 , ...]
+       1  2   3   4   5   6   7   8   9   ...
+
+3. Copiamos las dos primeras mitades. 
+
+R1 ->  [10,3,1    |  4,5,2  ]   
+R2 ->  [4,23,3,1  |  5,6,9,7]
+---------------------------------------------
+H1 ->  [10,3,1     |         ]
+       --<R1/1>--
+H2 ->  [4,23,3,1  |         ]
+       --<R2/1>--
+
+* Denotamos Ri/1 como la primera mitad de Ri. 
+
+4. Completamos las dos segundas mitades de la siguiente manera. 
+   - Recorremos Ri desde el inicio y en cada caso, colocamos el valor del 
+     cliente ci en Hi+1 si y solo si cumple con las siguientes condiciones, que
+     definen el criterio de validez de un alelo. 
+     * ci no pertenece a Ri+1/1
+     * V[i] > 0. 
+
+     Se insertan tantos clientes como la cantidad de los mismos en la segunda mitad 
+     de Ri+1
+
+   - Si se cumplen las condiciones y se ingresa al cliente a la ruta Hi+1, se 
+     actualiza V de la siguiente manera: 
+     * V[i]--;
+
+   En nuestro ejemplo: 
+
+R1 ->  [10,3,1,4,   |  5,2,8  ]   corte1=4,c1Size-corte1=3
+R2 ->  [4,23,3,1,2  |  5,6,9,7]   corte2=5,c2Size-corte2=4
+---------------------------------------------
+H1 ->  [10,3,1,4    | 2,5,6,9]   corte1=4,c1Size-corte2=4    7
+       --<R1/1>--
+H2 ->  [4,23,3,1,2  |5,8 ]   corte2=5,c2Size-corte1=3
+       --<R2/1>--        
+
+Para cada cliente con V[i]>0 hacer
+     l <- V[i]
+     Si l==2
+         metener i en las dos rutas.
+     sino si l==1
+         -- Ver donde sobra espacio
+         espacio1 = (corte1 +c1Size-corte2) - H1.size();
+         espacio2 = (corte2 +c2Size-corte1) - H2.size();
+
+         si espacio1>0 entonces meter l en H1
+         sino entonces meter l en H2. 
+     fin
+
+                    V -> [ 0, 1 , 0 , 1 , 2 , 1 , 1 , 0 , 1 , 0...]
+                           1  2   3   4   5   6   7   8   9  10...
+Paso 1:                  [ 0, 1 , 0 , 0 , 2 , 1 , 1 , 0 , 1 , ...]
+Paso 2, 3, 4: Descartado [ 0, 1 , 0 , 0 , 2 , 1 , 1 , 0 , 1 , ...]
+Paso 5:                  [ 0, 1 , 0 , 0 , 1 , 1 , 1 , 0 , 1 , ...]
+Paso 6:                  [ 0, 1 , 0 , 0 , 1 , 0 , 1 , 0 , 1 , ...]
+Paso 7:                  [ 0, 1 , 0 , 0 , 1 , 0 , 1 , 0 , 0 , ...] 
+----> Obs. Especial
+  La lista de clientes 
+  de la ruta recorrida
+  que no fueron incluidos
+  en la nueva ruta, se 
+  deben almacenar porque 
+  se incluirán en el otro
+  hijo. En este caso, se
+  guarda "7"
+Pasamos a H2
+Paso 8:                  [ 0, 1 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , ...]
+Paso 9:                  [ 0, 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , ...]
+--> A partir de aqui 
+    colocamos los que 
+    faltaron en el 
+    recorrido de la 
+    ruta anterior. 
+Paso 10:                  [ 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , ...]
+
+----------------------------------------------------------------------------
+HIJOS PRODUCIDOS
+
+H1 ->  [10,3,1,4,5,6,9]
+H2 ->  [4,23,3,1,5,2,7]
+
+
 
 Al terminar, se repite el mismo proceso con los demás padres.
 
