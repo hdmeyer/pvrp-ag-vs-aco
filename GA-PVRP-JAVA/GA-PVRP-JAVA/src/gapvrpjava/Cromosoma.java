@@ -130,50 +130,42 @@ public class Cromosoma {
     }
     
     public void fObjetivo(Conocimiento entrada){
-        int ultimoVisitado = 0;
+        
         int penalizacion=0;
-        int actual;
-        int posterior;
         this.setCosto(0);
-        for (int i = 0; i < entrada.dias; i++){
-            for (int j = 0; j < entrada.cantVehiculos; j++){
+        
+        for (int i = 0; i < entrada.dias; i++) {
+            for (int j = 0; j < entrada.cantVehiculos; j++) {
                 /*no nos vamos hasta el cliente mas 1 porque
                  * vamos haciendo cada valor con el sgte para calcular el
                  * costo, entonces cuando llegamos al n-1, tomamos con el valor
                  * de n*/
-                this.cromosoma[i][j].costo = 0;
-                if (cromosoma[i][j].ruta.size() > 0) {
-                    Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
-                    actual = (int) it.next();
-                    while(it.hasNext()){
-
-                        posterior = (int) it.next();
-                        this.cromosoma[i][j].costo += entrada.matrizCostos[actual][posterior];
-                        actual = posterior;
-
-                        ultimoVisitado = posterior;
-
-                    }
-
-                    /*Sumamos las cantidades para ir de 0 al primero y para ir del ultimo
-                     * al deposito de vuelta...*/
-                    this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.firstElement()];
-                    this.cromosoma[i][j].costo += entrada.matrizCostos[0][(Integer)cromosoma[i][j].ruta.lastElement()];
-                    this.setCosto(this.getCosto() + this.cromosoma[i][j].costo);
-                }
+                
+                double costoij = cromosoma[i][j].calcularCosto(entrada.matrizCostos);
+                
+                this.costo += costoij;                
             }
         }
+        
+        
         penalizacion = 0; 
         /** AQUI PENALIZAMOS SI ES QUE NO SE VISITO A ALGUIEN*/
-        for (int i = 0; i < this.cantClientes+1; i++) {
+        /*for (int i = 0; i < this.cantClientes+1; i++) {
             if(this.listaVisitasCromo[1][i] > 0){
                 penalizacion += entrada.matrizCostos[0][i]*this.listaVisitasCromo[1][i];
             }
+        }*/
+        
+        if (this.isValido(entrada)) {
+            double fit = (double) (1/this.getCosto());
+            this.setFitness(fit);            
+        } else {
+            // PENA DE MUERTE
+            this.setCosto(-1);
+            this.fitness = -1;
         }
-
-        this.setCosto(this.getCosto() + penalizacion);
-        double fit = (double) (1/this.getCosto());
-        this.setFitness(fit);
+        
+        
         
     }
     

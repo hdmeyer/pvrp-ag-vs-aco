@@ -254,12 +254,12 @@ public class Poblacion {
         
         // Revisar esta estrategia reemplazo
         // AHORA REEMPLAZAMOS TODO        
-        Cromosoma currentSun;
+        Cromosoma hijoActual;
                
         for (int i = 0; i<this.getTamanho(); i++) {
-            currentSun = this.getHijo(i);        
-            if (currentSun.isValido(this.conocimiento)) {
-                individuos[i] = currentSun;        
+            hijoActual = this.getHijo(i);        
+            if (hijoActual.isValido(this.conocimiento)) {
+                individuos[i] = hijoActual;        
             }
         }
         
