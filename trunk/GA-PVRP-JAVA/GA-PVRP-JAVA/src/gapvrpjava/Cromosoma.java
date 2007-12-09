@@ -217,7 +217,7 @@ public class Cromosoma {
         }
     }
 
-    private void copiar(int[][] listaVisitas) {
+    public void copiar(int[][] listaVisitas) {
         for (int i = 0; i < this.cantClientes+1; i++) {
             this.listaVisitasCromo[1][i] = listaVisitas[1][i];
             this.listaVisitasCromo[0][i] = 0;
