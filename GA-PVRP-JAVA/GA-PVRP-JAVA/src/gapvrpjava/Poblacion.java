@@ -260,7 +260,7 @@ public class Poblacion {
             currentSun = this.getHijo(i);        
             if (currentSun.isValido(this.conocimiento)) {
                 individuos[i] = currentSun;        
-                }
+            }
         }
         
     }
@@ -354,11 +354,11 @@ public class Poblacion {
         // verificamos el mejor historico de todas las generaciones
         if (this.mejorHistorico == null) {
             this.mejorHistorico  = this.mejorIndividuo;
-            this.mejorGeneracion = this.getGeneracion();
+            this.setMejorGeneracion(this.getGeneracion());
             newBestG = true;
         } else if (mejorIndividuo.getFitness() > mejorHistorico.getFitness()) {
             this.mejorHistorico = this.mejorIndividuo;
-            this.mejorGeneracion = this.getGeneracion();
+            this.setMejorGeneracion(this.getGeneracion());
             newBestG = true;
         }  
             
@@ -614,5 +614,13 @@ public class Poblacion {
 
     public void setInvalidos(int[] invalidos) {
         this.invalidos = invalidos;
+    }
+
+    public int getMejorGeneracion() {
+        return mejorGeneracion;
+    }
+
+    public void setMejorGeneracion(int mejorGeneracion) {
+        this.mejorGeneracion = mejorGeneracion;
     }
 }
