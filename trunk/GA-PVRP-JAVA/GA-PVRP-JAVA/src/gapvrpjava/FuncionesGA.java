@@ -368,6 +368,10 @@ public class FuncionesGA {
                 double fitness1 = p.getFitness(ind1);
                 double fitness2 = p.getFitness(ind2);
 
+                if(fitness1<0 && fitness2<0) {
+                    i--;
+                    break;
+                }
                 // Competencia
                 if (fitness1>=fitness2) { // Gan? individuo 1
                         Mejores[i]=p.getIndividuo(ind1);
