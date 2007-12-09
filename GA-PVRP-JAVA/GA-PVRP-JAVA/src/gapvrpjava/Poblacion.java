@@ -69,6 +69,7 @@ public class Poblacion {
     
     private int iterador = 0;
     private int mejorGeneracion;
+    private int[] invalidos;
     
     /** 
      * 
@@ -82,6 +83,7 @@ public class Poblacion {
         this.hijos = new Cromosoma[this.tamanho];
         this.probMutacion = 20; 
         this.generacion = 0;
+        this.invalidos = new int[this.tamanho];
     }
     
     /**
@@ -102,6 +104,7 @@ public class Poblacion {
         this.fitness = new double[tamanhoPop];
         this.probMutacion = 20;
         this.generacion = 0;
+        this.invalidos = new int[this.tamanho];
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop();
@@ -124,6 +127,7 @@ public class Poblacion {
             this.probMutacion = probMutacion; 
         }
         
+        this.invalidos = new int[this.tamanho];
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop();
@@ -254,7 +258,9 @@ public class Poblacion {
                
         for (int i = 0; i<this.getTamanho(); i++) {
             currentSun = this.getHijo(i);        
-            individuos[i] = currentSun;        
+            if (currentSun.isValido(this.conocimiento)) {
+                individuos[i] = currentSun;        
+                }
         }
         
     }
@@ -274,6 +280,19 @@ public class Poblacion {
             return newBestG;
     }
 
+    public int hayInvalidos() {
+        int invalids = 0;
+        
+        for (int i = 0; i < individuos.length; i++) {
+            Cromosoma cromosoma = individuos[i];
+            if (!cromosoma.isValido(this.conocimiento)){
+                this.getInvalidos()[i]++;
+                invalids++;
+            }
+        }
+        return invalids;
+    }
+    
     /**
      * Obtiene el fitness de un individuo
      * @param ind indice de un individuo
@@ -587,5 +606,13 @@ public class Poblacion {
 
     public void setMejorHistorico(Cromosoma mejorHistorico) {
         this.mejorHistorico = mejorHistorico;
+    }
+
+    public int[] getInvalidos() {
+        return invalidos;
+    }
+
+    public void setInvalidos(int[] invalidos) {
+        this.invalidos = invalidos;
     }
 }
