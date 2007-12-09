@@ -39,7 +39,7 @@ public class Cromosoma {
         this.cromosoma = new ruta [entrada.dias][entrada.cantVehiculos];
         for (int i = 0; i < entrada.dias; i++) {
             for (int j = 0; j < entrada.cantVehiculos; j++) {
-                this.cromosoma[i][j]= new ruta(entrada);
+                this.cromosoma[i][j] = new ruta(entrada);
             }
         }
 
@@ -55,6 +55,7 @@ public class Cromosoma {
         this.vehiculos = new int[entrada.cantVehiculos];
         this.capacidad = entrada.capacidad;
     }
+    
     public void construirCromosoma(Conocimiento entrada){
         int contador = 0;
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
@@ -117,9 +118,9 @@ public class Cromosoma {
         return this.getFitness();
     }
     
-    public boolean isValido() {
+    public boolean isValido(Conocimiento entrada) {
         
-        for (int i = 0; i < listaVisitasCromo.length; i++) {
+        for (int i = 1; i < entrada.cantClientes+1; i++) {
             if (this.listaVisitasCromo[1][i] > 0) {
                 return false;
             }
@@ -243,6 +244,16 @@ public class Cromosoma {
 
     public void setCosto(double costo) {
         this.costo = costo;
+    }
+    
+    public int getRutaSize(int dia, int camion) {
+        int resultado = this.cromosoma[dia][camion].ruta.size();
+        return resultado; 
+    }
+
+    public ruta getRuta(int dia, int camion) {
+        ruta resultado = this.cromosoma[dia][camion];
+        return resultado; 
     }
                 
 }

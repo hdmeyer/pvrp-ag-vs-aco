@@ -16,8 +16,7 @@ public class ruta {
     double costo;
     public void getCosto(){};
     public ruta(Conocimiento entrada){
-        ruta = new Vector(entrada.cantClientes);
-        
+        ruta = new Vector(entrada.cantClientes);        
     }
     
 

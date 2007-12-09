@@ -37,7 +37,8 @@ public class TestCruce {
         System.out.println("1. PRUEBA DE OPERCIÓN DE CRUCE");
         System.out.println("-* Población Inicial Generada =========================================");
         
-        Poblacion p = new Poblacion(prueba, 2, 30);
+        Poblacion p = new Poblacion(prueba, 10, 30);
+        
         p.evaluar();
         
         String popString = p.toStringImprimible();        
@@ -45,25 +46,33 @@ public class TestCruce {
         
         
         // SELECCIÓN BÁSICA...
-        Cromosoma[] selectos = p.getIndividuos();
-        p.cruce(selectos);
-        p.reemplazar();
-        p.evaluar();
         
         int i = 0;
-/*        while (!p.getIndividuo(0).isValido() || !p.getIndividuo(1).isValido()) {
-            selectos = p.getIndividuos();
-            p.cruce(selectos);
-            p.reemplazar();
-            p.evaluar(prueba);            
+        while (i<=10) {
             i++;
-        }*/
+            Cromosoma[] selectos = p.getIndividuos();
+            p.cruce(selectos);
+            System.out.println("Iteración "+i+": Invalidos -> "+p.hayInvalidos());
+            //p.reemplazar();
+            //p.evaluar();
+            //System.out.println("Iteración "+i+": Invalidos -> "+p.hayInvalidos());
+            
+        
+            popString = p.toStringImprimible();        
+            System.out.println(popString);
+            System.out.print("INVALIDOS: --> ");
+            
+            for (int j = 0; j < p.getInvalidos().length; j++) {
+                
+                System.out.print(" - "+p.getInvalidos()[j]+" - ");
+
+                
+            }
+
+        }
         
         System.out.println("-* ("+i+") vueltas Población Cruzada  =========================================");
                 
-        popString = p.toStringImprimible();
-        
-        System.out.print(popString);        
         
     }
     

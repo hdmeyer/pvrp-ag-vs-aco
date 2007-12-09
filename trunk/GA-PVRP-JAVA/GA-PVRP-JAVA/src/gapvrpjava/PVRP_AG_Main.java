@@ -12,6 +12,9 @@ import java.io.IOException;
  * @author Cristhian Parra
  */
 public class PVRP_AG_Main {
+    private static int CANT_GENERACIONES = 300;
+    private static int PROB_MUTACION = 40;
+    private static int TAM_POBLACION = 30;
 
     /**
      * @param args the command line arguments
@@ -49,7 +52,7 @@ public class PVRP_AG_Main {
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("II. INICALIZANDO POBLACIÓN \n");
         
-        poblacion = new Poblacion(conocimiento,30,40);
+        poblacion = new Poblacion(conocimiento,TAM_POBLACION,PROB_MUTACION);
         poblacion.evaluar();
         
         System.out.println("  2.1. Población Inicial: \n");     
@@ -61,14 +64,15 @@ public class PVRP_AG_Main {
         System.out.println("III. GENERACIONES \n");
         
                 
-        while (poblacion.getGeneracion() <=300) {
+        while (poblacion.getGeneracion() <=CANT_GENERACIONES) {
             String generacion = "--> POBGEN ["+poblacion.getGeneracion()+"]::";
             
             // iteraciones del algoritmo genetico
             Cromosoma [] selectos = poblacion.seleccion();
             poblacion.cruce(selectos);
+            
             //poblacion.setHijos(poblacion.getIndividuos());
-            poblacion.mutar();
+            //poblacion.mutar();
             poblacion.reemplazar();
             boolean newBestGlobal = poblacion.evaluar();
             
@@ -85,7 +89,7 @@ public class PVRP_AG_Main {
         System.out.println("IV. FIN DEL ALGORITMO \n");
         System.out.println("Mejor Solución Global -> "+poblacion.toStringMejorHistorico());
         System.out.println("Generación de la Mejor Solución Global -> ");
-        System.out.println(" Es la mejor solución válida? "+poblacion.getMejorHistorico().isValido());
+        System.out.println(" Es la mejor solución válida? "+poblacion.getMejorHistorico().isValido(conocimiento));
         System.out.println("-------------------------------------------------------------------------");
         
     }
