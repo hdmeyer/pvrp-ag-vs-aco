@@ -141,6 +141,7 @@ public class Cromosoma {
                  * vamos haciendo cada valor con el sgte para calcular el
                  * costo, entonces cuando llegamos al n-1, tomamos con el valor
                  * de n*/
+                this.cromosoma[i][j].costo = 0;
                 if (cromosoma[i][j].ruta.size() > 0) {
                     Iterator<Integer> it = cromosoma[i][j].ruta.iterator();
                     actual = (int) it.next();
@@ -162,6 +163,7 @@ public class Cromosoma {
                 }
             }
         }
+        penalizacion = 0; 
         /** AQUI PENALIZAMOS SI ES QUE NO SE VISITO A ALGUIEN*/
         for (int i = 0; i < this.cantClientes+1; i++) {
             if(this.listaVisitasCromo[1][i] > 0){

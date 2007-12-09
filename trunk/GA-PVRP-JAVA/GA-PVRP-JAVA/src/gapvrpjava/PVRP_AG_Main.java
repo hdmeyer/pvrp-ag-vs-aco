@@ -72,15 +72,20 @@ public class PVRP_AG_Main {
             poblacion.cruce(selectos);
             
             //poblacion.setHijos(poblacion.getIndividuos());
-            //poblacion.mutar();
+            poblacion.mutar();
             poblacion.reemplazar();
             boolean newBestGlobal = poblacion.evaluar();
             
+            System.out.println(" Inválidos en la Población -> "+poblacion.hayInvalidos());
             System.out.println(generacion+"BEST Local  -> "+poblacion.toStringMejorActual());
             System.out.println(generacion+"BEST Global -> "+poblacion.toStringMejorHistorico());
             if (newBestGlobal) {
                 System.out.println(generacion+"NUEVO BEST Global!!!!");
             }
+
+            System.out.println(generacion+"POBLACIÓN GENERACIÓN: \n");
+            String ultimo = poblacion.toStringImprimible();
+            System.out.println(generacion+ultimo);
             System.out.println(generacion+"END ----------------------------------------------------------->");
         }
         
@@ -88,9 +93,16 @@ public class PVRP_AG_Main {
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("IV. FIN DEL ALGORITMO \n");
         System.out.println("Mejor Solución Global -> "+poblacion.toStringMejorHistorico());
-        System.out.println("Generación de la Mejor Solución Global -> ");
+        System.out.println("Generación de la Mejor Solución Global -> " + poblacion.getMejorGeneracion());
         System.out.println(" Es la mejor solución válida? "+poblacion.getMejorHistorico().isValido(conocimiento));
         System.out.println("-------------------------------------------------------------------------");
+        
+        System.out.println("-------------------------------------------------------------------------");
+        System.out.println("ÚLTIMA GENERACIÓN: \n");
+        String ultimo = poblacion.toStringImprimible();
+        System.out.println(ultimo);
+        System.out.println("-------------------------------------------------------------------------");
+        
         
     }
 
