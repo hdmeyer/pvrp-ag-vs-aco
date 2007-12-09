@@ -81,6 +81,8 @@ public class TestMutacion {
         System.out.println(prueba.toString());
         System.out.println(prueba.toStringMatrizCostos());
         
+        prueba.LeerSolucion("C:p26.res");
+        System.out.println(prueba.toStringMejorSolucion());
         
         
     }
