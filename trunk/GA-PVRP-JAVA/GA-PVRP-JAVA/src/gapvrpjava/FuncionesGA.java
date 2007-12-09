@@ -18,6 +18,40 @@ import java.util.*;
  */
 public class FuncionesGA {
 
+    private static boolean meterSiEspacio(ruta RutaH, int[] visitasGlobales, int[] visitasLocales, int espacioLibre,int cliente) {
+        if (espacioLibre > 0) {
+            
+            if(visitasGlobales[cliente]>0) {
+                RutaH.ruta.add(cliente);
+                visitasGlobales[cliente]--;
+                visitasLocales[cliente]--;
+                return true;
+            } else {
+                return false;
+            }
+            
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean meterSiNoContenido(ruta RutaH, int[] visitasGlobales, int[] visitasLocales,int cliente) {
+        
+        if(!RutaH.ruta.contains(cliente)) {
+            if(visitasGlobales[cliente]>0) {
+                RutaH.ruta.add(cliente);
+                visitasGlobales[cliente]--;
+                visitasLocales[cliente]--;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        
+    }
+
     
     /** Creates a new instance of FuncionesGA */
         
@@ -289,14 +323,7 @@ public class FuncionesGA {
         return cruceResult;
     }
     
-    public void crucePorPunto() {
-    }
-    /**
-     * // Operar sobre c1 para mutarlo y colocar el resultado en mutado
-     * @param c1
-     * @param entrada
-     * @return
-     */
+    
     public static Cromosoma Mutar(Cromosoma c1,Conocimiento entrada) {
         
         for (int i = 0; i < entrada.dias; i++) {
@@ -476,9 +503,10 @@ public class FuncionesGA {
                 } else if (c1Size == 0 || c2Size == 0) {
                     
                     if (c1Size > 0) {
-                        corte1 = (int) Math.floor(c1Size/2)+1;
+                        double auxsize = (double) (c1Size/2); 
+                        corte1 = (int) Math.ceil(auxsize);
 
-                        List<Integer> v1 = c1.cromosoma[i][j].ruta.subList(0, corte1);
+                        List<Integer> v1 = Ruta1.ruta.subList(0, corte1);
                         Iterator<Integer> itSublist = v1.iterator();
                         contador = 0; 
                         
@@ -486,7 +514,7 @@ public class FuncionesGA {
                             valor = (int) itSublist.next();
 
                             if (cruzado1.listaVisitasCromo[1][valor] > 0) {
-                                cruzado1.cromosoma[i][j].ruta.add(valor);
+                                RutaH1.ruta.add(valor);
 
                                 // decrementamos de las visitas globales
                                 cruzado1.listaVisitasCromo[1][valor]--;
@@ -589,76 +617,35 @@ public class FuncionesGA {
         // calculamos espacios no ocupados en cada hijo
         int espacioLibre1 = h1Size - RutaH1.ruta.size();
         int espacioLibre2 = h2Size - RutaH2.ruta.size();
+
         
         for (int cliente = 1; cliente < visitasLocales.length; cliente++) {
             int cuentaVisitas = visitasLocales[cliente];
                         
             for (int i = 0; i < cuentaVisitas; i++) {
-                // calculamos la cuenta de visitas gobales para cliente en cada
-                // cromosoma
-                int cuentaGlobal1 = visitasGlobales1[cliente];
-                int cuentaGlobal2 = visitasGlobales2[cliente];
 
-                // verificamos si alguna de las rutas contiene o no al cliente
-                boolean contenidoEnH1 = RutaH1.ruta.contains(cliente);
-                boolean contenidoEnH2 = RutaH2.ruta.contains(cliente);
+                boolean insertado = meterSiEspacio(RutaH1, visitasGlobales1, 
+                                                    visitasLocales,espacioLibre1,cliente);
 
-                if (espacioLibre1 > 0 ) { // siel hijo 1 todavia tiene espacio libre
-                    
-                    if (contenidoEnH1) { // si ya esta en el hijo 1, hay que intentar meter en el otro
-                        
-                        if (cuentaGlobal2 > 0) { // si todavia se puede meter en 2, metemos,
-                                                 // sino se deshecha totalmente
-                                                 // hay un caso en el que esto va a pasar
-                            RutaH2.ruta.add(cliente);
-                            visitasGlobales2[cliente]--;
-                            visitasLocales[cliente]--;
-                            if (espacioLibre2 > 0) {
-                                espacioLibre2--;
-                            }
-                            
-                        }
-                    } else {
-                        
-                        if (cuentaGlobal1 > 0) { // si todavia se puede meter en 2, metemos,
-                                                 // sino se deshecha totalmente
-                                                 // hay un caso en el que esto va a pasar
-                            RutaH1.ruta.add(cliente);
-                            visitasGlobales1[cliente]--;
-                            visitasLocales[cliente]--;
-                            espacioLibre1--;
-                            
-                        }
-                    } 
-                    
-                } else if (espacioLibre2 > 0 ) {
-                    
-                    if (contenidoEnH2) { // si ya esta en el hijo 1, hay que intentar meter en el otro
-                        
-                        if (cuentaGlobal1 > 0) { // si todavia se puede meter en 2, metemos,
-                                                 // sino se deshecha totalmente
-                                                 // hay un caso en el que esto va a pasar
-                            RutaH1.ruta.add(cliente);
-                            visitasGlobales1[cliente]--;
-                            visitasLocales[cliente]--;
-                            if (espacioLibre1 > 0) {
-                                espacioLibre1--;
-                            }
-                            
-                        }
-                    } else {
-                        
-                        if (cuentaGlobal2 > 0) { // si todavia se puede meter en 2, metemos,
-                                                 // sino se deshecha totalmente
-                                                 // hay un caso en el que esto va a pasar
-                                                 // estos se penalizan a nivel de cromosoma
-                            RutaH2.ruta.add(cliente);
-                            visitasGlobales2[cliente]--;
-                            visitasLocales[cliente]--;
-                            espacioLibre2--;               
-                        }
-                    }
-                }               
+                if(!insertado) {
+                    insertado = meterSiEspacio(RutaH2, visitasGlobales2, 
+                                                    visitasLocales,espacioLibre1,cliente);
+                } else {
+                    espacioLibre1--;
+                }
+
+                if(!insertado) {
+                    insertado = meterSiNoContenido(RutaH1,visitasGlobales1,
+                                                    visitasLocales,cliente);
+                } else {
+                    espacioLibre2--;
+                }
+
+                if(!insertado) {
+                    insertado = meterSiNoContenido(RutaH2,visitasGlobales2,
+                                                    visitasLocales,cliente);
+                } 
+
             }
         }
     }
