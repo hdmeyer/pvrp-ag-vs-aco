@@ -281,7 +281,8 @@ public class FuncionesGA {
                  */
             }
         }
-        
+        evaluarListaVisitasCromo(cruzado1, entrada);
+        evaluarListaVisitasCromo(cruzado2,entrada);
         cruceResult[0] = cruzado1;
         cruceResult[1] = cruzado2;
         
@@ -377,6 +378,17 @@ public class FuncionesGA {
         }
 
         return Mejores;
+    }
+    public static void evaluarListaVisitasCromo(Cromosoma c1,Conocimiento entrada){
+        c1.copiar(entrada.listaVisitas);
+        for (int i = 0; i < entrada.dias; i++) {
+            for (int j = 1; j < entrada.cantVehiculos; j++) {
+                Iterator<Integer> it = c1.cromosoma[i][j].ruta.iterator();
+                while(it.hasNext()){
+                    c1.listaVisitasCromo[1][it.next()]--;
+                }
+            }
+        }
     }
     
 //    public static boolean revisarRepetido(Cromosoma cromo, int nro, int i, int j){
