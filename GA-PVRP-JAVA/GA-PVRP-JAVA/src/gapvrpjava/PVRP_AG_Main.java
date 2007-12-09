@@ -12,9 +12,9 @@ import java.io.IOException;
  * @author Cristhian Parra
  */
 public class PVRP_AG_Main {
-    private static int CANT_GENERACIONES = 300;
-    private static int PROB_MUTACION = 40;
-    private static int TAM_POBLACION = 30;
+    private static int CANT_GENERACIONES = 10000;
+    private static int PROB_MUTACION = 50;
+    private static int TAM_POBLACION = 40;
 
     /**
      * @param args the command line arguments
@@ -83,9 +83,9 @@ public class PVRP_AG_Main {
                 System.out.println(generacion+"NUEVO BEST Global!!!!");
             }
 
-            System.out.println(generacion+"POBLACIÓN GENERACIÓN: \n");
-            String ultimo = poblacion.toStringImprimible();
-            System.out.println(generacion+ultimo);
+            //System.out.println(generacion+"POBLACIÓN GENERACIÓN: \n");
+            //String ultimo = poblacion.toStringImprimible();
+            //System.out.println(generacion+ultimo);
             System.out.println(generacion+"END ----------------------------------------------------------->");
         }
         
