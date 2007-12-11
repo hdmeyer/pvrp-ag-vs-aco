@@ -343,10 +343,10 @@ public class Poblacion {
         
         // reemplazamos el peor, por el mejor anterior
         // la idea es preservar los mejores locales de iteración a iteración
-    /*    if (this.mejorIndividuo != null) {
+        if (this.mejorIndividuo != null) {
             individuos[peorPos] = this.mejorIndividuo;
         }
-      */  
+        
         // en mejor individuo, ponemos el nuevo mejor local
         this.mejorIndividuo = mejor;
         this.mejorIndividuoPos = mejorPos;
@@ -361,7 +361,7 @@ public class Poblacion {
             this.setMejorGeneracion(this.getGeneracion());
             newBestG = true;
         }  
-            
+        
         return newBestG;
     }
 

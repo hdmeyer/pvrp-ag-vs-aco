@@ -54,6 +54,23 @@ public class FuncionesGA {
         
     }
 
+    private static void splitSeco(Vector RutaGuia, Vector RutaDestino) {
+
+        Random rand = new Random();
+        
+        Iterator<Integer> it = RutaGuia.iterator();
+       
+        while(it.hasNext()) {
+            int cliente = (Integer) it.next();            
+            boolean mover = rand.nextBoolean();
+            
+            if(mover) {
+                RutaDestino.add(cliente);
+                it.remove();
+            }
+        }        
+    }
+
     private static void splitRuta(ruta Ruta, ruta RutaH1, ruta RutaH2, int[] visitasGlobales1,int[] visitasGlobales2) {
         
         Iterator<Integer> itSublist = Ruta.ruta.iterator();
@@ -72,7 +89,7 @@ public class FuncionesGA {
 
                 // decrementamos de las visitas globales
                 refVisitas1[cliente]--;
-            } else {
+            } else if (!ref2.ruta.contains(cliente)){
                 ref2.ruta.add(cliente);
 
                 // decrementamos de las visitas globales
@@ -89,6 +106,25 @@ public class FuncionesGA {
             ref2 = aux;
             refVisitas2 = visitasaux;            
         }
+    }
+
+    private static void trySwapRouteClients(Vector RutaGuia, Vector RutaDestino, int indiceGuia, int indiceDestino) {
+        int clienteGuia = (Integer) RutaGuia.elementAt(indiceGuia);
+        int clienteDestino = (Integer) RutaDestino.elementAt(indiceDestino);
+        
+        // el clienteDestino ya esta en la RutaGuia
+        boolean contenidoEnGuia = RutaGuia.contains(clienteDestino);
+        
+        // el clienteGuia ya esta en la RutaDestino
+        boolean contenidoEnDestino = RutaDestino.contains(clienteGuia);
+        
+        // si ninguno de los clientes a intercambiar, están en la ruta complementaria
+        // realizar el intercambio.
+        if (!contenidoEnGuia && !contenidoEnDestino) {
+            RutaGuia.setElementAt(clienteDestino, indiceGuia);
+            RutaDestino.setElementAt(clienteGuia, indiceDestino);
+        }       
+        
     }
 
     
@@ -341,12 +377,12 @@ public class FuncionesGA {
                 }
                 /*ACTUALIZAMOS LA CANTIDAD DE VECINOS*/
                 /*
-                Iterator<Integer> it1 = cruzado1.cromosoma[i][j].ruta.iterator();
+                Iterator<Integer> it1 = cruzado1.cromosoma[indiceGuia][j].ruta.iterator();
                 while (it1.hasNext()) {
                     cliente = (int) it1.next();
                     cruzado1.listaVisitasCromo[1][cliente]--;
                 }
-                Iterator<Integer> it2 = cruzado2.cromosoma[i][j].ruta.iterator();
+                Iterator<Integer> it2 = cruzado2.cromosoma[indiceGuia][j].ruta.iterator();
                 while (it2.hasNext()) {
                     cliente = (int) it2.next();
                     cruzado2.listaVisitasCromo[1][cliente]--;
@@ -371,41 +407,71 @@ public class FuncionesGA {
 
         return c1;
     }
+    
     public static void mezclarCamiones(ruta[] camiones){
-        int mitad = (int) Math.ceil(camiones.length/2);
+        
+        int cantCamiones = camiones.length;
+        
         for (int k = 0; k < camiones.length; k++) {
-            if(k + mitad >= camiones.length){
-                mezclarRutas(camiones[k],camiones[0]);
-                break;
-            }else{
-                mezclarRutas(camiones[k],camiones[k+mitad]);
-            }
+            
+            int ind1 = k;
+            int ind2 = (k+1)%cantCamiones;
+            
+            // rutas a mezclar
+            ruta Ruta1 = camiones[ind1];
+            ruta Ruta2 = camiones[ind2];
+            
+            mezclarRutas(Ruta1,Ruta2);   
         }
     }
     
     private static void mezclarRutas(ruta ruta1, ruta ruta2) {
-        int cantCruces =0;
+        
         int vecSize;
-        int temp;
-        int[][] intercambios;
+        int destinoSize;
+        Random randBoolean = new Random();
+        Random randIndice = new Random();
+        
+        Vector RutaGuia;
+        Vector RutaDestino;
+	
+        // elegimos la ruta más larga
         if(ruta1.ruta.size() > ruta2.ruta.size()){
             vecSize = ruta1.ruta.size();
+            destinoSize = ruta2.ruta.size();
+            
+            RutaGuia = ruta1.ruta;
+            RutaDestino = ruta2.ruta;
         }else{
             vecSize = ruta2.ruta.size();
-        }
-        vecSize = (int)(Math.random()* (vecSize));
-        intercambios = new int [2][vecSize];
-        for (int i = 0; i < vecSize; i++) {
-            intercambios[0][i] = (int)(Math.random()* (ruta1.ruta.size()));
-            intercambios[1][i] = (int)(Math.random()* (ruta2.ruta.size()));
+            destinoSize = ruta1.ruta.size();
+            
+            RutaGuia = ruta2.ruta;
+            RutaDestino = ruta1.ruta;
         }
         
-        for (int i = 0; i < vecSize; i++) {
-            if(ruta1.ruta.size() != 0 && ruta2.ruta.size() !=0){
-                temp =(Integer) ruta1.ruta.get(intercambios[0][i]);
-                ruta1.ruta.setElementAt(ruta2.ruta.get(intercambios[1][i]),intercambios[0][i]);
-                ruta2.ruta.setElementAt(temp,intercambios[1][i]);
+        
+        if (vecSize > 0 && destinoSize > 0) {
+            // recorro la ruta más larga y en cada paso, decido si hacer el swap o
+            // o no aletoriamente
+
+            for (int i = 0; i < vecSize; i++) {
+
+                boolean intercambiar = randBoolean.nextBoolean();
+                // cliente de la rutaGuia que pasara a la otra ruta si se produce el intercambio
+                
+                // aleatoriamente se intercambian algunos y otros no
+                if (intercambiar) {
+                    int indiceDestino = randIndice.nextInt(destinoSize);
+
+                    // tratar de realizar el cambio (el cambio puede fallar si se duplican
+                    // los cliente en una ruta
+                    trySwapRouteClients(RutaGuia,RutaDestino,i,indiceDestino);
+                }
             }
+        // si una de las rutas es vacía, debemos hacer un splitSeco seco
+        } else {            
+            splitSeco(RutaGuia,RutaDestino);
         }
 
     }
@@ -549,12 +615,12 @@ public class FuncionesGA {
                 }
                 /*ACTUALIZAMOS LA CANTIDAD DE VECINOS*/
                 /*
-                Iterator<Integer> it1 = cruzado1.cromosoma[i][j].ruta.iterator();
+                Iterator<Integer> it1 = cruzado1.cromosoma[indiceGuia][j].ruta.iterator();
                 while (it1.hasNext()) {
                     cliente = (int) it1.next();
                     cruzado1.listaVisitasCromo[1][cliente]--;
                 }
-                Iterator<Integer> it = cruzado2.cromosoma[i][j].ruta.iterator();
+                Iterator<Integer> it = cruzado2.cromosoma[indiceGuia][j].ruta.iterator();
                 while (it.hasNext()) {
                     cliente = (int) it.next();
                     cruzado2.listaVisitasCromo[1][cliente]--;
@@ -700,10 +766,10 @@ public class FuncionesGA {
         }
     }
     
-//    public static boolean revisarRepetido(Cromosoma cromo, int nro, int i, int j){
+//    public static boolean revisarRepetido(Cromosoma cromo, int nro, int indiceGuia, int j){
 //        
 //        for (int l = 1; l < cromo.cantClientes+1; l++) {
-//            if(cromo.cromosoma[i][j].ruta[l] == nro){
+//            if(cromo.cromosoma[indiceGuia][j].ruta[l] == nro){
 //                return true;
 //            }
 //        }
