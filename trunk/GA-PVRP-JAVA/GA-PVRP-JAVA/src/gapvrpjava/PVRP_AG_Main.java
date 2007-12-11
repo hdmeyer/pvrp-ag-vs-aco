@@ -76,6 +76,8 @@ public class PVRP_AG_Main {
             poblacion.reemplazar();
             boolean newBestGlobal = poblacion.evaluar();
             
+            
+            
             System.out.println(" Inválidos en la Población -> "+poblacion.hayInvalidos());
             System.out.println(generacion+"BEST Local  -> "+poblacion.toStringMejorActual());
             System.out.println(generacion+"BEST Global -> "+poblacion.toStringMejorHistorico());
