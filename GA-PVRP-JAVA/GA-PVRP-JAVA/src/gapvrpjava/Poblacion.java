@@ -84,6 +84,8 @@ public class Poblacion {
         this.probMutacion = 20; 
         this.generacion = 0;
         this.invalidos = new int[this.tamanho];
+        this.mejorHistorico = null;
+        this.mejorIndividuo = null;
     }
     
     /**
@@ -105,6 +107,8 @@ public class Poblacion {
         this.probMutacion = 20;
         this.generacion = 0;
         this.invalidos = new int[this.tamanho];
+        this.mejorHistorico = null;
+        this.mejorIndividuo = null;
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop();
@@ -128,6 +132,8 @@ public class Poblacion {
         }
         
         this.invalidos = new int[this.tamanho];
+        this.mejorHistorico = null;
+        this.mejorIndividuo = null;
         // Leer de la entrada el conocimiento e inicializar la población a 
         // partir de ello
         this.inicializarPop();
