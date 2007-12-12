@@ -13,7 +13,7 @@ import java.io.FileWriter;
  * @author Cristhian Parra
  */
 public class PVRP_AG_Main {
-    private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols\\";
+    private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols\\runs";
 
     private static int CANT_GENERACIONES = 50000;
     private static int PROB_MUTACION = 30;
@@ -145,9 +145,10 @@ public class PVRP_AG_Main {
 
                 System.out.println(" Inválidos en la Población -> "+poblacion.hayInvalidos());
                 System.out.println(generacion+"BEST Local  -> "+poblacion.toStringMejorActual());
-                System.out.println(generacion+"BEST Global -> "+poblacion.toStringMejorHistorico());
+                
                 if (newBestGlobal) {
                     System.out.println(generacion+"NUEVO BEST Global!!!!");
+                    System.out.println(generacion+"BEST Global -> "+poblacion.toStringMejorHistorico());
                 }
 
                 //System.out.println(generacion+"POBLACIÓN GENERACIÓN: \n");
@@ -189,7 +190,7 @@ public class PVRP_AG_Main {
 
             CSVWriter writer = null;
             try {
-                    String path = SOL_DIR+instanceNumber+"_TEST"+prueba+"_"+
+                    String path = SOL_DIR+"-"+instanceNumber+"\\"+instanceNumber+"_TEST"+prueba+"_"+
                             TAM_POBLACION+"IND_"+MAX_TIEMPO+"MIN_"+PROB_MUTACION+"MUT.csv";
                     writer = new CSVWriter(new FileWriter(path));
             } catch (IOException e){
