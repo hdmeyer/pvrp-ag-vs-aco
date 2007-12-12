@@ -194,22 +194,16 @@ public class Poblacion {
     public void cruce(Cromosoma[] selectos) {
         
         Cromosoma nuevos[];
-        for (int i=0; i <= selectos.length-2; i = i+2){
-            
-            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[i+1],this.getConocimiento());
+        
+        int tamanhoSel = selectos.length;
+        for (int i=0; i < selectos.length; i++){
+            int k = i%(tamanhoSel-1);
+            int sigte = k+1;
+            nuevos = FuncionesGA.Cruzar(selectos[i], selectos[k+1],this.getConocimiento());
 
             this.getHijos()[i] = nuevos[0];
-            this.getHijos()[i+1] = nuevos[1];
+            this.getHijos()[k] = nuevos[1];
            
-        }
-        
-        // si la longitud es impar, cruzamos el último con el primero
-        int indiceUltimo = selectos.length - 1;
-        
-        if ((indiceUltimo+1)%2 != 0) {
-            nuevos = FuncionesGA.Cruzar(selectos[indiceUltimo], 
-                                        selectos[0],this.getConocimiento());
-            this.getHijos()[indiceUltimo] = nuevos[0];
         }
     }
 
@@ -343,10 +337,10 @@ public class Poblacion {
         
         // reemplazamos el peor, por el mejor anterior
         // la idea es preservar los mejores locales de iteración a iteración
-        if (this.mejorIndividuo != null) {
+    /*    if (this.mejorIndividuo != null) {
             individuos[peorPos] = this.mejorIndividuo;
         }
-        
+      */  
         // en mejor individuo, ponemos el nuevo mejor local
         this.mejorIndividuo = mejor;
         this.mejorIndividuoPos = mejorPos;
@@ -412,6 +406,10 @@ public class Poblacion {
 
     public double getMejorCosto(){
         return this.mejorIndividuo.getCosto();
+    }
+    
+    public double getMejorCostoHistorico(){
+        return this.mejorHistorico.getCosto();
     }
 
     public Cromosoma[] getIndividuos() {

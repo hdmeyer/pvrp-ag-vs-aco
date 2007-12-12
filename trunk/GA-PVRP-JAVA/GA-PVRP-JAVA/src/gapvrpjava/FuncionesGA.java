@@ -54,6 +54,22 @@ public class FuncionesGA {
         
     }
 
+    private static void mezclarDías(ruta[][] cromosoma) {
+               
+        int vecSize = cromosoma.length;
+        
+        Random randIndice = new Random();
+        
+        ruta[] aux;
+
+        for (int i = 0; i < vecSize; i++) {
+            int indiceDestino = randIndice.nextInt(vecSize);
+            aux = cromosoma[i];
+            cromosoma[i] = cromosoma[indiceDestino];
+            cromosoma[indiceDestino] = aux;
+        }
+    }
+
     private static void splitSeco(Vector RutaGuia, Vector RutaDestino) {
 
         Random rand = new Random();
@@ -404,6 +420,8 @@ public class FuncionesGA {
         for (int i = 0; i < entrada.dias; i++) {
             mezclarCamiones(c1.cromosoma[i]);
         }
+        
+        mezclarDías(c1.cromosoma);            
 
         return c1;
     }
@@ -429,7 +447,6 @@ public class FuncionesGA {
         
         int vecSize;
         int destinoSize;
-        Random randBoolean = new Random();
         Random randIndice = new Random();
         
         Vector RutaGuia;
@@ -457,17 +474,12 @@ public class FuncionesGA {
 
             for (int i = 0; i < vecSize; i++) {
 
-                boolean intercambiar = randBoolean.nextBoolean();
-                // cliente de la rutaGuia que pasara a la otra ruta si se produce el intercambio
-                
-                // aleatoriamente se intercambian algunos y otros no
-                if (intercambiar) {
-                    int indiceDestino = randIndice.nextInt(destinoSize);
+                int indiceDestino = randIndice.nextInt(destinoSize);
 
-                    // tratar de realizar el cambio (el cambio puede fallar si se duplican
-                    // los cliente en una ruta
-                    trySwapRouteClients(RutaGuia,RutaDestino,i,indiceDestino);
-                }
+                // tratar de realizar el cambio (el cambio puede fallar si se duplican
+                // los cliente en una ruta
+                trySwapRouteClients(RutaGuia,RutaDestino,i,indiceDestino);
+                
             }
         // si una de las rutas es vacía, debemos hacer un splitSeco seco
         } else {            
