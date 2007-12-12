@@ -177,6 +177,7 @@ public class Conocimiento {
             System.out.println("Se pudrio todo viteh...");
         }
     }
+    
     public String toStringMejorSolucion(){
         String salida = "";
         salida+= this.mejorSol + "\n";
