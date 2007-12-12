@@ -18,7 +18,7 @@ public class PVRP_AG_Main {
     private static int CANT_GENERACIONES = 50000;
     private static int PROB_MUTACION = 30;
     private static int TAM_POBLACION = 40;
-    private static int MAX_TIEMPO = 1; // EN MINUTOS
+    private static int MAX_TIEMPO = 5; // EN MINUTOS
 
     /**
      * @param args the command line arguments
@@ -93,7 +93,7 @@ public class PVRP_AG_Main {
             long muestra = 5000; 
 
             long iteradorTiempo = muestra; // se evalua de a 5 segundos	
-            long maxTiempo = 10000L * MAX_TIEMPO;
+            long maxTiempo = 60000L * MAX_TIEMPO;
 
             int longSalida = (int)( maxTiempo / muestra) + 2;
 
