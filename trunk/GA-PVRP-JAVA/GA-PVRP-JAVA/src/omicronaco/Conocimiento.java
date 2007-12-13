@@ -33,6 +33,7 @@ public class Conocimiento {
     public Vector<Double>solucion [];
     
     public int cantidadHormigas = 25;
+    public int megatron = 600;
     
     /** Creates a new instance of Lector */
     public Conocimiento() {

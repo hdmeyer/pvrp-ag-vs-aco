@@ -9,6 +9,7 @@
 
 package omicronaco;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -18,10 +19,13 @@ import java.util.Vector;
 public class Camino {
     private Vector<Integer> ruta;
     private double costo;
+    private double [][] matrizCostos;
     /** Creates a new instance of Camino */
     public Camino(Conocimiento entrada) {
         ruta = new Vector(entrada.cantClientes);
         ruta.add(0);
+        this.setMatrizCostos(entrada.matrizCostos);
+        this.costo = 0;
     }
 
     public double getCosto() {
@@ -38,6 +42,31 @@ public class Camino {
 
     public void setRuta(Vector<Integer> ruta) {
         this.ruta = ruta;
+    }
+    
+    public void calcularCosto(){
+        
+        if (this.getRuta().size() > 0) {
+            
+            Iterator<Integer> it = this.getRuta().iterator();
+            int actual = (int) it.next();
+            int posterior = 0;
+            while(it.hasNext()){
+                
+                posterior = (int) it.next();
+                this.costo += this.getMatrizCostos()[actual][posterior];
+                actual = posterior;
+            }           
+            this.costo += matrizCostos[actual][posterior] + matrizCostos[posterior][0];
+        }
+    }
+
+    public double[][] getMatrizCostos() {
+        return matrizCostos;
+    }
+
+    public void setMatrizCostos(double[][] matrizCostos) {
+        this.matrizCostos = matrizCostos;
     }
     
 }
