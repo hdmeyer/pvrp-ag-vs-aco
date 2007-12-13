@@ -131,12 +131,14 @@ public class Poblacion {
                         this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
                         this.getNuevaHormiga().setPosicion(cElegido);
                         this.visitasGlobales[cElegido]--;
+                        this.clientes.get(cElegido).setDisponible(false);
                     }
                 }else{
                     k = this.getCamiones();
                 } 
             }
         }
+        this.getNuevaHormiga().calcularCostoTotal();
     }
          
     /**

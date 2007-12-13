@@ -9,6 +9,7 @@
 
 package omicronaco;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -24,12 +25,16 @@ public class OACO {
     private double matrizFeromonas[][];   //matriz de feromonas (memoristica)
     
     private int tamanoPoblacion;
+    private int megatron;
+    private Hormiga hActual;
+    
     /** Creates a new instance of OACO */
     public OACO(Conocimiento entrada) {
         this.matrizFeromonas = new double [entrada.cantClientes+1][entrada.cantClientes+1];
         this.inicializarMatFeromonas();
         this.setTamanoPoblacion(entrada.cantidadHormigas);
-        
+        this.setMegatron(entrada.megatron);
+        this.hActual = new Hormiga(entrada);
     }
     
     public void inicializarMatFeromonas(){
@@ -57,14 +62,31 @@ public class OACO {
     public void actualizarMatrizFeromonas(Vector<Hormiga> sols){
         this.inicializarMatFeromonas();
         int x = 0;
+        
         //ACA DEBEMOS ACTUALIZAR LAS FEROMONAS POR CADA ARCO QUE 
         // SE HAYA TOCADO DENTRO DE LAS SOLUCIONES...
-        while(x < this.getTamanoPoblacion()){
-            this.setNuevaHormiga(this.construirSolucion());
+        Iterator<Hormiga> itHormiga = sols.iterator();
+        while(itHormiga.hasNext()){
+            this.sethActual((Hormiga)itHormiga.next());
             
-            if(this.estaContenido(this.getNuevaHormiga())){
-                this.getSoluciones().add(this.getNuevaHormiga());
-                x++;
+            for (int i = 0; i < this.gethActual().getCaminos().length; i++) {
+                
+                for (int j = 0; j < this.gethActual().getCaminos()[i].length; j++) {
+                    
+                    if(!this.gethActual().getCaminos()[i][j].getRuta().isEmpty()){
+                        
+                        Iterator<Integer> itRuta = this.gethActual().getCaminos()[i][j].getRuta().iterator();
+                        int actual = (int) itRuta.next();
+                        int posterior = 0;
+                        while(itRuta.hasNext()){
+                            
+                            posterior = (int) itRuta.next();
+                            this.matrizFeromonas[actual][posterior] += this.getMegatron()/this.tamanoPoblacion;
+                            actual = posterior;
+                            
+                        }
+                    }
+                }
             }
         }
     }
@@ -75,6 +97,22 @@ public class OACO {
 
     public void setTamanoPoblacion(int tamanoPoblacion) {
         this.tamanoPoblacion = tamanoPoblacion;
+    }
+
+    public int getMegatron() {
+        return megatron;
+    }
+
+    public void setMegatron(int megatron) {
+        this.megatron = megatron;
+    }
+
+    public Hormiga gethActual() {
+        return hActual;
+    }
+
+    public void sethActual(Hormiga hActual) {
+        this.hActual = hActual;
     }
     
 }

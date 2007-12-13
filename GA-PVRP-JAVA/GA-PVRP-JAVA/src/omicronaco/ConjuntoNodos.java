@@ -18,7 +18,7 @@ import java.util.Vector;
 public class ConjuntoNodos {
     private Vector<Nodo> conjunto;
     /** Creates a new instance of ConjuntoNodos */
-    public ConjuntoNodos(Conocimiento entrada,) {
+    public ConjuntoNodos(Conocimiento entrada) {
         
     }
     

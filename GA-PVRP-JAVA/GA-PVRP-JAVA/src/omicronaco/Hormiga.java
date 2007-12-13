@@ -73,4 +73,17 @@ public class Hormiga {
         }
     }
     
+    public void calcularCostoTotal(){
+        for (int i = 0; i < caminos.length; i++) {
+            
+            for (int j = 0; j < caminos[i].length; j++) {
+                if(!this.getCaminos()[i][j].getRuta().isEmpty()){
+                    this.getCaminos()[i][j].calcularCosto();
+                    
+                    this.CostoTotal += this.getCaminos()[i][j].getCosto();
+                }
+            }
+        }   
+    }
+    
 }
