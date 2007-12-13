@@ -54,4 +54,15 @@ public class Nodo {
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
+    
+    public int comparaNodos(Nodo n){
+        
+        if(this.getProbabilidad() > n.getProbabilidad()){
+            return 1;
+        }else if(this.getProbabilidad() < n.getProbabilidad()){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
 }
