@@ -112,10 +112,6 @@ public class Poblacion {
     public void construirHormiga(){
         int contador = 0;
         /*antes de iniciar el ciclo debemos elegir un cliente al azar*/
-        int primero = (int)(Math.random()* this.cantClientes);
-        if(primero == 0){
-            primero++;
-        }
         
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
         for (int i = 0; i < this.getDias(); i++) {
@@ -281,6 +277,50 @@ public class Poblacion {
 
     public void setMatrizCostos(double[][] matrizCostos) {
         this.matrizCostos = matrizCostos;
+    }
+    /**
+     *LO UNICO QUE HARA ESTE METODO ES CALCULAR LA SUMA DE TODAS LAS PROBABILIDADES
+     *EXISTENTES PARA TODOS LOS NODOS CALCULADOS Y LUEGO PROCEDERA A DIVIDIR
+     *CADA UNA DE ESTAS PROBABILIDADES PARA QUE ASI EN SU TOTALIDAD SUMEN 1.
+     **/
+    private void normalizarProbabilidades() {
+        double totalProbabilidades =0;
+        Iterator it = this.clientes.iterator();
+        
+        while(it.hasNext()){
+            
+            this.setNActual((Nodo)it.next());
+            totalProbabilidades += this.getNActual().getProbabilidad();
+        }
+        
+        Iterator it1 = this.clientes.iterator();
+        
+        while (it1.hasNext()){
+            
+            this.setNActual((Nodo) it1.next());
+            this.getNActual().setProbabilidad(this.getNActual().getProbabilidad()/totalProbabilidades);
+        }
+    }
+
+    private void ordenarProbabilidades() {
+        QuickSort.quicksort(this.clientes,0,this.clientes.size()-1,true,false);
+    }
+    
+    /* ELEGIMOS EL NODO A VISITAR*/
+    public int seleccionarCliente (){
+        double aleatorio=(double)(Math.random());
+        System.out.println("Ruleta SALE: "+aleatorio+"");
+        double suma=0;
+        for (int i=1;i<this.cantClientes;i++){
+            if (suma > aleatorio){
+                if (i != 0 && this.clientes.get(i-1).isDisponible()){
+                    return this.clientes.get(i-1).getIdNodo();
+                }                    
+                return this.clientes.get(i-1).getIdNodo();
+            }
+            suma += clientes.get(i).getProbabilidad();
+        }
+        return this.clientes.get(this.cantClientes-1).getIdNodo();
     }
     
 }

@@ -51,7 +51,7 @@ public class Hormiga {
     }
 
     public void setCaminos(Camino[][] caminos) {
-        this.caminos = camino;
+        this.caminos= caminos;
     }
 
     public double getCostoTotal() {
@@ -61,9 +61,16 @@ public class Hormiga {
     public void setCostoTotal(double CostoTotal) {
         this.CostoTotal = CostoTotal;
     }
-    /**
-     *Con este metodo inicializamos los clientes disponibles para 
-     *cada dia de acuerdo a la cantidad de visitas que necesita.
-     */
+    
+    public int comparaHormigas(Hormiga h){
+        
+        if(this.getCostoTotal() > h.getCostoTotal()){
+            return 1;
+        }else if(this.getCostoTotal() < h.getCostoTotal()){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
     
 }
