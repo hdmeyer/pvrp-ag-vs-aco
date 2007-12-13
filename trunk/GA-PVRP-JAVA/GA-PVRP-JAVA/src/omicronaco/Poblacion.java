@@ -106,7 +106,7 @@ public class Poblacion {
     }
 
     private void sortSoluciones() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        QuickSort.quicksort(this.soluciones,0,this.soluciones.size()-1,true,true);
     }
     
     public void construirHormiga(){
@@ -126,8 +126,15 @@ public class Poblacion {
                 this.normalizarProbabilidades();
                 this.ordenarProbabilidades();
                 int cElegido = this.seleccionarCliente();
-                this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
-                this.getNuevaHormiga().setPosicion(cElegido);
+                if(cElegido > 0){
+                    if(this.clientes.get(cElegido).isDisponible()){
+                        this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
+                        this.getNuevaHormiga().setPosicion(cElegido);
+                        this.visitasGlobales[cElegido]--;
+                    }
+                }else{
+                    k = this.getCamiones();
+                } 
             }
         }
     }
@@ -308,19 +315,27 @@ public class Poblacion {
     
     /* ELEGIMOS EL NODO A VISITAR*/
     public int seleccionarCliente (){
+        
         double aleatorio=(double)(Math.random());
         System.out.println("Ruleta SALE: "+aleatorio+"");
         double suma=0;
-        for (int i=1;i<this.cantClientes;i++){
+        
+        for (int i=0;i < this.cantClientes;i++){
+            
             if (suma > aleatorio){
                 if (i != 0 && this.clientes.get(i-1).isDisponible()){
                     return this.clientes.get(i-1).getIdNodo();
-                }                    
-                return this.clientes.get(i-1).getIdNodo();
+                }
+                if(this.clientes.get(i).isDisponible()){
+                    return this.clientes.get(i).getIdNodo();    
+                }
             }
             suma += clientes.get(i).getProbabilidad();
         }
-        return this.clientes.get(this.cantClientes-1).getIdNodo();
+        if(this.clientes.get(this.cantClientes).isDisponible()){
+            return this.clientes.get(this.cantClientes).getIdNodo();
+        }
+        return -1;
     }
     
 }
