@@ -1,0 +1,69 @@
+/*
+ * Hormiga.java
+ *
+ * Created on 11 de diciembre de 2007, 9:50
+ *
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
+ */
+
+package omicronaco;
+
+import java.util.Vector;
+
+/**
+ *
+ * @author Propietario
+ */
+public class Hormiga {
+    
+    private int posicion;
+    //CADA HORMIGA DEBE MANTENER SU SOLUCION.
+    private Camino[][] caminos;
+    
+    private double CostoTotal;
+    
+    //CADA HORMIGA DEBERIA SABER A QUIEN VISITO
+    
+    /** Creates a new instance of Hormiga */
+    public Hormiga(Conocimiento entrada) {
+                
+        this.setPosicion(0);// EMPEZAMOS EN EL DEPOSITO SIEMPRE
+        this.setCaminos(new Camino[entrada.dias][entrada.cantVehiculos]);
+        for (int i = 0; i < caminos.length; i++) {
+            for (int j = 0; j < caminos[i].length; j++) {
+                this.getCaminos()[i][j] = new Camino(entrada);
+            }
+        }
+        this.setCostoTotal(0);
+    }
+    
+    public int getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
+
+    public Camino[][] getCaminos() {
+        return caminos;
+    }
+
+    public void setCaminos(Camino[][] caminos) {
+        this.caminos = camino;
+    }
+
+    public double getCostoTotal() {
+        return CostoTotal;
+    }
+
+    public void setCostoTotal(double CostoTotal) {
+        this.CostoTotal = CostoTotal;
+    }
+    /**
+     *Con este metodo inicializamos los clientes disponibles para 
+     *cada dia de acuerdo a la cantidad de visitas que necesita.
+     */
+    
+}
