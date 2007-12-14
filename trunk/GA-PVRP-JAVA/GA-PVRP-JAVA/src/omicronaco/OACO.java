@@ -27,6 +27,7 @@ public class OACO {
     private int tamanoPoblacion;
     private int megatron;
     private Hormiga hActual;
+    private int generaciones = 1000;
     
     /** Creates a new instance of OACO */
     public OACO(Conocimiento entrada) {
@@ -113,6 +114,32 @@ public class OACO {
 
     public void sethActual(Hormiga hActual) {
         this.hActual = hActual;
+    }
+    
+    public void elPurete(Conocimiento entrada, int corridas){
+        
+        this.inicializarMatFeromonas();
+        Poblacion P= new Poblacion(entrada,this.matrizFeromonas);
+        P.inicializarPoblacion();
+        P.sortSoluciones();
+        
+        int x =0;
+        int y = 0;
+        while ( x < corridas){
+            while(y < this.generaciones){
+                
+                P.construirHormiga();
+                
+                if(P.getNuevaHormiga().getCostoTotal() < ((Hormiga)P.getSoluciones().get(0)).getCostoTotal()){
+                    if(!P.estaContenido(P.getNuevaHormiga())){
+                        P.actualizarSoluciones();
+                        y++;
+                    }
+                }
+            }
+            this.actualizarMatrizFeromonas(P.getSoluciones());
+            x++;
+        }
     }
     
 }
