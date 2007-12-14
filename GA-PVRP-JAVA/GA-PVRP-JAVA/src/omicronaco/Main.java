@@ -29,7 +29,7 @@ public class Main {
         
         Conocimiento prueba = new Conocimiento();
         try {
-            prueba.CargarConocimiento("C:\\pvrp\\p26");
+            prueba.CargarConocimiento("C:\\p26");
             OACO optimusPrime = new OACO(prueba);
             optimusPrime.elPurete(prueba,100);
         } catch (IOException ex) {

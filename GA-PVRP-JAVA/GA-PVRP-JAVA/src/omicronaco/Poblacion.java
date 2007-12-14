@@ -134,17 +134,20 @@ public class Poblacion {
                     this.calcularProbabilidades();
                     this.normalizarProbabilidades();
                     this.ordenarProbabilidades();
-                    int cElegido = this.seleccionarCliente();
-                    if(cElegido > 0){
-                        if(this.clientes.get(cElegido).isDisponible()){
-                            this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
-                            this.getNuevaHormiga().setPosicion(cElegido);
-                            this.visitasGlobales[cElegido]--;
-                            this.clientes.get(cElegido).setDisponible(false);
+                    int posCElegido = this.seleccionarCliente();
+                    if(posCElegido != -1 &&  this.clientes.get(posCElegido).getIdNodo() != 0){
+                        if(this.clientes.get(posCElegido).isDisponible()){
+                            this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(this.clientes.get(posCElegido).getIdNodo());
+                            this.getNuevaHormiga().setPosicion(this.clientes.get(posCElegido).getIdNodo());
+                            this.visitasGlobales[this.clientes.get(posCElegido).getIdNodo()]--;
+                            this.clientes.get(posCElegido).setDisponible(false);
                             contClientes++;
                         }
                     }else{
                         k = this.getCamiones();
+                        break;
+                    }
+                    if(posCElegido == -1){
                         break;
                     }
                 } 
@@ -157,7 +160,7 @@ public class Poblacion {
      *Creamos nodos nuevos y los vamos insertando en el VectorClientes
      **/
     public void inicializarClientesDisp(){
-        
+        //desde el cero al 51
         int x = 1;
         while(x <= this.getCantClientes()){
             this.getClientes().add(new Nodo(x,0));
@@ -252,8 +255,12 @@ public class Poblacion {
                 parteArriba = Math.pow(matrizFeromonas[this.getNuevaHormiga().getPosicion()][this.getNActual().getIdNodo()],alfa) 
                 * Math.pow((1/(this.getMatrizCostos()[this.getNuevaHormiga().getPosicion()][this.getNActual().getIdNodo()])),beta); 
             }
+            if(this.getNActual().isDisponible()){
+                this.getNActual().setProbabilidad(parteArriba/sumatoria);
+            }else{
+                this.getNActual().setProbabilidad(0);
+            }
             
-            this.getNActual().setProbabilidad(parteArriba/sumatoria);
         }
     }
 
@@ -338,16 +345,21 @@ public class Poblacion {
             
             if (suma > aleatorio){
                 if (i != 0 && this.clientes.get(i-1).isDisponible()){
-                    return this.clientes.get(i-1).getIdNodo();
+                    return i-1;//this.clientes.get(i-1).getIdNodo();
                 }
                 if(this.clientes.get(i).isDisponible()){
-                    return this.clientes.get(i).getIdNodo();    
+                    return i;//this.clientes.get(i).getIdNodo();    
                 }
             }
             suma += clientes.get(i).getProbabilidad();
         }
+        for (int i=0;i < this.cantClientes;i++){
+            if(this.clientes.get(i).isDisponible()){
+                return i;
+            }
+        }
         if(this.clientes.get(this.cantClientes-1).isDisponible()){
-            return this.clientes.get(this.cantClientes - 1).getIdNodo();
+            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
         }
         return -1;
     }
