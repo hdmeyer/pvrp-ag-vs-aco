@@ -9,6 +9,8 @@
 
 package omicronaco;
 
+import java.io.IOException;
+
 /**
  *
  * @author Propietario
@@ -24,6 +26,16 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        Conocimiento prueba = new Conocimiento();
+        try {
+            prueba.CargarConocimiento("C:\\pvrp\\p26");
+            OACO optimusPrime = new OACO(prueba);
+            optimusPrime.elPurete(prueba,100);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("No se pudo leer correctamente el archivo");
+        }
     }
     
 }

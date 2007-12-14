@@ -70,7 +70,7 @@ public class QuickSort {
                 do{
                     while (((Hormiga) v.elementAt(i)).getCostoTotal() > costo)
                         ++i;
-                    while (((Hormiga) v.elementAt(i)).getCostoTotal() < costo)
+                    while (((Hormiga) v.elementAt(j)).getCostoTotal() < costo)
                         --j;
                     
                     if (i <= j) {
@@ -91,7 +91,7 @@ public class QuickSort {
                 do{
                     while (((Nodo) v.elementAt(i)).getProbabilidad() > probabilidad)
                         ++i;
-                    while (((Nodo) v.elementAt(i)).getProbabilidad() < probabilidad)
+                    while (((Nodo) v.elementAt(j)).getProbabilidad() < probabilidad)
                         --j;
                     
                     if (i <= j) {
