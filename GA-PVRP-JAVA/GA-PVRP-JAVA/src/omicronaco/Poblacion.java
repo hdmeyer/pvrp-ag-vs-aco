@@ -65,11 +65,13 @@ public class Poblacion {
         
         int x = 0;
         while(x < this.getTamanoPoblacion()){
-            this.setNuevaHormiga(this.construirSolucion());
+            this.construirHormiga();
             
-            if(this.estaContenido(this.getNuevaHormiga())){
+            if(!this.estaContenido(this.getNuevaHormiga())){
                 this.getSoluciones().add(this.getNuevaHormiga());
                 x++;
+            }else{
+                
             }
         }
         this.sortSoluciones();
@@ -97,15 +99,18 @@ public class Poblacion {
         this.nuevaHormiga = nuevaHormiga;
     }
 
-    public Hormiga construirSolucion() {
-        return null;
-    }
 
-    private boolean estaContenido(Hormiga hormiga) {
+    public boolean estaContenido(Hormiga hormiga) {
+        Iterator<Hormiga> it = this.getSoluciones().iterator();
+        while(it.hasNext()){
+            if(hormiga.getCostoTotal() != ((Hormiga)it.next()).getCostoTotal()){
+                return true;
+            }
+        }
         return false;
     }
 
-    private void sortSoluciones() {
+    public void sortSoluciones() {
         QuickSort.quicksort(this.soluciones,0,this.soluciones.size()-1,true,true);
     }
     
@@ -311,7 +316,7 @@ public class Poblacion {
         }
     }
 
-    private void ordenarProbabilidades() {
+    public void ordenarProbabilidades() {
         QuickSort.quicksort(this.clientes,0,this.clientes.size()-1,true,false);
     }
     
