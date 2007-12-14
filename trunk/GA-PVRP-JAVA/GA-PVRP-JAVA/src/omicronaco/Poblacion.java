@@ -345,6 +345,18 @@ public class Poblacion {
         return -1;
     }
     
+    public String toString(){
+        String retorno = "";
+        Iterator<Hormiga> it = this.getSoluciones().iterator();
+        while(it.hasNext()){
+            retorno += it.next().toString();
+            retorno += "\n";
+            retorno += "----------------------------------------------------------------------------------------------";
+            retorno += "\n";
+        }
+        return retorno;
+    }
+    
 }
     
   

@@ -69,4 +69,14 @@ public class Camino {
         this.matrizCostos = matrizCostos;
     }
     
+    public String toString(){
+        String retorno = "[";
+        Iterator<Integer> it = this.getRuta().iterator();
+        while(it.hasNext()){
+            retorno += it.next().toString();
+        }
+        retorno += "]";
+        return retorno;
+    }
+    
 }
