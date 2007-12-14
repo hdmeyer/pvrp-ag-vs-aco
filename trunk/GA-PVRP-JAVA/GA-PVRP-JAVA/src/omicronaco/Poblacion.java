@@ -37,17 +37,19 @@ public class Poblacion {
         
         this.setSoluciones(new Vector(entrada.cantidadHormigas));
         this.setTamanoPoblacion(entrada.cantidadHormigas);
-        
+        this.setCantClientes(entrada.cantClientes);
+        this.setCamiones(entrada.cantVehiculos);
+        this.setDias(entrada.dias);
         this.setNuevaHormiga(new Hormiga(entrada));
+        
+        this.clientes = new Vector(this.cantClientes);
         this.inicializarClientesDisp();
         this.matrizFeromonas = matrizFeromonas;
         this.setNActual(new Nodo());
         this.setNProbabilidad(new Nodo());
         this.setMatrizCostos(entrada.matrizCostos);
-        
         this.setVisitasGlobales(new int[this.cantClientes+1]);
-        this.copiar(entrada.listaVisitas[1]);
-        this.setCantClientes(entrada.cantClientes);
+        this.copiar(entrada.listaVisitas);
         
         
     }
@@ -115,7 +117,7 @@ public class Poblacion {
     }
     
     public void construirHormiga(){
-        int contador = 0;
+        int contClientes = 0;
         /*antes de iniciar el ciclo debemos elegir un cliente al azar*/
         
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
@@ -127,19 +129,24 @@ public class Poblacion {
                 
                 //PRIMERO CALCULAMOS LAS PROBABILIDADES DE TODOS LOS VECINOS
                 //DE LA POSICION ACTUAL DE MI HORMIGA.
-                this.calcularProbabilidades();
-                this.normalizarProbabilidades();
-                this.ordenarProbabilidades();
-                int cElegido = this.seleccionarCliente();
-                if(cElegido > 0){
-                    if(this.clientes.get(cElegido).isDisponible()){
-                        this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
-                        this.getNuevaHormiga().setPosicion(cElegido);
-                        this.visitasGlobales[cElegido]--;
-                        this.clientes.get(cElegido).setDisponible(false);
+                /*AK ITERAMOS POR TODOS LOS CLIENTES QUE HAY*/
+                while(contClientes < this.cantClientes){
+                    this.calcularProbabilidades();
+                    this.normalizarProbabilidades();
+                    this.ordenarProbabilidades();
+                    int cElegido = this.seleccionarCliente();
+                    if(cElegido > 0){
+                        if(this.clientes.get(cElegido).isDisponible()){
+                            this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(cElegido);
+                            this.getNuevaHormiga().setPosicion(cElegido);
+                            this.visitasGlobales[cElegido]--;
+                            this.clientes.get(cElegido).setDisponible(false);
+                            contClientes++;
+                        }
+                    }else{
+                        k = this.getCamiones();
+                        break;
                     }
-                }else{
-                    k = this.getCamiones();
                 } 
             }
         }
@@ -170,9 +177,9 @@ public class Poblacion {
         }
     }
     
-    public void copiar(int[] listaVisitas) {
-        for (int i = 0; i < listaVisitas.length; i++) {
-            this.getVisitasGlobales()[i] = listaVisitas[i];
+    public void copiar(int[][] listaVisitas) {
+        for (int i = 0; i < listaVisitas[1].length; i++) {
+            this.getVisitasGlobales()[i] = listaVisitas[1][i];
         }
     }
 
@@ -324,7 +331,7 @@ public class Poblacion {
     public int seleccionarCliente (){
         
         double aleatorio=(double)(Math.random());
-        System.out.println("Ruleta SALE: "+aleatorio+"");
+        System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
         double suma=0;
         
         for (int i=0;i < this.cantClientes;i++){
@@ -339,8 +346,8 @@ public class Poblacion {
             }
             suma += clientes.get(i).getProbabilidad();
         }
-        if(this.clientes.get(this.cantClientes).isDisponible()){
-            return this.clientes.get(this.cantClientes).getIdNodo();
+        if(this.clientes.get(this.cantClientes-1).isDisponible()){
+            return this.clientes.get(this.cantClientes - 1).getIdNodo();
         }
         return -1;
     }
