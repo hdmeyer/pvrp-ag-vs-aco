@@ -22,6 +22,8 @@ public class Hormiga {
     private Camino[][] caminos;
     
     private double CostoTotal;
+    private int dias;
+    private int cantVehiculos;
     
     //CADA HORMIGA DEBERIA SABER A QUIEN VISITO
     
@@ -36,6 +38,8 @@ public class Hormiga {
             }
         }
         this.setCostoTotal(0);
+        this.setDias(entrada.dias);
+        this.setCantVehiculos(entrada.cantVehiculos);
     }
     
     public int getPosicion() {
@@ -84,6 +88,35 @@ public class Hormiga {
                 }
             }
         }   
+    }
+    
+    public String toString(){
+        String retorno = "";
+        for (int i = 0; i < this.getCantVehiculos(); i++) {
+            
+            for (int j = 0; j < this.getDias(); j++) {
+                
+                retorno += this.getCaminos()[j][i].toString();
+            }
+            retorno += "\n";
+        }
+        return retorno;
+    }
+
+    public int getDias() {
+        return dias;
+    }
+
+    public void setDias(int dias) {
+        this.dias = dias;
+    }
+
+    public int getCantVehiculos() {
+        return cantVehiculos;
+    }
+
+    public void setCantVehiculos(int cantVehiculos) {
+        this.cantVehiculos = cantVehiculos;
     }
     
 }
