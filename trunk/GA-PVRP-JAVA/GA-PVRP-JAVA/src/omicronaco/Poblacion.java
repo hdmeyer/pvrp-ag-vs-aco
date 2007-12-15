@@ -127,16 +127,25 @@ public class Poblacion {
         
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
         for (int i = 0; i < this.getDias(); i++) {
+            
+            //* reinicializar posicion de la hormiga a cero 
+            // El cliente cero debe estar si o si al inicio y al final de cada ruta
+            // incluirlos sin hacerles pasar por el proceso de selección ni de cálculo de probabilidades
+            
             this.reiniciarClientes();
             
             //this.InicializarVehiculos();
             for(int j = 0; j<this.getCantClientes();j++){
+                
                 
                 for (int k = 0; k < this.getCamiones(); k++) {
                     
                     //PRIMERO CALCULAMOS LAS PROBABILIDADES DE TODOS LOS VECINOS
                     //DE LA POSICION ACTUAL DE MI HORMIGA.
                     /*AK ITERAMOS POR TODOS LOS CLIENTES QUE HAY*/
+                    
+                    
+                    
                     this.calcularProbabilidades();
                     this.normalizarProbabilidades();
                     this.ordenarProbabilidades();
@@ -150,15 +159,19 @@ public class Poblacion {
                             this.clientes.get(posCElegido).setDisponible(false);
                         }
                     }else{
+                        
                         k = this.getCamiones();
                         j = this.getCantClientes();
+                        
                         break;
                     }
+                                        
                     if(posCElegido == -1){
                         break;
                     }
-                } 
-            }
+                }       
+            }         
+             
             
         }
         this.getNuevaHormiga().calcularCostoTotal();
@@ -277,8 +290,12 @@ public class Poblacion {
                 // luego, calculamos la información heurística                
                 double costo = this.getMatrizCostos()[posActual][posNodo];                
                 double inversaCosto = (double) 1/costo;
-                double infoHeuristica = Math.pow(inversaCosto,beta);               
-                System.out.println("SUMATORIA-->"+inversaCosto+" infoHeuristica -->"+infoHistorica);
+                double infoHeuristica = Math.pow(inversaCosto,beta); 
+                
+                //
+                if (posActual == posNodo) {
+                    System.out.println("SUMATORIA-->"+inversaCosto+" infoHeuristica -->"+infoHistorica);   
+                }
                 parteArriba = infoHistorica * infoHeuristica;
             }
             
@@ -381,49 +398,74 @@ public class Poblacion {
     public void ordenarProbabilidades() {
         QuickSort.quicksort(this.clientes,0,this.clientes.size()-1,true,false);
     }
-    
-    /* ELEGIMOS EL NODO A VISITAR*/
     public int seleccionarCliente (){
         
-        Random rand = new Random();
+        double aleatorio=(double)(Math.random());
+        System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
+        double suma=0;
         
-        double aleatorio=rand.nextDouble();
-        
-        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
-        Nodo primerCliente = this.clientes.get(0);
-        
-        double suma = 0;
-        if (primerCliente.isDisponible()) {
-            suma = primerCliente.getProbabilidad();
-        } else {
-            return -1;
-        }
-        
-        
-        for (int i=1;i <= this.cantClientes;i++){
-            Nodo clienteActual = clientes.get(i-1);
+        for (int i=0;i < this.cantClientes;i++){
             
             if (suma > aleatorio){
-                if(clienteActual.isDisponible()){
-                    return i-1;//this.clientes.get(i).getIdNodo();    
+                if (i != 0 && this.clientes.get(i-1).isDisponible()){
+                    return i-1;//this.clientes.get(i-1).getIdNodo();
+                }
+                if(this.clientes.get(i).isDisponible()){
+                    return i;//this.clientes.get(i).getIdNodo();    
                 }
             }
-            
-            if (i<cantClientes) {
-               suma += clientes.get(i).getProbabilidad();
+            suma += clientes.get(i).getProbabilidad();
+        }
+        for (int i=0;i < this.cantClientes;i++){
+            if(this.clientes.get(i).isDisponible()){
+                return i;
             }
         }
-        
-//        for (int i=0;i < this.cantClientes;i++){
-//            if(this.clientes.get(i).isDisponible()){
-//                return i;
-//            }
-//        }
-//        if(this.clientes.get(this.cantClientes-1).isDisponible()){
-//            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
-//        }
+        if(this.clientes.get(this.cantClientes-1).isDisponible()){
+            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
+        }
         return -1;
     }
+    /* ELEGIMOS EL NODO A VISITAR*/
+//    public int seleccionarCliente (){
+//        
+//        double aleatorio= (double) Math.random();
+//        
+//        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
+//        Nodo primerCliente = this.clientes.get(0);
+//        
+//        double suma = 0;
+//        if (primerCliente.isDisponible()) {
+//            suma = primerCliente.getProbabilidad();
+//        } else {
+//            return -1;
+//        }
+//        
+//        
+//        for (int i=1;i <= this.cantClientes;i++){
+//            Nodo clienteActual = clientes.get(i-1);
+//            
+//            if (suma > aleatorio){
+//                if(clienteActual.isDisponible()){
+//                    return i-1;//this.clientes.get(i).getIdNodo();    
+//                }
+//            }
+//            
+//            if (i<cantClientes) {
+//               suma += clientes.get(i).getProbabilidad();
+//            }
+//        }
+//        
+////        for (int i=0;i < this.cantClientes;i++){
+////            if(this.clientes.get(i).isDisponible()){
+////                return i;
+////            }
+////        }
+////        if(this.clientes.get(this.cantClientes-1).isDisponible()){
+////            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
+////        }
+//        return -1;
+//    }
     
     public String toString(){
         String retorno = "";
