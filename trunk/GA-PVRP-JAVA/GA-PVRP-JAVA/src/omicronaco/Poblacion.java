@@ -118,6 +118,7 @@ public class Poblacion {
     
     public void construirHormiga(){
         int contClientes = 0;
+        int elegido =0;;
         /*antes de iniciar el ciclo debemos elegir un cliente al azar*/
         
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
@@ -136,10 +137,11 @@ public class Poblacion {
                     this.ordenarProbabilidades();
                     int posCElegido = this.seleccionarCliente();
                     if(posCElegido != -1 &&  this.clientes.get(posCElegido).getIdNodo() != 0){
+                        elegido = this.clientes.get(posCElegido).getIdNodo();
                         if(this.clientes.get(posCElegido).isDisponible()){
-                            this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(this.clientes.get(posCElegido).getIdNodo());
-                            this.getNuevaHormiga().setPosicion(this.clientes.get(posCElegido).getIdNodo());
-                            this.visitasGlobales[this.clientes.get(posCElegido).getIdNodo()]--;
+                            this.getNuevaHormiga().getCaminos()[i][k].getRuta().add(elegido);
+                            this.getNuevaHormiga().setPosicion(elegido);
+                            this.visitasGlobales[elegido]--;
                             this.clientes.get(posCElegido).setDisponible(false);
                             contClientes++;
                         }
