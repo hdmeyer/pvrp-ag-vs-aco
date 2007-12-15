@@ -126,12 +126,13 @@ public class Poblacion {
             this.reiniciarClientes();
             
             //this.InicializarVehiculos();
-            for (int k = 0; k < this.getCamiones(); k++) {
+            for(int j = 0; j<this.getCantClientes();j++){
                 
-                //PRIMERO CALCULAMOS LAS PROBABILIDADES DE TODOS LOS VECINOS
-                //DE LA POSICION ACTUAL DE MI HORMIGA.
-                /*AK ITERAMOS POR TODOS LOS CLIENTES QUE HAY*/
-                while(contClientes < this.cantClientes){
+                for (int k = 0; k < this.getCamiones(); k++) {
+                    
+                    //PRIMERO CALCULAMOS LAS PROBABILIDADES DE TODOS LOS VECINOS
+                    //DE LA POSICION ACTUAL DE MI HORMIGA.
+                    /*AK ITERAMOS POR TODOS LOS CLIENTES QUE HAY*/
                     this.calcularProbabilidades();
                     this.normalizarProbabilidades();
                     this.ordenarProbabilidades();
@@ -143,10 +144,10 @@ public class Poblacion {
                             this.getNuevaHormiga().setPosicion(elegido);
                             this.visitasGlobales[elegido]--;
                             this.clientes.get(posCElegido).setDisponible(false);
-                            contClientes++;
                         }
                     }else{
                         k = this.getCamiones();
+                        j = this.getCantClientes();
                         break;
                     }
                     if(posCElegido == -1){
@@ -154,8 +155,10 @@ public class Poblacion {
                     }
                 } 
             }
+            
         }
         this.getNuevaHormiga().calcularCostoTotal();
+        System.out.println(this.getNuevaHormiga().toString());
     }
          
     /**

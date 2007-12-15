@@ -96,7 +96,7 @@ public class Hormiga {
             
             for (int j = 0; j < this.getDias(); j++) {
                 
-                retorno += this.getCaminos()[j][i].toString();
+                retorno += this.getCaminos()[j][i].toString()+"-";
             }
             retorno += "\n";
         }

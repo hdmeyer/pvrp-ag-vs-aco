@@ -73,7 +73,7 @@ public class Camino {
         String retorno = "[";
         Iterator<Integer> it = this.getRuta().iterator();
         while(it.hasNext()){
-            retorno += it.next().toString();
+            retorno += it.next().toString() + ",";
         }
         retorno += "]";
         return retorno;
