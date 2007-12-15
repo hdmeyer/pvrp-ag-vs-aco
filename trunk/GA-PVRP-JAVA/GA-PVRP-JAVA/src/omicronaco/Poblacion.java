@@ -10,6 +10,7 @@
 package omicronaco;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -180,6 +181,7 @@ public class Poblacion {
         Iterator it = this.clientes.iterator();
         while(it.hasNext()){
             this.setNActual((Nodo)it.next());
+            this.getNActual().setProbabilidad(0);
             //Solo reiniciamos si todavia no cumplio con sus necesidades
             //de visitas.
             if(this.visitasGlobales[this.getNActual().getIdNodo()] > 0){
@@ -274,9 +276,9 @@ public class Poblacion {
 
                 // luego, calculamos la información heurística                
                 double costo = this.getMatrizCostos()[posActual][posNodo];                
-                double inversaCosto = 1/costo;
+                double inversaCosto = (double) 1/costo;
                 double infoHeuristica = Math.pow(inversaCosto,beta);               
-                
+                System.out.println("SUMATORIA-->"+inversaCosto+" infoHeuristica -->"+infoHistorica);
                 parteArriba = infoHistorica * infoHeuristica;
             }
             
@@ -361,15 +363,18 @@ public class Poblacion {
         while(it.hasNext()){
             
             this.setNActual((Nodo)it.next());
-            totalProbabilidades += this.getNActual().getProbabilidad();
+            totalProbabilidades += (double)this.getNActual().getProbabilidad();
         }
         
         Iterator it1 = this.clientes.iterator();
         
         while (it1.hasNext()){
-            
+
             this.setNActual((Nodo) it1.next());
-            this.getNActual().setProbabilidad(this.getNActual().getProbabilidad()/totalProbabilidades);
+            
+            double nuevaProb = (double) this.getNActual().getProbabilidad()/totalProbabilidades;
+            
+            this.getNActual().setProbabilidad(nuevaProb);
         }
     }
 
@@ -380,30 +385,43 @@ public class Poblacion {
     /* ELEGIMOS EL NODO A VISITAR*/
     public int seleccionarCliente (){
         
-        double aleatorio=(double)(Math.random());
-        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
-        double suma=0;
+        Random rand = new Random();
         
-        for (int i=0;i < this.cantClientes;i++){
+        double aleatorio=rand.nextDouble();
+        
+        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
+        Nodo primerCliente = this.clientes.get(0);
+        
+        double suma = 0;
+        if (primerCliente.isDisponible()) {
+            suma = primerCliente.getProbabilidad();
+        } else {
+            return -1;
+        }
+        
+        
+        for (int i=1;i <= this.cantClientes;i++){
+            Nodo clienteActual = clientes.get(i-1);
             
             if (suma > aleatorio){
-                if (i != 0 && this.clientes.get(i-1).isDisponible()){
-                    return i-1;//this.clientes.get(i-1).getIdNodo();
-                }
-                if(this.clientes.get(i).isDisponible()){
-                    return i;//this.clientes.get(i).getIdNodo();    
+                if(clienteActual.isDisponible()){
+                    return i-1;//this.clientes.get(i).getIdNodo();    
                 }
             }
-            suma += clientes.get(i).getProbabilidad();
-        }
-        for (int i=0;i < this.cantClientes;i++){
-            if(this.clientes.get(i).isDisponible()){
-                return i;
+            
+            if (i<cantClientes) {
+               suma += clientes.get(i).getProbabilidad();
             }
         }
-        if(this.clientes.get(this.cantClientes-1).isDisponible()){
-            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
-        }
+        
+//        for (int i=0;i < this.cantClientes;i++){
+//            if(this.clientes.get(i).isDisponible()){
+//                return i;
+//            }
+//        }
+//        if(this.clientes.get(this.cantClientes-1).isDisponible()){
+//            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
+//        }
         return -1;
     }
     
