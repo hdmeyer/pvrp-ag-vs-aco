@@ -27,7 +27,7 @@ public class OACO {
     private int tamanoPoblacion;
     private int megatron;
     private Hormiga hActual;
-    private int generaciones = 1000;
+    private int generaciones = 10;
     
     /** Creates a new instance of OACO */
     public OACO(Conocimiento entrada) {
@@ -121,7 +121,8 @@ public class OACO {
         this.inicializarMatFeromonas();
         Poblacion P= new Poblacion(entrada,this.matrizFeromonas);
         P.inicializarPoblacion();
-        P.sortSoluciones();
+        /*ya se hace en inicializar poblacion*/
+        //P.sortSoluciones();
         
         int x =0;
         int y = 0;
@@ -140,6 +141,7 @@ public class OACO {
             this.actualizarMatrizFeromonas(P.getSoluciones());
             x++;
         }
+        System.out.println(P.toString());
     }
     
 }
