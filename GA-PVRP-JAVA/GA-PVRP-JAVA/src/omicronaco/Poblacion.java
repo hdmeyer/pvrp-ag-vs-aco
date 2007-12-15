@@ -31,6 +31,7 @@ public class Poblacion {
     private double [][] matrizCostos;
     private double alfa =1;
     private double beta =2;
+    private Conocimiento conocPob;
     
     /** Creates a new instance of Poblacion */
     public Poblacion(Conocimiento entrada, double [][] matrizFeromonas) {
@@ -51,9 +52,9 @@ public class Poblacion {
         this.setVisitasGlobales(new int[this.cantClientes+1]);
         this.copiar(entrada.listaVisitas);
         
+        this.setConocPob(entrada);
         
     }
-
 
     public Vector getSoluciones() {
         return soluciones;
@@ -105,7 +106,7 @@ public class Poblacion {
     public boolean estaContenido(Hormiga hormiga) {
         Iterator<Hormiga> it = this.getSoluciones().iterator();
         while(it.hasNext()){
-            if(hormiga.getCostoTotal() != ((Hormiga)it.next()).getCostoTotal()){
+            if(hormiga.getCostoTotal() == ((Hormiga)it.next()).getCostoTotal()){
                 return true;
             }
         }
@@ -117,8 +118,10 @@ public class Poblacion {
     }
     
     public void construirHormiga(){
+        this.setNuevaHormiga(new Hormiga(this.getConocPob()));
+        this.copiar(this.getConocPob().listaVisitas);
         int contClientes = 0;
-        int elegido =0;;
+        int elegido =0;
         /*antes de iniciar el ciclo debemos elegir un cliente al azar*/
         
         /*GENERA UN VECTOR QUE LO USAMOS PARA CONSTRUIR el cromosoma*/
@@ -256,12 +259,30 @@ public class Poblacion {
              *VISITADO*/
             if(this.getNActual().isDisponible()){
                 
+                // sumatoria las informaciones en los demás clientes
                 sumatoria = this.calcularSumatoria();
-                parteArriba = Math.pow(matrizFeromonas[this.getNuevaHormiga().getPosicion()][this.getNActual().getIdNodo()],alfa) 
-                * Math.pow((1/(this.getMatrizCostos()[this.getNuevaHormiga().getPosicion()][this.getNActual().getIdNodo()])),beta); 
+                
+                // primero calculamos todo lo relativo a la matriz de feromonas
+                Hormiga hormigaActual = this.getNuevaHormiga();
+                Nodo nodoActual = this.getNActual();
+                
+                int posActual = hormigaActual.getPosicion();
+                int posNodo = nodoActual.getIdNodo();
+                
+                double feromonas = matrizFeromonas[posActual][posNodo];                
+                double infoHistorica = Math.pow(feromonas,alfa);
+
+                // luego, calculamos la información heurística                
+                double costo = this.getMatrizCostos()[posActual][posNodo];                
+                double inversaCosto = 1/costo;
+                double infoHeuristica = Math.pow(inversaCosto,beta);               
+                
+                parteArriba = infoHistorica * infoHeuristica;
             }
+            
             if(this.getNActual().isDisponible()){
-                this.getNActual().setProbabilidad(parteArriba/sumatoria);
+                double probabilidad = parteArriba/sumatoria;
+                this.getNActual().setProbabilidad(probabilidad);
             }else{
                 this.getNActual().setProbabilidad(0);
             }
@@ -275,16 +296,33 @@ public class Poblacion {
     public double calcularSumatoria() {
         double resultado=0;
         Iterator iter = this.clientes.iterator();
-        while(iter.hasNext()){
+        
+        while(iter.hasNext()) {
+
             this.setNProbabilidad((Nodo)iter.next());
-            if (this.getNProbabilidad().isDisponible() && 
-            this.getNuevaHormiga().getPosicion() != this.getNProbabilidad().getIdNodo()){
+
+            // primero calculamos todo lo relativo a la matriz de feromonas
+            Hormiga hormigaActual = this.getNuevaHormiga();
+            Nodo nodoActual = this.getNProbabilidad();
+
+            int posActual = hormigaActual.getPosicion();
+            int posNodo = nodoActual.getIdNodo();
+
+            double feromonas = matrizFeromonas[posActual][posNodo];                
+            double infoHistorica = Math.pow(feromonas,alfa);
+
+            // luego, calculamos la información heurística                
+            double costo = this.getMatrizCostos()[posActual][posNodo];                
+            double inversaCosto = 1/costo;
+            double infoHeuristica = Math.pow(inversaCosto,beta);               
+
+            if ( nodoActual.isDisponible() && 
+                 posActual != posNodo ) {
                 
-                resultado += Math.pow(matrizFeromonas[this.getNuevaHormiga().getPosicion()][this.getNProbabilidad().getIdNodo()],alfa) 
-                * Math.pow((1/(this.getMatrizCostos()[this.getNuevaHormiga().getPosicion()][this.getNProbabilidad().getIdNodo()])),beta);
-            
+                resultado += infoHeuristica * infoHistorica;
             }
         }
+        
         return resultado;
     }
 
@@ -343,7 +381,7 @@ public class Poblacion {
     public int seleccionarCliente (){
         
         double aleatorio=(double)(Math.random());
-        System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
+        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
         double suma=0;
         
         for (int i=0;i < this.cantClientes;i++){
@@ -379,6 +417,14 @@ public class Poblacion {
             retorno += "\n";
         }
         return retorno;
+    }
+
+    public Conocimiento getConocPob() {
+        return conocPob;
+    }
+
+    public void setConocPob(Conocimiento conocPob) {
+        this.conocPob = conocPob;
     }
     
 }
