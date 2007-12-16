@@ -40,7 +40,7 @@ public class Main {
             OACO optimusPrime = new OACO(prueba);
             
             // paraguayización de nuestro héroe
-            optimusPrime.elPurete(prueba,100);
+            optimusPrime.elPurete(prueba,10);
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("No se pudo leer correctamente el archivo");
