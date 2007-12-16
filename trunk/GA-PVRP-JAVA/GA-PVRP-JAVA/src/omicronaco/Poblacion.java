@@ -182,7 +182,7 @@ public class Poblacion {
      *Creamos nodos nuevos y los vamos insertando en el VectorClientes
      **/
     public void inicializarClientesDisp(){
-        //desde el cero al 51
+        //desde el 1 al 51
         int x = 1;
         while(x <= this.getCantClientes()){
             this.getClientes().add(new Nodo(x,0));
@@ -201,6 +201,7 @@ public class Poblacion {
                 this.getNActual().setDisponible(true);
             }
         }
+        this.getNuevaHormiga().setPosicion(0);
     }
     
     public void copiar(int[][] listaVisitas) {
@@ -470,9 +471,12 @@ public class Poblacion {
     public String toString(){
         String retorno = "";
         Iterator<Hormiga> it = this.getSoluciones().iterator();
+        Hormiga hormigaImpr;
         while(it.hasNext()){
-            retorno += it.next().toString();
+            hormigaImpr = it.next();
+            retorno += hormigaImpr.toString();
             retorno += "\n";
+            retorno += "COSTO: "+ hormigaImpr.getCostoTotal() + "\n";
             retorno += "----------------------------------------------------------------------------------------------";
             retorno += "\n";
         }

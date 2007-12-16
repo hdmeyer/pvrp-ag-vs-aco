@@ -56,7 +56,9 @@ public class Camino {
                 posterior = (int) it.next();
                 this.costo += this.getMatrizCostos()[actual][posterior];
                 actual = posterior;
-            }           
+            }        
+            /*Sumamos tb el trayecto desde el penultimo al ultimo
+             *y desde el ultimo al nodo 0*/
             this.costo += matrizCostos[actual][posterior] + matrizCostos[posterior][0];
         }
     }
