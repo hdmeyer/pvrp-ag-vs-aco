@@ -27,7 +27,7 @@ public class OACO {
     private int tamanoPoblacion;
     private int megatron;
     private Hormiga hActual;
-    private int generaciones = 10;
+    private int generaciones = 100;
     
     /** Creates a new instance of OACO */
     public OACO(Conocimiento entrada) {
@@ -117,7 +117,8 @@ public class OACO {
     }
     
     public void elPurete(Conocimiento entrada, int corridas){
-        
+        System.out.println(" CANTIDAD DE CORRIDAS" + corridas);
+        System.out.println(" CANTIDAD DE GENERACIONES" + this.generaciones);
         this.inicializarMatFeromonas();
         Poblacion P= new Poblacion(entrada,this.matrizFeromonas);
         P.inicializarPoblacion();

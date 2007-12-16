@@ -175,7 +175,7 @@ public class Poblacion {
             
         }
         this.getNuevaHormiga().calcularCostoTotal();
-        System.out.println(this.getNuevaHormiga().toString());
+        //System.out.println(this.getNuevaHormiga().toString());
     }
          
     /**
@@ -402,13 +402,13 @@ public class Poblacion {
     public int seleccionarCliente (){
         
         double aleatorio=(double)(Math.random());
-        System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
+        //System.out.println("Aleatorio en seleccionar cliente SALE: "+aleatorio+"");
         double suma=0;
-        
-        for (int i=0;i < this.cantClientes;i++){
+        suma += clientes.get(0).getProbabilidad();
+        for (int i=1;i < this.cantClientes;i++){
             
             if (suma > aleatorio){
-                if (i != 0 && this.clientes.get(i-1).isDisponible()){
+                if (i != 1 && this.clientes.get(i-1).isDisponible()){
                     return i-1;//this.clientes.get(i-1).getIdNodo();
                 }
                 if(this.clientes.get(i).isDisponible()){
@@ -417,13 +417,14 @@ public class Poblacion {
             }
             suma += clientes.get(i).getProbabilidad();
         }
-        for (int i=0;i < this.cantClientes;i++){
-            if(this.clientes.get(i).isDisponible()){
-                return i;
-            }
-        }
+//        for (int i=0;i < this.cantClientes;i++){
+//            if(this.clientes.get(i).isDisponible()){
+//                return i;
+//            }
+//        }
         if(this.clientes.get(this.cantClientes-1).isDisponible()){
-            return this.cantClientes;//this.clientes.get(this.cantClientes - 1).getIdNodo();
+            System.out.println("DEVOLVIO EL ULTIMO");
+            return this.cantClientes-1;//this.clientes.get(this.cantClientes - 1).getIdNodo();
         }
         return -1;
     }
