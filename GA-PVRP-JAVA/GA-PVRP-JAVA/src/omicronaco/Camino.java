@@ -77,7 +77,7 @@ public class Camino {
         while(it.hasNext()){
             retorno += it.next().toString() + ",";
         }
-        retorno += "]";
+        retorno += "0]";
         return retorno;
     }
     

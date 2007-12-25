@@ -13,8 +13,9 @@ import java.io.FileWriter;
  * @author Cristhian Parra
  */
 public class PVRP_AG_Main {
-    private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols\\runs";
-
+    //private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols\\runs";
+    private static String SOL_DIR = "..\\sols-ag\\runs-t";
+    
     private static int CANT_GENERACIONES = 50000;
     private static int PROB_MUTACION = 30;
     private static int TAM_POBLACION = 40;
@@ -48,12 +49,12 @@ public class PVRP_AG_Main {
         } else if (args.length == 2) {
             instanceNumber = args[0];
             solutionNumber = args[0];
-            problemInstanceFile = "C:\\pvrp\\p"+args[0];
-            bestSolutionFile = "C:\\pvrp-sols\\p"+args[0]+".res";
+            problemInstanceFile = "pvrp\\p"+args[0];
+            bestSolutionFile = "pvrp-sols\\p"+args[0]+".res";
             testNumber = args[1];
         } else {
-            problemInstanceFile = "C:\\pvrp\\p26";
-            bestSolutionFile = "C:\\pvrp-sols\\p26.res";
+            problemInstanceFile = "pvrp\\p26";
+            bestSolutionFile = "pvrp-sols\\p26.res";
             instanceNumber = "26";
             solutionNumber = "26";
             testNumber = "PRUEBA";

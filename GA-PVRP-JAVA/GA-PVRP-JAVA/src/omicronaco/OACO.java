@@ -9,6 +9,9 @@
 
 package omicronaco;
 
+import au.com.bytecode.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -23,6 +26,10 @@ public class OACO {
     // Su tamaño sera inicializado a la cantidad de clientes mas 1 para tener
     // en cuenta tambien al deposito
     private double matrizFeromonas[][];   //matriz de feromonas (memoristica)
+    
+    //private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols-aco\\runs";
+    private static String SOL_DIR = "..\\sols-aco\\runs";
+    private static int MAX_TIEMPO = 5; // EN MINUTOS
     
     private int tamanoPoblacion;
     private int megatron;
@@ -138,11 +145,201 @@ public class OACO {
                         y++;
                     }
                 }
+                
+                
             }
             this.actualizarMatrizFeromonas(P.getSoluciones());
             x++;
         }
         System.out.println(P.toString());
+    }
+    
+    
+    public void elPuretePorTiempo(Conocimiento entrada, int tiempoMax, int prueba,String instanceNumber){
+        
+        
+        
+        /*
+        * Variables para calculo de Resultados.
+         *  Correr por: 5 min (300 seg)
+         *  Tomar muestra cada: 5 seg.
+         */
+        long muestra = 5000; 
+
+        long iteradorTiempo = muestra; // se evalua de a 5 segundos	
+        long maxTiempo = 60000L * MAX_TIEMPO;
+
+        int longSalida = (int)( maxTiempo / muestra) + 2;
+
+        String[] tiempos = new String[longSalida]; 
+        String[] fitness = new String[longSalida];
+        String[] iteraciones = new String[longSalida];    // --- revisar 
+        tiempos[0] = "Tiempo";
+        fitness[0] = "Costo";
+        iteraciones[0] = "Generacion";
+        int medida = 1;
+
+        String headPrueba = "####PRUEBA "+prueba+":: ";
+        
+        System.out.println(" CANTIDAD DE HORMIGAS" + this.generaciones);
+        
+        this.inicializarMatFeromonas();
+        Poblacion P= new Poblacion(entrada,this.matrizFeromonas);
+        
+        // construye las primeras soluciones. 
+        // la cantidad de hormigas está determinado por la propiedad this.generaciones
+        // El algoritmo presentado es una adaptación de la propuesta de
+        // Barán y Gómez en su paper "Omicron ACO"
+                
+        System.out.println(headPrueba+":: INICALIZANDO POBLACIÓN... \n");
+        System.out.println(headPrueba+":: --> Población inicial:  \n");
+        
+        P.inicializarPoblacion();
+        /*ya se hace en inicializar poblacion*/
+        //P.sortSoluciones();
+
+        System.out.println(headPrueba+":: -->   "+P.toString());
+
+        // Mantenemos la nomeclatura del Algoritmo genético, para establecer un 
+        // paralelo entre ambos algoritmos. 
+        // En este caso, cada generación corresponde a una iteración del algoritmo
+        // en la que producimos K hormigas. 
+        
+        System.out.println("\n-------------------------------------------------------------------------");
+        System.out.println(headPrueba+"GENERACIONES \n");
+
+        boolean parada = false;
+
+        // medida de tiempo
+        long tiempoActual;
+        long inicio = System.currentTimeMillis();
+        
+        int y = 0;
+        int x = 1;
+        boolean newBest = false;  // Variable utilizada para detectar cada vez
+                                  // que encontramos una nueva mejor solucion global
+        int mejorGeneracion = x;  // Indicador de la última generación en la que 
+                                  // encontramos una mejor solución
+        while (!parada){            
+            
+                
+            String generacion = headPrueba+"--> POBGEN ["+x+"]::";
+            
+            
+            // construcción de hormigas...
+            // 1. Se construyen this.generacion hormigas, cada uno con una solucion en particular
+            // 2. Luego de cada nueva hormiga construida, se reemplaza la peor hormiga por la nueva
+            //    si esta es mejor. 
+            // 3. Luego, se reordenan las soluciones. 
+            y = 0; 
+            
+            // con esta variable controlamos el caso en el que no se hayan 
+            // generado this.generaciones nuevas mejores soluciones al momento
+            // de exceder el tiempo de la prueba. 
+            boolean corteInterno = true;
+            
+            while(y < this.generaciones && corteInterno ) {
+                
+                // generar nueva hormiga
+                P.construirHormiga();
+                
+                Hormiga mejorActual = (Hormiga) P.getSoluciones().lastElement();
+                Hormiga nueva = P.getNuevaHormiga();
+                
+                if (mejorActual.getCostoTotal() > nueva.getCostoTotal()) {
+                    newBest = true;
+                }
+                
+                if(P.getNuevaHormiga().getCostoTotal() < ((Hormiga)P.getSoluciones().get(0)).getCostoTotal()){
+                    if(!P.estaContenido(P.getNuevaHormiga())){
+                        P.actualizarSoluciones();
+                        y++;
+                    }
+                }
+                
+                // medición de tiempo para cortar este ciclo interno cuando se 
+                // excede el tiempo de prueba.
+                long tiempoCorte = System.currentTimeMillis();
+                corteInterno = ((tiempoCorte - inicio) >= maxTiempo);
+                
+            }
+            
+            Vector<Hormiga> currentSolutions = P.getSoluciones();
+            this.actualizarMatrizFeromonas(currentSolutions);
+            
+            Hormiga mejor = currentSolutions.lastElement();
+            System.out.println(generacion+"BEST Actual  -> COSTO: "+mejor.getCostoTotal());
+            System.out.print(generacion+"BEST Actual  -> "+mejor.toString());
+            
+            if (newBest) {
+                System.out.println(generacion+"NUEVO BEST Global!!!!");
+                mejorGeneracion = x;
+                newBest = false; 
+            }
+
+            System.out.println(generacion+"END ----------------------------------------------------------->");
+
+            tiempoActual = System.currentTimeMillis();
+
+            if (tiempoActual - inicio >= maxTiempo)
+                    parada = true;
+            else if (tiempoActual - inicio >= iteradorTiempo){
+                    //System.out.println("Generacion: "+iteraciones);
+                    //imprimirMejor(poblacion);
+                    tiempos[medida] = ""+(tiempoActual - inicio);
+                    fitness[medida] = ""+mejor.getCostoTotal();
+                    iteraciones[medida] = ""+x;                     
+
+                    medida++;
+                    iteradorTiempo += muestra; 		
+            }         
+
+            x++;                        
+        }
+        
+        
+        Hormiga mejorFinal = (Hormiga) P.getSoluciones().lastElement();
+        
+        System.out.println(headPrueba+"-------------------------------------------------------------------------");
+        System.out.println(headPrueba+"FIN DEL ALGORITMO \n");
+        System.out.println(headPrueba+"FIN -> Mejor Solución Global COSTO: -> "+mejorFinal.getCostoTotal());
+        System.out.println(headPrueba+"FIN -> Mejor Solución Global -> "+mejorFinal.toString());
+        System.out.println(headPrueba+"FIN -> Generación de la Mejor Solución Global -> " + mejorGeneracion);
+        System.out.println(headPrueba+"FIN -> Costo de la Mejor solución Conocida: "+entrada.mejorSol);
+        double relacionMejorSol = entrada.mejorSol/mejorFinal.getCostoTotal();
+        System.out.println(headPrueba+"FIN -> Mejor solución conocida / Mejor solución encontrada: "+relacionMejorSol);
+
+        System.out.println("-------------------------------------------------------------------------");
+
+        System.out.println("Escribiendo resultados a archivo...");
+
+        CSVWriter writer = null;
+        try {
+                String path = SOL_DIR+"-"+instanceNumber+"\\"+instanceNumber+"_TEST"+prueba+"_"+
+                        +MAX_TIEMPO+"MIN_"+this.generaciones+"HORMIGAS.csv";
+                writer = new CSVWriter(new FileWriter(path));
+        } catch (IOException e){
+                System.out.println("Error de escritura del archivo historico");
+                e.printStackTrace();
+                System.exit(0);			
+        }
+
+        writer.writeNext(tiempos);
+        writer.writeNext(fitness);
+        writer.writeNext(iteraciones);
+
+        try {
+            writer.flush();
+            writer.close();	
+        } catch (IOException e){
+            System.out.println("Error para cerrar archivo historico");
+            e.printStackTrace();
+            System.exit(0);			
+        }		
+
+        System.out.println(headPrueba+"ÚLTIMA POBLACIÓN: ");
+        System.out.println(headPrueba+P.toString());
+        
     }
     
 }

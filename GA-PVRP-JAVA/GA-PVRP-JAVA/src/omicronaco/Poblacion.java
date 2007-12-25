@@ -399,6 +399,7 @@ public class Poblacion {
     public void ordenarProbabilidades() {
         QuickSort.quicksort(this.clientes,0,this.clientes.size()-1,true,false);
     }
+    
     public int seleccionarCliente (){
         
         double aleatorio=(double)(Math.random());
@@ -423,7 +424,7 @@ public class Poblacion {
 //            }
 //        }
         if(this.clientes.get(this.cantClientes-1).isDisponible()){
-            System.out.println("DEVOLVIO EL ULTIMO");
+            //System.out.println("DEVOLVIO EL ULTIMO");
             return this.cantClientes-1;//this.clientes.get(this.cantClientes - 1).getIdNodo();
         }
         return -1;
