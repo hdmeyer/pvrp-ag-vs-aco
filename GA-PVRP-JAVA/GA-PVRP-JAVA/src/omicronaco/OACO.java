@@ -167,7 +167,7 @@ public class OACO {
         long muestra = 5000; 
 
         long iteradorTiempo = muestra; // se evalua de a 5 segundos	
-        long maxTiempo = 60000L * MAX_TIEMPO;
+        long maxTiempo = 60000L * tiempoMax;
 
         int longSalida = (int)( maxTiempo / muestra) + 2;
 
@@ -236,9 +236,9 @@ public class OACO {
             // con esta variable controlamos el caso en el que no se hayan 
             // generado this.generaciones nuevas mejores soluciones al momento
             // de exceder el tiempo de la prueba. 
-            boolean corteInterno = true;
+            boolean tiempoExcedido = false;
             
-            while(y < this.generaciones && corteInterno ) {
+            while(y < this.generaciones && !tiempoExcedido ) {
                 
                 // generar nueva hormiga
                 P.construirHormiga();
@@ -257,10 +257,35 @@ public class OACO {
                     }
                 }
                 
+            
+                Vector<Hormiga> currentSolutionsLocal = P.getSoluciones();    
+                Hormiga mejorLocal = currentSolutionsLocal.lastElement();
+                System.out.println(generacion+"BEST Actual  -> COSTO: "+mejorLocal.getCostoTotal());
+                System.out.print(generacion+"BEST Actual  -> "+mejorLocal.toString());
+
+                if (newBest) {
+                    System.out.println(generacion+"NUEVO BEST Global!!!!");
+                    mejorGeneracion = x;
+                    newBest = false; 
+                }
+
+                
                 // medición de tiempo para cortar este ciclo interno cuando se 
                 // excede el tiempo de prueba.
                 long tiempoCorte = System.currentTimeMillis();
-                corteInterno = ((tiempoCorte - inicio) >= maxTiempo);
+                
+                if (tiempoCorte - inicio >= maxTiempo) {
+                    tiempoExcedido = true;
+                } else if (tiempoCorte - inicio >= iteradorTiempo){
+                    //System.out.println("Generacion: "+iteraciones);
+                    //imprimirMejor(poblacion);
+                    tiempos[medida] = ""+(tiempoCorte - inicio);
+                    fitness[medida] = ""+mejorLocal.getCostoTotal();
+                    iteraciones[medida] = ""+x;                     
+
+                    medida++;
+                    iteradorTiempo += muestra; 		
+                }
                 
             }
             

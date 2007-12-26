@@ -83,7 +83,7 @@ public class Main {
         
                 System.out.println("############################# -- PRUEBA NRO. " + prueba + " -- #############################");
 
-                optimusPrime.elPuretePorTiempo(conocimiento,1, prueba, instanceNumber);
+                optimusPrime.elPuretePorTiempo(conocimiento,5, prueba, instanceNumber);
                 
                 System.out.println("######################## -- PRUEBA NRO. " + prueba + " FINALIZADO -- ########################");
             }
