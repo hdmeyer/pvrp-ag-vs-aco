@@ -15,6 +15,7 @@ import java.util.Vector;
 /**
  *
  * @author Hugo Meyer- Cristhian Parra
+ * Representa cada una de las rutas que existe
  */
 public class Camino {
     private Vector<Integer> ruta;

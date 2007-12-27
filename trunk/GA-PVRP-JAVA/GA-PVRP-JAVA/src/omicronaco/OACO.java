@@ -37,7 +37,9 @@ public class OACO {
     private Hormiga hActual;
     private int generaciones = 100;
     
-    /** Creates a new instance of OACO */
+    /** Creates a new instance of OACO 
+     *Inicializamos todos los datos necesarios.
+     */
     public OACO(Conocimiento entrada) {
         
         this.matrizFeromonas = new double [entrada.cantClientes+1][entrada.cantClientes+1];
@@ -46,7 +48,7 @@ public class OACO {
         this.setMegatron(entrada.megatron);
         this.hActual = new Hormiga(entrada);
     }
-    
+    /*Inicializa Matriz de feromonas con los valores a 1*/
     public void inicializarMatFeromonas(){
         for (int i = 0; i < matrizFeromonas.length; i++) {
             for (int j = 0; j < matrizFeromonas[i].length; j++) {
@@ -69,6 +71,9 @@ public class OACO {
         
     }
     
+    /*Actualizamos la matriz de feromonas
+     *de acuerdo a las rutas que fueron visitadas por las Hormigas
+     */
     public void actualizarMatrizFeromonas(Vector<Hormiga> sols){
         this.inicializarMatFeromonas();
         int x = 0;
@@ -125,6 +130,10 @@ public class OACO {
         this.hActual = hActual;
     }
     
+    /**
+     *Se le añadio este nombre jocoso solo para amenizar el trabajo debido a las largas madrugadas
+     *que llevamos desarrollando, este es el algoritmo principal que esta descripto en el paper
+     */
     public void elPurete(Conocimiento entrada, int corridas){
         System.out.println(" CANTIDAD DE CORRIDAS" + corridas);
         System.out.println(" CANTIDAD DE GENERACIONES" + this.generaciones);
@@ -156,7 +165,9 @@ public class OACO {
         System.out.println(P.toString());
     }
     
-    
+    /**
+     *IDEM anterior pero utilizando condicion de tiempo para parada.
+     */
     public void elPuretePorTiempo(Conocimiento entrada, int tiempoMax, int prueba,String instanceNumber){
         
         
