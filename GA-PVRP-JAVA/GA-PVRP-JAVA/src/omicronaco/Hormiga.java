@@ -13,7 +13,8 @@ import java.util.Vector;
 
 /**
  *
- * @author Propietario
+ * @author Hugo Meyer- Cristhian Parra
+ *
  */
 public class Hormiga {
     
@@ -27,7 +28,9 @@ public class Hormiga {
     
     //CADA HORMIGA DEBERIA SABER A QUIEN VISITO
     
-    /** Creates a new instance of Hormiga */
+    /** Creates a new instance of Hormiga 
+     * Se inicilizan los valores necesarios.
+     */
     public Hormiga(Conocimiento entrada) {
                 
         this.setPosicion(0);// EMPEZAMOS EN EL DEPOSITO SIEMPRE
@@ -76,7 +79,10 @@ public class Hormiga {
             return 0;
         }
     }
-    
+    /**
+     *Se calcula el costo de cada hormiga de acuerdo al 
+     *costo de cada una de las rutas.
+     */
     public void calcularCostoTotal(){
         for (int i = 0; i < caminos.length; i++) {
             

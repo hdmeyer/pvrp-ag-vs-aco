@@ -4,9 +4,7 @@ import java.util.*;
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Quick sort implementation that will sort an array or Vector of IComparable objects.
- * @see org.relayirc.util.IComparable
- * @see java.util.Vector 
+ *Metodo de Ordenamiento para Vectores.
  */
 public class QuickSort {
  
@@ -61,6 +59,10 @@ public class QuickSort {
 //		quicksort(v, left, last-1,ascending,tipo);
 //		quicksort(v, last+1, right,ascending,tipo);
 //	}
+        
+        /**
+         *Realiza el ordenamiento de hormigas o probabilidades de acuerdo al tipo
+         */
         public static void quicksort(Vector v, int left, int right, boolean ascending, boolean tipo) {
             int i, j;
             if(tipo){

@@ -34,7 +34,10 @@ public class Poblacion {
     private double beta =2;
     private Conocimiento conocPob;
     
-    /** Creates a new instance of Poblacion */
+    /** Creates a new instance of Poblacion 
+     * Se carga todos los datos necesarios a partir de los datos
+     * de entrada.
+     */
     public Poblacion(Conocimiento entrada, double [][] matrizFeromonas) {
         
         this.setSoluciones(new Vector(entrada.cantidadHormigas));
@@ -64,7 +67,9 @@ public class Poblacion {
     public void setSoluciones(Vector soluciones) {
         this.soluciones = soluciones;
     }
-    
+    /**
+     *Construye una poblacion inicial de hormigas.
+     */
     public void inicializarPoblacion(){
         
         int x = 0;
@@ -80,7 +85,10 @@ public class Poblacion {
         }
         this.sortSoluciones();
     }
-    
+    /**
+     *Actualiza la población de hormigas con una nueva hormiga si
+     *se cumple con las restricciones necesarias
+     */
     public void actualizarSoluciones(){
         this.soluciones.remove(0);
         this.soluciones.add(0,this.nuevaHormiga);
@@ -103,7 +111,11 @@ public class Poblacion {
         this.nuevaHormiga = nuevaHormiga;
     }
 
-
+    /**
+     *Verifica si una hormiga esta contenida ya dentro de la poblacion
+     *fijandose solo en el costo total, porque recorrer toda la hormiga
+     *seria computacionalmente mas costoso.
+     */
     public boolean estaContenido(Hormiga hormiga) {
         Iterator<Hormiga> it = this.getSoluciones().iterator();
         while(it.hasNext()){
@@ -113,11 +125,16 @@ public class Poblacion {
         }
         return false;
     }
-
+    /**
+     *Ordena las hormigas o soluciones con quicksort
+     */
     public void sortSoluciones() {
         QuickSort.quicksort(this.soluciones,0,this.soluciones.size()-1,true,true);
     }
-    
+    /**
+     *Construye una hormiga completa con todas sus rutas para cada
+     *dia y camion respectivamente
+     */
     public void construirHormiga(){
         this.setNuevaHormiga(new Hormiga(this.getConocPob()));
         this.copiar(this.getConocPob().listaVisitas);
@@ -189,7 +206,11 @@ public class Poblacion {
             x++;
         }
     }
-    
+    /**
+     *Se setea de vuelta la disponibilidad
+     *de los clientes de acuerdo a la cantidad de visitas
+     *que requiere cada uno
+     */
     public void reiniciarClientes(){
         Iterator it = this.clientes.iterator();
         while(it.hasNext()){
@@ -399,7 +420,10 @@ public class Poblacion {
     public void ordenarProbabilidades() {
         QuickSort.quicksort(this.clientes,0,this.clientes.size()-1,true,false);
     }
-    
+    /**
+     *Se utiliza un metodo de ruleta con prioridades, tratando
+     *de favorecer a los nodos menos costosos
+     */
     public int seleccionarCliente (){
         
         double aleatorio=(double)(Math.random());

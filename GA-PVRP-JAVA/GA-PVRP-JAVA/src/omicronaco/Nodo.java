@@ -11,7 +11,8 @@ package omicronaco;
 
 /**
  *
- * @author Propietario
+ * @author Hugo Meyer- Cristhian Parra
+ *Representa a un cliente
  */
 public class Nodo {
     
