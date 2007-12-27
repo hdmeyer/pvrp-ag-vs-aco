@@ -10,6 +10,7 @@
 package omicronaco;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
@@ -28,7 +29,7 @@ public class OACO {
     private double matrizFeromonas[][];   //matriz de feromonas (memoristica)
     
     //private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols-aco\\runs";
-    private static String SOL_DIR = "..\\sols-aco\\runs";
+    private String SOL_DIR = "..\\sols-aco\\runs";
     private static int MAX_TIEMPO = 5; // EN MINUTOS
     
     private int tamanoPoblacion;
@@ -38,6 +39,7 @@ public class OACO {
     
     /** Creates a new instance of OACO */
     public OACO(Conocimiento entrada) {
+        
         this.matrizFeromonas = new double [entrada.cantClientes+1][entrada.cantClientes+1];
         this.inicializarMatFeromonas();
         this.setTamanoPoblacion(entrada.cantidadHormigas);
@@ -339,8 +341,19 @@ public class OACO {
         System.out.println("Escribiendo resultados a archivo...");
 
         CSVWriter writer = null;
+        
+        
+        
         try {
-                String path = SOL_DIR+"-"+instanceNumber+"\\"+instanceNumber+"_TEST"+prueba+"_"+
+                String barra = "\\";
+                
+                String separator = File.separator;
+                if (separator.compareTo("/") == 0 ) {
+                    barra = "/";
+                    this.SOL_DIR = "../sols-aco/runs";
+                }
+            
+                String path = SOL_DIR+"-"+instanceNumber+barra+instanceNumber+"_TEST"+prueba+"_"+
                         +MAX_TIEMPO+"MIN_"+this.generaciones+"HORMIGAS.csv";
                 writer = new CSVWriter(new FileWriter(path));
         } catch (IOException e){
