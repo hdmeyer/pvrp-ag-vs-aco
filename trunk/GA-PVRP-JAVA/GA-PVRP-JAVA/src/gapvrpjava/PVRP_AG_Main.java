@@ -5,16 +5,14 @@
 
 package gapvrpjava;
 
-import java.io.IOException;
 import au.com.bytecode.opencsv.CSVWriter;
-import java.io.FileWriter;
+import java.io.*;
 /**
  *
  * @author Cristhian Parra
  */
 public class PVRP_AG_Main {
-    //private static String SOL_DIR = "D:\\cparra\\Cparra\\Estudios\\FACU\\2007\\8voSemestre\\ia\\tp-ia\\fuentes\\GA-PVRP-JAVA\\GA-PVRP-JAVA\\sols\\runs";
-    private static String SOL_DIR = "..\\sols-ag\\runs-t";
+    
     
     private static int CANT_GENERACIONES = 50000;
     private static int PROB_MUTACION = 30;
@@ -25,7 +23,8 @@ public class PVRP_AG_Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        
+    
+        String SOL_DIR = "..\\sols-ag\\runs";    
         Poblacion poblacion;
         Conocimiento conocimiento;
         String problemInstanceFile;
@@ -33,7 +32,18 @@ public class PVRP_AG_Main {
         String testNumber;        
         String instanceNumber;
         String solutionNumber;
+
+        
+        
+        String separator = File.separator;
+        
+        String dir = "pvrp\\p";
+        
+        if (separator.compareTo("/") == 0 ) {
+            dir = "pvrp/p";
+        }
        
+        
         /**
          * lectura de parámatros iniciales, preparación del algoritmo. 
          * 
@@ -49,17 +59,21 @@ public class PVRP_AG_Main {
         } else if (args.length == 2) {
             instanceNumber = args[0];
             solutionNumber = args[0];
-            problemInstanceFile = "pvrp\\p"+args[0];
-            bestSolutionFile = "pvrp-sols\\p"+args[0]+".res";
+            problemInstanceFile = dir+args[0];
+            bestSolutionFile = dir+args[0]+".res";
             testNumber = args[1];
+        } else if (args.length == 1) {            
+            instanceNumber = args[0];
+            solutionNumber = args[0];
+            problemInstanceFile = dir+args[0];
+            bestSolutionFile = dir+args[0]+".res";
         } else {
-            problemInstanceFile = "pvrp\\p26";
-            bestSolutionFile = "pvrp-sols\\p26.res";
+            problemInstanceFile = dir +"26";
+            bestSolutionFile = dir + "26.res";
             instanceNumber = "26";
             solutionNumber = "26";
             testNumber = "PRUEBA";
         }
-
         
         
         //impresión de título
@@ -191,7 +205,17 @@ public class PVRP_AG_Main {
 
             CSVWriter writer = null;
             try {
-                    String path = SOL_DIR+"-"+instanceNumber+"\\"+instanceNumber+"_TEST"+prueba+"_"+
+
+                    String barra = "\\";
+
+                    separator = File.separator;
+                    
+                    if (separator.compareTo("/") == 0 ) {
+                        barra = "/";
+                        SOL_DIR = "../sols-ag/runs";
+                    }
+
+                    String path = SOL_DIR+"-"+instanceNumber+barra+instanceNumber+"_TEST"+prueba+"_"+
                             TAM_POBLACION+"IND_"+MAX_TIEMPO+"MIN_"+PROB_MUTACION+"MUT.csv";
                     writer = new CSVWriter(new FileWriter(path));
             } catch (IOException e){
