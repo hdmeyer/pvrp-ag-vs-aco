@@ -1,0 +1,1 @@
+Se implementan dos algoritmos: uno genético y otro de colonia de hormigas. Ambos para resolver el problema del ruteo de vehículos periódico.
